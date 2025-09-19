@@ -1,12 +1,40 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import FitMateHeader from "@/components/FitMateHeader";
+import WelcomeSection from "@/components/WelcomeSection";
+import DailyCheckIn from "@/components/DailyCheckIn";
+import WorkoutPlanning from "@/components/WorkoutPlanning";
+import NutritionTracking from "@/components/NutritionTracking";
+import ProgressVisualization from "@/components/ProgressVisualization";
+import MentalWellness from "@/components/MentalWellness";
 
 const Index = () => {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
-      </div>
+    <div className="min-h-screen bg-background">
+      <FitMateHeader />
+      
+      <main className="max-w-7xl mx-auto px-6 py-8">
+        <div className="space-y-8">
+          {/* Welcome Section */}
+          <WelcomeSection />
+          
+          {/* Main Dashboard Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Left Column */}
+            <div className="lg:col-span-2 space-y-6">
+              <WorkoutPlanning />
+              <NutritionTracking />
+            </div>
+            
+            {/* Right Column */}
+            <div className="space-y-6">
+              <DailyCheckIn />
+              <MentalWellness />
+            </div>
+          </div>
+          
+          {/* Progress Section */}
+          <ProgressVisualization />
+        </div>
+      </main>
     </div>
   );
 };
