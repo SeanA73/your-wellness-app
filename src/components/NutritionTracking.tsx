@@ -8,12 +8,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { Camera, Plus, Apple, Utensils } from "lucide-react";
+import { Camera, Plus, Apple, Utensils, LogIn } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
+import { useAuth } from "@/hooks/useAuth";
 
 const NutritionTracking = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [addFoodOpen, setAddFoodOpen] = useState(false);
   const [newFood, setNewFood] = useState({ 
     name: "", 
@@ -107,7 +109,9 @@ const NutritionTracking = () => {
       
       toast({
         title: "Food Added!",
-        description: `${newFood.name} (${nutritionSummary}) added to your ${newFood.mealType || 'nutrition'} log.`,
+        description: user 
+          ? `${newFood.name} (${nutritionSummary}) added to your ${newFood.mealType || 'nutrition'} log.`
+          : `${newFood.name} logged temporarily. Sign in to save your data permanently!`,
       });
       
       setNewFood({ 
@@ -322,15 +326,25 @@ const NutritionTracking = () => {
         <div className="bg-motivation-gradient/10 border border-accent/20 rounded-lg p-4">
           <div className="flex items-start gap-3">
             <Apple className="w-5 h-5 text-accent mt-0.5" />
-            <div>
+            <div className="flex-1">
               <h5 className="font-semibold text-foreground mb-1">FitMate's Nutrition Tip</h5>
               <p className="text-sm text-muted-foreground mb-2">
-                "You're doing great with protein today! For dinner, how about adding some colorful veggies? 
-                A rainbow on your plate means a rainbow of nutrients!"
+                {user 
+                  ? "You're doing great with protein today! For dinner, how about adding some colorful veggies? A rainbow on your plate means a rainbow of nutrients!"
+                  : "Track your nutrition and get personalized tips from FitMate! Sign in to save your progress and get AI-powered coaching."
+                }
               </p>
-              <Button variant="motivation" size="sm" onClick={() => navigate("/nutrition")}>
-                Show me recipes
-              </Button>
+              <div className="flex gap-2">
+                <Button variant="motivation" size="sm" onClick={() => navigate("/nutrition")}>
+                  {user ? "Show me recipes" : "Explore recipes"}
+                </Button>
+                {!user && (
+                  <Button variant="wellness" size="sm" onClick={() => navigate("/auth")}>
+                    <LogIn className="w-4 h-4 mr-2" />
+                    Sign In
+                  </Button>
+                )}
+              </div>
             </div>
           </div>
         </div>
