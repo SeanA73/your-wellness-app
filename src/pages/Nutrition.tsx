@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { ArrowLeft, Search, Camera, Plus, ChefHat, Clock, Users } from "lucide-react";
+import { ArrowLeft, Search, Camera, Plus, ChefHat, Clock, Users, Upload } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
 
@@ -16,6 +16,10 @@ const Nutrition = () => {
   const [selectedRecipe, setSelectedRecipe] = useState(null);
   const [addFoodOpen, setAddFoodOpen] = useState(false);
   const [newFood, setNewFood] = useState({ name: "", calories: "" });
+  const [photoAnalysisOpen, setPhotoAnalysisOpen] = useState(false);
+  const [analyzedFood, setAnalyzedFood] = useState(null);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const fileInputRef = useRef(null);
   const { toast } = useToast();
 
   const nutritionData = {
@@ -94,6 +98,57 @@ const Nutrition = () => {
     setSelectedRecipe(recipe);
   };
 
+  const handlePhotoUpload = (event) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      analyzePhoto(file);
+    }
+  };
+
+  const handleCameraCapture = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
+  const analyzePhoto = async (file) => {
+    setIsAnalyzing(true);
+    setPhotoAnalysisOpen(true);
+    
+    // Simulate AI analysis - in real app, this would call an AI service
+    setTimeout(() => {
+      const mockAnalysis = {
+        foodName: "Grilled Chicken Salad",
+        calories: 340,
+        protein: 32,
+        carbs: 12,
+        fats: 18,
+        fiber: 4,
+        ingredients: ["Grilled chicken breast", "Mixed greens", "Cherry tomatoes", "Cucumber", "Olive oil dressing"],
+        confidence: 85
+      };
+      
+      setAnalyzedFood(mockAnalysis);
+      setIsAnalyzing(false);
+      
+      toast({
+        title: "Photo Analyzed!",
+        description: `Detected ${mockAnalysis.foodName} with ${mockAnalysis.calories} calories`,
+      });
+    }, 2000);
+  };
+
+  const addAnalyzedFood = () => {
+    if (analyzedFood) {
+      toast({
+        title: "Food Added!",
+        description: `${analyzedFood.foodName} has been added to your nutrition log.`,
+      });
+      setPhotoAnalysisOpen(false);
+      setAnalyzedFood(null);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
@@ -109,10 +164,18 @@ const Nutrition = () => {
               <p className="text-sm text-muted-foreground">Track meals and discover healthy recipes</p>
             </div>
             <div className="flex gap-2">
-              <Button variant="outline">
+              <Button variant="wellness" onClick={handleCameraCapture}>
                 <Camera className="w-4 h-4" />
                 Photo
               </Button>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                capture="environment"
+                onChange={handlePhotoUpload}
+                className="hidden"
+              />
               <Dialog open={addFoodOpen} onOpenChange={setAddFoodOpen}>
                 <DialogTrigger asChild>
                   <Button variant="wellness">
@@ -323,6 +386,74 @@ const Nutrition = () => {
               </div>
             </>
           )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Photo Analysis Dialog */}
+      <Dialog open={photoAnalysisOpen} onOpenChange={setPhotoAnalysisOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-3">
+              <Camera className="w-5 h-5" />
+              Food Photo Analysis
+            </DialogTitle>
+          </DialogHeader>
+          
+          {isAnalyzing ? (
+            <div className="flex flex-col items-center py-8 space-y-4">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+              <p className="text-muted-foreground">Analyzing your food photo...</p>
+            </div>
+          ) : analyzedFood ? (
+            <div className="space-y-6">
+              <div className="bg-success-gradient/10 p-4 rounded-lg">
+                <h3 className="font-semibold text-lg mb-2">{analyzedFood.foodName}</h3>
+                <p className="text-sm text-muted-foreground mb-3">
+                  Analysis confidence: {analyzedFood.confidence}%
+                </p>
+                
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-primary">{analyzedFood.calories}</div>
+                    <div className="text-xs text-muted-foreground">Calories</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-success">{analyzedFood.protein}g</div>
+                    <div className="text-xs text-muted-foreground">Protein</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-motivation">{analyzedFood.carbs}g</div>
+                    <div className="text-xs text-muted-foreground">Carbs</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-calm">{analyzedFood.fats}g</div>
+                    <div className="text-xs text-muted-foreground">Fats</div>
+                  </div>
+                </div>
+                
+                <div>
+                  <h4 className="font-medium mb-2">Detected Ingredients:</h4>
+                  <div className="flex gap-1 flex-wrap">
+                    {analyzedFood.ingredients.map((ingredient, index) => (
+                      <Badge key={index} variant="secondary" className="text-xs">
+                        {ingredient}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              
+              <div className="flex gap-3">
+                <Button variant="wellness" onClick={addAnalyzedFood} className="flex-1">
+                  <Plus className="w-4 h-4 mr-2" />
+                  Add to Food Log
+                </Button>
+                <Button variant="outline" onClick={() => setPhotoAnalysisOpen(false)}>
+                  Cancel
+                </Button>
+              </div>
+            </div>
+          ) : null}
         </DialogContent>
       </Dialog>
     </div>
