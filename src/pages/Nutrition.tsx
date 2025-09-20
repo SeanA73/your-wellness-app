@@ -6,6 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import { ArrowLeft, Search, Camera, Plus, ChefHat, Clock, Users, Upload } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
@@ -15,7 +17,17 @@ const Nutrition = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedRecipe, setSelectedRecipe] = useState(null);
   const [addFoodOpen, setAddFoodOpen] = useState(false);
-  const [newFood, setNewFood] = useState({ name: "", calories: "" });
+  const [newFood, setNewFood] = useState({ 
+    name: "", 
+    calories: "", 
+    protein: "", 
+    carbs: "", 
+    fats: "", 
+    fiber: "", 
+    servingSize: "", 
+    mealType: "",
+    notes: ""
+  });
   const [photoAnalysisOpen, setPhotoAnalysisOpen] = useState(false);
   const [analyzedFood, setAnalyzedFood] = useState(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -85,11 +97,29 @@ const Nutrition = () => {
 
   const handleAddFood = () => {
     if (newFood.name && newFood.calories) {
+      const nutritionSummary = [
+        newFood.calories && `${newFood.calories} calories`,
+        newFood.protein && `${newFood.protein}g protein`,
+        newFood.carbs && `${newFood.carbs}g carbs`,
+        newFood.fats && `${newFood.fats}g fats`
+      ].filter(Boolean).join(", ");
+      
       toast({
         title: "Food Added!",
-        description: `${newFood.name} (${newFood.calories} calories) has been added to your log.`,
+        description: `${newFood.name} (${nutritionSummary}) added to your ${newFood.mealType || 'nutrition'} log.`,
       });
-      setNewFood({ name: "", calories: "" });
+      
+      setNewFood({ 
+        name: "", 
+        calories: "", 
+        protein: "", 
+        carbs: "", 
+        fats: "", 
+        fiber: "", 
+        servingSize: "", 
+        mealType: "",
+        notes: ""
+      });
       setAddFoodOpen(false);
     }
   };
@@ -183,31 +213,122 @@ const Nutrition = () => {
                     Add Food
                   </Button>
                 </DialogTrigger>
-                <DialogContent>
+                <DialogContent className="max-w-md max-h-[80vh] overflow-y-auto">
                   <DialogHeader>
                     <DialogTitle>Add Food to Log</DialogTitle>
                   </DialogHeader>
                   <div className="space-y-4">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="col-span-2">
+                        <Label htmlFor="food-name">Food Name *</Label>
+                        <Input
+                          id="food-name"
+                          value={newFood.name}
+                          onChange={(e) => setNewFood({...newFood, name: e.target.value})}
+                          placeholder="e.g., Greek Yogurt with Berries"
+                        />
+                      </div>
+                      
+                      <div>
+                        <Label htmlFor="meal-type">Meal Type</Label>
+                        <Select value={newFood.mealType} onValueChange={(value) => setNewFood({...newFood, mealType: value})}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select meal" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="breakfast">Breakfast</SelectItem>
+                            <SelectItem value="lunch">Lunch</SelectItem>
+                            <SelectItem value="dinner">Dinner</SelectItem>
+                            <SelectItem value="snack">Snack</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      
+                      <div>
+                        <Label htmlFor="serving-size">Serving Size</Label>
+                        <Input
+                          id="serving-size"
+                          value={newFood.servingSize}
+                          onChange={(e) => setNewFood({...newFood, servingSize: e.target.value})}
+                          placeholder="e.g., 1 cup, 100g"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor="food-calories">Calories *</Label>
+                        <Input
+                          id="food-calories"
+                          type="number"
+                          value={newFood.calories}
+                          onChange={(e) => setNewFood({...newFood, calories: e.target.value})}
+                          placeholder="150"
+                        />
+                      </div>
+                      
+                      <div>
+                        <Label htmlFor="food-protein">Protein (g)</Label>
+                        <Input
+                          id="food-protein"
+                          type="number"
+                          value={newFood.protein}
+                          onChange={(e) => setNewFood({...newFood, protein: e.target.value})}
+                          placeholder="12"
+                        />
+                      </div>
+                      
+                      <div>
+                        <Label htmlFor="food-carbs">Carbs (g)</Label>
+                        <Input
+                          id="food-carbs"
+                          type="number"
+                          value={newFood.carbs}
+                          onChange={(e) => setNewFood({...newFood, carbs: e.target.value})}
+                          placeholder="20"
+                        />
+                      </div>
+                      
+                      <div>
+                        <Label htmlFor="food-fats">Fats (g)</Label>
+                        <Input
+                          id="food-fats"
+                          type="number"
+                          value={newFood.fats}
+                          onChange={(e) => setNewFood({...newFood, fats: e.target.value})}
+                          placeholder="5"
+                        />
+                      </div>
+                      
+                      <div>
+                        <Label htmlFor="food-fiber">Fiber (g)</Label>
+                        <Input
+                          id="food-fiber"
+                          type="number"
+                          value={newFood.fiber}
+                          onChange={(e) => setNewFood({...newFood, fiber: e.target.value})}
+                          placeholder="3"
+                        />
+                      </div>
+                    </div>
+
                     <div>
-                      <Label htmlFor="food-name">Food Name</Label>
-                      <Input
-                        id="food-name"
-                        value={newFood.name}
-                        onChange={(e) => setNewFood({...newFood, name: e.target.value})}
-                        placeholder="e.g., Greek Yogurt with Berries"
+                      <Label htmlFor="food-notes">Notes (optional)</Label>
+                      <Textarea
+                        id="food-notes"
+                        value={newFood.notes}
+                        onChange={(e) => setNewFood({...newFood, notes: e.target.value})}
+                        placeholder="Any additional notes about preparation, brand, etc."
+                        rows={2}
                       />
                     </div>
-                    <div>
-                      <Label htmlFor="food-calories">Calories</Label>
-                      <Input
-                        id="food-calories"
-                        type="number"
-                        value={newFood.calories}
-                        onChange={(e) => setNewFood({...newFood, calories: e.target.value})}
-                        placeholder="e.g., 150"
-                      />
-                    </div>
-                    <Button onClick={handleAddFood} className="w-full" variant="wellness">
+                    
+                    <Button 
+                      onClick={handleAddFood} 
+                      className="w-full" 
+                      variant="wellness"
+                      disabled={!newFood.name || !newFood.calories}
+                    >
                       Add to Log
                     </Button>
                   </div>
