@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useSubscription } from '@/hooks/useSubscription';
+import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -105,6 +106,7 @@ interface PricingSectionProps {
 
 export const PricingSection = ({ showTitle = true, className }: PricingSectionProps) => {
   const { createCheckoutSession, getCurrentPlan, hasPremiumAccess } = useSubscription();
+  const { user } = useAuth();
   const [isAnnual, setIsAnnual] = useState(false);
   const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
 
@@ -122,6 +124,13 @@ export const PricingSection = ({ showTitle = true, className }: PricingSectionPr
   };
 
   const getButtonText = (plan: PricingPlan) => {
+    if (!user) {
+      if (plan.id === 'free') {
+        return 'Get Started Free';
+      }
+      return 'Start Free Trial';
+    }
+    
     if (plan.id === 'free') {
       return currentPlan === 'free' ? 'Current Plan' : 'Downgrade';
     }
@@ -138,7 +147,7 @@ export const PricingSection = ({ showTitle = true, className }: PricingSectionPr
   };
 
   const getButtonVariant = (plan: PricingPlan) => {
-    if (currentPlan === plan.id) return 'secondary';
+    if (user && currentPlan === plan.id) return 'secondary';
     if (plan.popular) return 'default';
     return 'outline';
   };
@@ -279,9 +288,11 @@ export const PricingSection = ({ showTitle = true, className }: PricingSectionPr
                     className="w-full"
                     variant={getButtonVariant(plan)}
                     size="lg"
-                    disabled={loadingPlan === plan.id || (plan.id === 'free' && currentPlan === 'free')}
+                    disabled={loadingPlan === plan.id || (user && plan.id === 'free' && currentPlan === 'free')}
                     onClick={() => {
-                      if (plan.id !== 'free' && plan.id !== currentPlan) {
+                      if (!user) {
+                        window.location.href = '/auth';
+                      } else if (plan.id !== 'free' && plan.id !== currentPlan) {
                         handleSelectPlan(plan.id as 'premium' | 'pro');
                       }
                     }}

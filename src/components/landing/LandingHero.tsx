@@ -50,7 +50,7 @@ const LandingHero = () => {
           <Button 
             size="lg" 
             variant="outline"
-            className="text-lg px-8 py-6 h-auto border-white/30 text-white hover:bg-white/10"
+            className="text-lg px-8 py-6 h-auto border-white/30 text-white hover:bg-white/10 hover:text-white bg-transparent"
             onClick={() => {
               const featuresSection = document.getElementById('features');
               featuresSection?.scrollIntoView({ behavior: 'smooth' });
