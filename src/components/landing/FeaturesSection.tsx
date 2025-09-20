@@ -113,7 +113,21 @@ const FeaturesSection = () => {
           {features.map((feature, index) => (
             <Card 
               key={index} 
-              className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border-muted"
+              className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border-muted cursor-pointer"
+              onClick={() => {
+                const routes = [
+                  '/features/workout-planning',
+                  '/features/nutrition-tracking', 
+                  '/features/mental-wellness',
+                  '/features/ai-coaching',
+                  '/features/analytics',
+                  '/features/community',
+                  '/features/goal-setting',
+                  '/features/wearable-integration',
+                  '/features/coaching'
+                ];
+                window.location.href = routes[index] || '/auth';
+              }}
             >
               <CardHeader className="space-y-4">
                 <div className="flex items-start justify-between">
