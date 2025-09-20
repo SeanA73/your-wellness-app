@@ -3,8 +3,11 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Heart, Zap, Moon, Droplets } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const DailyCheckIn = () => {
+  const navigate = useNavigate();
+  
   const todayStats = [
     { icon: Heart, label: "Energy Level", value: 7, max: 10, color: "text-accent" },
     { icon: Zap, label: "Motivation", value: 8, max: 10, color: "text-primary" },
@@ -51,7 +54,7 @@ const DailyCheckIn = () => {
             "Your energy is good today, but I notice your sleep could use some attention. 
             How about we try a gentle 20-minute yoga session to help you unwind later?"
           </p>
-          <Button variant="calm" size="sm">
+          <Button variant="calm" size="sm" onClick={() => navigate("/chat")}>
             Tell me more
           </Button>
         </div>

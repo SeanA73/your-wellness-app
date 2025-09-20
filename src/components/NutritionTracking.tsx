@@ -3,8 +3,11 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Camera, Plus, Apple, Utensils } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const NutritionTracking = () => {
+  const navigate = useNavigate();
+  
   const nutritionData = {
     calories: { current: 1420, target: 2000 },
     protein: { current: 85, target: 120 },
@@ -89,7 +92,7 @@ const NutritionTracking = () => {
                 "You're doing great with protein today! For dinner, how about adding some colorful veggies? 
                 A rainbow on your plate means a rainbow of nutrients!"
               </p>
-              <Button variant="motivation" size="sm">
+              <Button variant="motivation" size="sm" onClick={() => navigate("/nutrition")}>
                 Show me recipes
               </Button>
             </div>

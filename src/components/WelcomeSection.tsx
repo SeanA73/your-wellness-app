@@ -1,9 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Sparkles, MessageCircle } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import heroImage from "@/assets/fitmate-hero.jpg";
 
 const WelcomeSection = () => {
+  const navigate = useNavigate();
+  
   return (
     <Card className="overflow-hidden shadow-card hover:shadow-card-hover transition-smooth">
       <div className="relative">
@@ -33,7 +36,7 @@ const WelcomeSection = () => {
               Let's start with a quick check-in to see what works best for you right now.
             </p>
           </div>
-          <Button variant="wellness" size="lg" className="animate-pulse-glow">
+          <Button variant="wellness" size="lg" className="animate-pulse-glow" onClick={() => navigate("/chat")}>
             <MessageCircle className="w-5 h-5" />
             Chat with FitMate
           </Button>

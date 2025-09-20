@@ -2,8 +2,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Clock, Users, Flame, Target } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const WorkoutPlanning = () => {
+  const navigate = useNavigate();
+  
   const workoutPlans = [
     {
       title: "Morning Energy Boost",
@@ -80,7 +83,7 @@ const WorkoutPlanning = () => {
                 <Badge variant="outline" className="text-xs">
                   {workout.difficulty}
                 </Badge>
-                <Button variant={workout.variant} size="sm">
+                <Button variant={workout.variant} size="sm" onClick={() => navigate(`/workout/${index}`)}>
                   Start Workout
                 </Button>
               </div>
@@ -89,7 +92,7 @@ const WorkoutPlanning = () => {
         ))}
         
         <div className="text-center pt-4">
-          <Button variant="outline" className="w-full">
+          <Button variant="outline" className="w-full" onClick={() => navigate("/workouts")}>
             Browse All Workouts
           </Button>
         </div>
