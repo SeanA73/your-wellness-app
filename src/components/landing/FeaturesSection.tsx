@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { useNavigate } from "react-router-dom";
 import { 
   Dumbbell, 
   Apple, 
@@ -16,6 +17,7 @@ import {
 } from "lucide-react";
 
 const FeaturesSection = () => {
+  const navigate = useNavigate();
   const features = [
     {
       icon: <Dumbbell className="w-8 h-8 text-primary" />,
@@ -110,25 +112,28 @@ const FeaturesSection = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {features.map((feature, index) => (
-            <Card 
-              key={index} 
-              className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border-muted cursor-pointer"
-              onClick={() => {
-                const routes = [
-                  '/features/workout-planning',
-                  '/features/nutrition-tracking', 
-                  '/features/mental-wellness',
-                  '/features/ai-coaching',
-                  '/features/analytics',
-                  '/features/community',
-                  '/features/goal-setting',
-                  '/features/wearable-integration',
-                  '/features/coaching'
-                ];
-                window.location.href = routes[index] || '/auth';
-              }}
-            >
+          {features.map((feature, index) => {
+            const getFeatureRoute = (index: number) => {
+              const routes = [
+                '/features/workout-planning',
+                '/features/nutrition-tracking', 
+                '/features/mental-wellness',
+                '/features/ai-coaching',
+                '/auth', // Analytics - redirect to auth for now
+                '/auth', // Community - redirect to auth for now
+                '/auth', // Goal Setting - redirect to auth for now
+                '/auth', // Wearable Integration - redirect to auth for now
+                '/auth'  // 1-on-1 Coaching - redirect to auth for now
+              ];
+              return routes[index] || '/auth';
+            };
+
+            return (
+              <Card 
+                key={index} 
+                className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border-muted cursor-pointer"
+                onClick={() => navigate(getFeatureRoute(index))}
+              >
               <CardHeader className="space-y-4">
                 <div className="flex items-start justify-between">
                   <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
@@ -155,8 +160,9 @@ const FeaturesSection = () => {
                   ))}
                 </div>
               </CardContent>
-            </Card>
-          ))}
+              </Card>
+            );
+          })}
         </div>
 
         {/* CTA Section */}
@@ -172,7 +178,7 @@ const FeaturesSection = () => {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button 
                 className="bg-white text-primary hover:bg-white/90 transition-colors px-8 py-4 rounded-full font-semibold text-lg"
-                onClick={() => window.location.href = "/auth"}
+                onClick={() => navigate("/auth")}
               >
                 Start Free Trial
               </button>
