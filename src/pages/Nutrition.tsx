@@ -4,12 +4,19 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
 import { ArrowLeft, Search, Camera, Plus, ChefHat, Clock, Users } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useToast } from "@/components/ui/use-toast";
 
 const Nutrition = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedRecipe, setSelectedRecipe] = useState(null);
+  const [addFoodOpen, setAddFoodOpen] = useState(false);
+  const [newFood, setNewFood] = useState({ name: "", calories: "" });
+  const { toast } = useToast();
 
   const nutritionData = {
     calories: { current: 1420, target: 2000 },
@@ -72,6 +79,21 @@ const Nutrition = () => {
     recipe.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
+  const handleAddFood = () => {
+    if (newFood.name && newFood.calories) {
+      toast({
+        title: "Food Added!",
+        description: `${newFood.name} (${newFood.calories} calories) has been added to your log.`,
+      });
+      setNewFood({ name: "", calories: "" });
+      setAddFoodOpen(false);
+    }
+  };
+
+  const handleViewRecipe = (recipe) => {
+    setSelectedRecipe(recipe);
+  };
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
@@ -91,10 +113,43 @@ const Nutrition = () => {
                 <Camera className="w-4 h-4" />
                 Photo
               </Button>
-              <Button variant="wellness">
-                <Plus className="w-4 h-4" />
-                Add Food
-              </Button>
+              <Dialog open={addFoodOpen} onOpenChange={setAddFoodOpen}>
+                <DialogTrigger asChild>
+                  <Button variant="wellness">
+                    <Plus className="w-4 h-4" />
+                    Add Food
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Add Food to Log</DialogTitle>
+                  </DialogHeader>
+                  <div className="space-y-4">
+                    <div>
+                      <Label htmlFor="food-name">Food Name</Label>
+                      <Input
+                        id="food-name"
+                        value={newFood.name}
+                        onChange={(e) => setNewFood({...newFood, name: e.target.value})}
+                        placeholder="e.g., Greek Yogurt with Berries"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="food-calories">Calories</Label>
+                      <Input
+                        id="food-calories"
+                        type="number"
+                        value={newFood.calories}
+                        onChange={(e) => setNewFood({...newFood, calories: e.target.value})}
+                        placeholder="e.g., 150"
+                      />
+                    </div>
+                    <Button onClick={handleAddFood} className="w-full" variant="wellness">
+                      Add to Log
+                    </Button>
+                  </div>
+                </DialogContent>
+              </Dialog>
             </div>
           </div>
         </div>
@@ -205,7 +260,12 @@ const Nutrition = () => {
                           </Badge>
                         </div>
                         
-                        <Button variant="motivation" size="sm" className="w-full">
+                        <Button 
+                          variant="motivation" 
+                          size="sm" 
+                          className="w-full"
+                          onClick={() => handleViewRecipe(recipe)}
+                        >
                           View Recipe
                         </Button>
                       </div>
@@ -217,6 +277,54 @@ const Nutrition = () => {
           </div>
         </div>
       </div>
+
+      {/* Recipe Detail Dialog */}
+      <Dialog open={!!selectedRecipe} onOpenChange={() => setSelectedRecipe(null)}>
+        <DialogContent className="max-w-2xl">
+          {selectedRecipe && (
+            <>
+              <DialogHeader>
+                <DialogTitle className="flex items-center gap-3">
+                  <span className="text-3xl">{selectedRecipe.image}</span>
+                  {selectedRecipe.title}
+                </DialogTitle>
+              </DialogHeader>
+              <div className="space-y-4">
+                <p className="text-muted-foreground">{selectedRecipe.description}</p>
+                
+                <div className="flex items-center gap-6 text-sm">
+                  <div className="flex items-center gap-1">
+                    <Clock className="w-4 h-4" />
+                    {selectedRecipe.prepTime}
+                  </div>
+                  <span>{selectedRecipe.calories} calories</span>
+                  <span>Difficulty: {selectedRecipe.difficulty}</span>
+                </div>
+
+                <div className="flex gap-2 flex-wrap">
+                  {selectedRecipe.tags.map((tag, index) => (
+                    <Badge key={index} variant="secondary">
+                      {tag}
+                    </Badge>
+                  ))}
+                </div>
+
+                <div className="bg-calm-gradient/20 p-4 rounded-lg">
+                  <h4 className="font-semibold mb-2">Recipe Details</h4>
+                  <p className="text-sm text-muted-foreground">
+                    This is a placeholder for the full recipe instructions. In a real app, 
+                    this would contain the complete ingredient list and step-by-step cooking instructions.
+                  </p>
+                </div>
+
+                <Button variant="wellness" className="w-full">
+                  Start Cooking
+                </Button>
+              </div>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
