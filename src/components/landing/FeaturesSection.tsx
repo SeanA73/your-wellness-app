@@ -43,7 +43,7 @@ const FeaturesSection = () => {
     {
       icon: <MessageCircle className="w-8 h-8 text-accent" />,
       title: "AI Personal Coach",
-      description: "Chat with FitMate anytime for instant fitness advice, motivation, and support.",
+      description: "Chat with FitMate Pro anytime for instant fitness advice, motivation, and support.",
       badge: "Premium",
       highlights: ["24/7 availability", "Personalized tips", "Progress insights"]
     },
@@ -106,7 +106,7 @@ const FeaturesSection = () => {
             <span className="block text-primary">Complete Wellness</span>
           </h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            From personalized workouts to AI coaching, FitMate provides comprehensive tools 
+            From personalized workouts to AI coaching, FitMate Pro provides comprehensive tools 
             to support your fitness journey at every step.
           </p>
         </div>
@@ -172,7 +172,7 @@ const FeaturesSection = () => {
               Ready to Start Your Transformation?
             </h3>
             <p className="text-xl mb-8 text-white/90 max-w-2xl mx-auto">
-              Join thousands of users who have already transformed their lives with FitMate. 
+              Join thousands of users who have already transformed their lives with FitMate Pro. 
               Start your free trial today!
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">

@@ -12,7 +12,7 @@ const Chat = () => {
   const [messages, setMessages] = useState([
     {
       type: "fitmate",
-      content: "Hi there! 👋 I'm FitMate, your personal wellness coach. I'm here to help you with workouts, nutrition, mental wellness, and building healthy habits. How are you feeling today?",
+      content: "Hi there! 👋 I'm FitMate Pro, your personal wellness coach. I'm here to help you with workouts, nutrition, mental wellness, and building healthy habits. How are you feeling today?",
       time: "Just now"
     }
   ]);
@@ -69,7 +69,7 @@ const Chat = () => {
               Back to Dashboard
             </Button>
             <div className="flex-1">
-              <h1 className="text-xl font-bold">Chat with FitMate</h1>
+              <h1 className="text-xl font-bold">Chat with FitMate Pro</h1>
               <p className="text-sm text-muted-foreground">Your personal wellness coach is here to help</p>
             </div>
             <Badge variant="outline" className="bg-success/10 text-success">
@@ -117,7 +117,7 @@ const Chat = () => {
                     <div className="w-6 h-6 bg-success rounded-full flex items-center justify-center">
                       <Heart className="w-3 h-3 text-white" />
                     </div>
-                    <span className="text-xs font-medium text-success">FitMate</span>
+                    <span className="text-xs font-medium text-success">FitMate Pro</span>
                   </div>
                 )}
                 <p className="text-sm">{msg.content}</p>
@@ -134,7 +134,7 @@ const Chat = () => {
         {/* Message Input */}
         <div className="flex gap-3">
           <Input
-            placeholder="Type your message to FitMate..."
+            placeholder="Type your message to FitMate Pro..."
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
@@ -148,7 +148,7 @@ const Chat = () => {
         {/* Tips */}
         <div className="mt-4 p-3 bg-calm-gradient rounded-lg">
           <p className="text-xs text-muted-foreground">
-            💡 <strong>Tip:</strong> Ask FitMate about workouts, nutrition advice, goal setting, or just how you're feeling today. 
+            💡 <strong>Tip:</strong> Ask FitMate Pro about workouts, nutrition advice, goal setting, or just how you're feeling today. 
             I'm here to support your wellness journey!
           </p>
         </div>

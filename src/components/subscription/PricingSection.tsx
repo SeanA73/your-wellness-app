@@ -37,7 +37,7 @@ interface PricingPlan {
 const PRICING_PLANS: PricingPlan[] = [
   {
     id: 'free',
-    name: 'FitMate Free',
+    name: 'FitMate Pro Free',
     icon: <Target className="h-6 w-6" />,
     price: { monthly: 0, annual: 0 },
     description: 'Perfect for fitness beginners',
@@ -58,7 +58,7 @@ const PRICING_PLANS: PricingPlan[] = [
   },
   {
     id: 'premium',
-    name: 'FitMate Premium',
+    name: 'FitMate Pro Premium',
     icon: <Zap className="h-6 w-6" />,
     price: { monthly: 9.99, annual: 89.99 },
     description: 'For committed fitness enthusiasts',
@@ -79,7 +79,7 @@ const PRICING_PLANS: PricingPlan[] = [
   },
   {
     id: 'pro',
-    name: 'FitMate Pro',
+    name: 'FitMate Pro Elite',
     icon: <Crown className="h-6 w-6" />,
     price: { monthly: 19.99, annual: 179.99 },
     description: 'For serious athletes & professionals',
@@ -163,7 +163,7 @@ export const PricingSection = ({ showTitle = true, className }: PricingSectionPr
     <div className={`space-y-8 ${className}`}>
       {showTitle && (
         <div className="text-center space-y-4">
-          <h2 className="text-3xl font-bold">Choose Your FitMate Plan</h2>
+          <h2 className="text-3xl font-bold">Choose Your FitMate Pro Plan</h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
             Start free and upgrade when you're ready. All plans include our core fitness tracking features.
           </p>

@@ -125,7 +125,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
 
       toast({
-        title: "Welcome to FitMate!",
+        title: "Welcome to FitMate Pro!",
         description: "Your account has been created successfully.",
       });
 
@@ -154,7 +154,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
       toast({
         title: "Welcome back!",
-        description: "Successfully signed in to FitMate.",
+        description: "Successfully signed in to FitMate Pro.",
       });
 
       return { data, error: null };

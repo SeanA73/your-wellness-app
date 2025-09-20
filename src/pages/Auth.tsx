@@ -85,7 +85,7 @@ const Auth = () => {
             className="flex items-center gap-2"
           >
             <ArrowLeft className="w-4 h-4" />
-            Back to FitMate
+            Back to FitMate Pro
           </Button>
           <Button 
             variant="outline" 
@@ -100,7 +100,7 @@ const Auth = () => {
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-2 mb-4">
             <Heart className="w-8 h-8 text-primary" />
-            <h1 className="text-3xl font-bold">FitMate</h1>
+            <h1 className="text-3xl font-bold">FitMate Pro</h1>
           </div>
           <p className="text-muted-foreground">Your Personal Health & Wellness Coach</p>
           <p className="text-sm text-muted-foreground mt-2">Sign in to save your progress and get personalized coaching</p>
@@ -167,7 +167,7 @@ const Auth = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Dumbbell className="w-5 h-5" />
-                  Join FitMate
+                  Join FitMate Pro
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -323,7 +323,7 @@ const Auth = () => {
         {/* Footer message */}
         <div className="text-center mt-6 p-4 bg-muted/30 rounded-lg">
           <p className="text-sm text-muted-foreground">
-            Want to try FitMate first? You can{" "}
+            Want to try FitMate Pro first? You can{" "}
             <button 
               onClick={() => navigate("/")}
               className="text-primary hover:underline font-medium"

@@ -21,7 +21,7 @@ const FitMateHeader = () => {
             <Heart className="w-6 h-6 text-white" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-foreground">FitMate</h1>
+            <h1 className="text-2xl font-bold text-foreground">FitMate Pro</h1>
             <p className="text-sm text-muted-foreground">Your Personal Wellness Coach</p>
           </div>
         </div>

@@ -32,13 +32,13 @@ const WelcomeSection = () => {
           <div className="flex-1">
             <h3 className="font-semibold text-foreground mb-1">Hi there! 👋</h3>
             <p className="text-sm text-muted-foreground">
-              I'm FitMate, your personal wellness coach. How are you feeling today? 
+              I'm FitMate Pro, your personal wellness coach. How are you feeling today? 
               Let's start with a quick check-in to see what works best for you right now.
             </p>
           </div>
           <Button variant="wellness" size="lg" className="animate-pulse-glow" onClick={() => navigate("/chat")}>
             <MessageCircle className="w-5 h-5" />
-            Chat with FitMate
+            Chat with FitMate Pro
           </Button>
         </div>
       </CardContent>
