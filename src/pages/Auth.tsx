@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Heart, Dumbbell, User, Mail, Lock, Calendar, Ruler, Weight } from "lucide-react";
+import { Heart, Dumbbell, User, Mail, Lock, Calendar, Ruler, Weight, ArrowLeft, X } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 
 const Auth = () => {
@@ -77,12 +77,33 @@ const Auth = () => {
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <div className="w-full max-w-md">
+        {/* Skip/Back Navigation */}
+        <div className="flex items-center justify-between mb-6">
+          <Button 
+            variant="ghost" 
+            onClick={() => navigate("/")}
+            className="flex items-center gap-2"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back to FitMate
+          </Button>
+          <Button 
+            variant="outline" 
+            onClick={() => navigate("/")}
+            className="flex items-center gap-2"
+          >
+            <X className="w-4 h-4" />
+            Skip for now
+          </Button>
+        </div>
+
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-2 mb-4">
             <Heart className="w-8 h-8 text-primary" />
             <h1 className="text-3xl font-bold">FitMate</h1>
           </div>
           <p className="text-muted-foreground">Your Personal Health & Wellness Coach</p>
+          <p className="text-sm text-muted-foreground mt-2">Sign in to save your progress and get personalized coaching</p>
         </div>
 
         <Tabs defaultValue="signin" className="w-full">
@@ -298,6 +319,20 @@ const Auth = () => {
             </Card>
           </TabsContent>
         </Tabs>
+        
+        {/* Footer message */}
+        <div className="text-center mt-6 p-4 bg-muted/30 rounded-lg">
+          <p className="text-sm text-muted-foreground">
+            Want to try FitMate first? You can{" "}
+            <button 
+              onClick={() => navigate("/")}
+              className="text-primary hover:underline font-medium"
+            >
+              continue without an account
+            </button>
+            {" "}and sign up later to save your progress.
+          </p>
+        </div>
       </div>
     </div>
   );
