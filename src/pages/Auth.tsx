@@ -1,0 +1,306 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Heart, Dumbbell, User, Mail, Lock, Calendar, Ruler, Weight } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+
+const Auth = () => {
+  const navigate = useNavigate();
+  const { signUp, signIn, loading } = useAuth();
+  
+  const [signInData, setSignInData] = useState({
+    email: "",
+    password: "",
+  });
+
+  const [signUpData, setSignUpData] = useState({
+    email: "",
+    password: "",
+    full_name: "",
+    date_of_birth: "",
+    gender: "",
+    height_cm: "",
+    weight_kg: "",
+    activity_level: "",
+    fitness_goals: [] as string[],
+  });
+
+  const handleSignIn = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const { data, error } = await signIn(signInData.email, signInData.password);
+    if (data && !error) {
+      navigate("/");
+    }
+  };
+
+  const handleSignUp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const { data, error } = await signUp(signUpData.email, signUpData.password, {
+      full_name: signUpData.full_name,
+      date_of_birth: signUpData.date_of_birth || null,
+      gender: signUpData.gender || null,
+      height_cm: signUpData.height_cm ? parseInt(signUpData.height_cm) : null,
+      weight_kg: signUpData.weight_kg ? parseFloat(signUpData.weight_kg) : null,
+      activity_level: signUpData.activity_level || null,
+      fitness_goals: signUpData.fitness_goals,
+    });
+    
+    if (data && !error) {
+      navigate("/");
+    }
+  };
+
+  const toggleFitnessGoal = (goal: string) => {
+    setSignUpData(prev => ({
+      ...prev,
+      fitness_goals: prev.fitness_goals.includes(goal)
+        ? prev.fitness_goals.filter(g => g !== goal)
+        : [...prev.fitness_goals, goal]
+    }));
+  };
+
+  const fitnessGoals = [
+    "weight_loss",
+    "muscle_gain", 
+    "endurance",
+    "flexibility",
+    "strength",
+    "general_health"
+  ];
+
+  return (
+    <div className="min-h-screen bg-background flex items-center justify-center p-4">
+      <div className="w-full max-w-md">
+        <div className="text-center mb-8">
+          <div className="flex items-center justify-center gap-2 mb-4">
+            <Heart className="w-8 h-8 text-primary" />
+            <h1 className="text-3xl font-bold">FitMate</h1>
+          </div>
+          <p className="text-muted-foreground">Your Personal Health & Wellness Coach</p>
+        </div>
+
+        <Tabs defaultValue="signin" className="w-full">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="signin">Sign In</TabsTrigger>
+            <TabsTrigger value="signup">Sign Up</TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="signin">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <User className="w-5 h-5" />
+                  Welcome Back
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <form onSubmit={handleSignIn} className="space-y-4">
+                  <div>
+                    <Label htmlFor="signin-email">Email</Label>
+                    <div className="relative">
+                      <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                      <Input
+                        id="signin-email"
+                        type="email"
+                        value={signInData.email}
+                        onChange={(e) => setSignInData({...signInData, email: e.target.value})}
+                        placeholder="your@email.com"
+                        className="pl-10"
+                        required
+                      />
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <Label htmlFor="signin-password">Password</Label>
+                    <div className="relative">
+                      <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                      <Input
+                        id="signin-password"
+                        type="password"
+                        value={signInData.password}
+                        onChange={(e) => setSignInData({...signInData, password: e.target.value})}
+                        placeholder="••••••••"
+                        className="pl-10"
+                        required
+                      />
+                    </div>
+                  </div>
+                  
+                  <Button type="submit" className="w-full" variant="wellness" disabled={loading}>
+                    {loading ? "Signing In..." : "Sign In"}
+                  </Button>
+                </form>
+              </CardContent>
+            </Card>
+          </TabsContent>
+          
+          <TabsContent value="signup">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Dumbbell className="w-5 h-5" />
+                  Join FitMate
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <form onSubmit={handleSignUp} className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="col-span-2">
+                      <Label htmlFor="signup-name">Full Name</Label>
+                      <Input
+                        id="signup-name"
+                        value={signUpData.full_name}
+                        onChange={(e) => setSignUpData({...signUpData, full_name: e.target.value})}
+                        placeholder="John Doe"
+                        required
+                      />
+                    </div>
+                    
+                    <div className="col-span-2">
+                      <Label htmlFor="signup-email">Email</Label>
+                      <div className="relative">
+                        <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                        <Input
+                          id="signup-email"
+                          type="email"
+                          value={signUpData.email}
+                          onChange={(e) => setSignUpData({...signUpData, email: e.target.value})}
+                          placeholder="your@email.com"
+                          className="pl-10"
+                          required
+                        />
+                      </div>
+                    </div>
+                    
+                    <div className="col-span-2">
+                      <Label htmlFor="signup-password">Password</Label>
+                      <div className="relative">
+                        <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                        <Input
+                          id="signup-password"
+                          type="password"
+                          value={signUpData.password}
+                          onChange={(e) => setSignUpData({...signUpData, password: e.target.value})}
+                          placeholder="••••••••"
+                          className="pl-10"
+                          minLength={6}
+                          required
+                        />
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <Label htmlFor="signup-dob">Date of Birth</Label>
+                      <div className="relative">
+                        <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                        <Input
+                          id="signup-dob"
+                          type="date"
+                          value={signUpData.date_of_birth}
+                          onChange={(e) => setSignUpData({...signUpData, date_of_birth: e.target.value})}
+                          className="pl-10"
+                        />
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <Label htmlFor="signup-gender">Gender</Label>
+                      <Select value={signUpData.gender} onValueChange={(value) => setSignUpData({...signUpData, gender: value})}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="male">Male</SelectItem>
+                          <SelectItem value="female">Female</SelectItem>
+                          <SelectItem value="other">Other</SelectItem>
+                          <SelectItem value="prefer_not_to_say">Prefer not to say</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    
+                    <div>
+                      <Label htmlFor="signup-height">Height (cm)</Label>
+                      <div className="relative">
+                        <Ruler className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                        <Input
+                          id="signup-height"
+                          type="number"
+                          value={signUpData.height_cm}
+                          onChange={(e) => setSignUpData({...signUpData, height_cm: e.target.value})}
+                          placeholder="170"
+                          className="pl-10"
+                        />
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <Label htmlFor="signup-weight">Weight (kg)</Label>
+                      <div className="relative">
+                        <Weight className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                        <Input
+                          id="signup-weight"
+                          type="number"
+                          value={signUpData.weight_kg}
+                          onChange={(e) => setSignUpData({...signUpData, weight_kg: e.target.value})}
+                          placeholder="70"
+                          className="pl-10"
+                        />
+                      </div>
+                    </div>
+                    
+                    <div className="col-span-2">
+                      <Label htmlFor="signup-activity">Activity Level</Label>
+                      <Select value={signUpData.activity_level} onValueChange={(value) => setSignUpData({...signUpData, activity_level: value})}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select your activity level" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="sedentary">Sedentary (little/no exercise)</SelectItem>
+                          <SelectItem value="lightly_active">Lightly Active (light exercise 1-3 days/week)</SelectItem>
+                          <SelectItem value="moderately_active">Moderately Active (moderate exercise 3-5 days/week)</SelectItem>
+                          <SelectItem value="very_active">Very Active (hard exercise 6-7 days/week)</SelectItem>
+                          <SelectItem value="extremely_active">Extremely Active (very hard exercise & physical job)</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    
+                    <div className="col-span-2">
+                      <Label>Fitness Goals</Label>
+                      <div className="grid grid-cols-2 gap-2 mt-2">
+                        {fitnessGoals.map(goal => (
+                          <div key={goal} className="flex items-center space-x-2">
+                            <Checkbox
+                              id={`goal-${goal}`}
+                              checked={signUpData.fitness_goals.includes(goal)}
+                              onCheckedChange={() => toggleFitnessGoal(goal)}
+                            />
+                            <Label htmlFor={`goal-${goal}`} className="text-sm capitalize">
+                              {goal.replace('_', ' ')}
+                            </Label>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <Button type="submit" className="w-full" variant="wellness" disabled={loading}>
+                    {loading ? "Creating Account..." : "Create Account"}
+                  </Button>
+                </form>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
+      </div>
+    </div>
+  );
+};
+
+export default Auth;
