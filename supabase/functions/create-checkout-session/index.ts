@@ -1,0 +1,132 @@
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import Stripe from 'https://esm.sh/stripe@14.21.0'
+
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+}
+
+serve(async (req) => {
+  // Handle CORS preflight requests
+  if (req.method === 'OPTIONS') {
+    return new Response(null, { headers: corsHeaders });
+  }
+
+  try {
+    const { priceId, userId } = await req.json()
+
+    if (!priceId || !userId) {
+      return new Response(
+        JSON.stringify({ error: 'Missing required parameters' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      )
+    }
+
+    // Initialize Stripe
+    const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY') || '', {
+      apiVersion: '2023-10-16',
+    })
+
+    // Initialize Supabase client
+    const supabaseClient = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+    )
+
+    // Get user profile
+    const { data: profile, error: profileError } = await supabaseClient
+      .from('profiles')
+      .select('*')
+      .eq('id', userId)
+      .single()
+
+    if (profileError || !profile) {
+      return new Response(
+        JSON.stringify({ error: 'User not found' }),
+        { status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      )
+    }
+
+    // Create or retrieve Stripe customer
+    let customerId = null
+    
+    // Check if user already has a Stripe customer ID
+    const { data: existingSubscription } = await supabaseClient
+      .from('subscriptions')
+      .select('stripe_customer_id')
+      .eq('user_id', userId)
+      .not('stripe_customer_id', 'is', null)
+      .limit(1)
+      .single()
+
+    if (existingSubscription?.stripe_customer_id) {
+      customerId = existingSubscription.stripe_customer_id
+    } else {
+      // Create new Stripe customer
+      const customer = await stripe.customers.create({
+        email: profile.email,
+        name: profile.full_name || undefined,
+        metadata: {
+          supabase_user_id: userId
+        }
+      })
+      customerId = customer.id
+    }
+
+    // Price mapping for different plans
+    const priceMapping: Record<string, { stripePrice: string, planType: string }> = {
+      'price_premium_monthly': { stripePrice: 'price_1234premium_monthly', planType: 'premium' },
+      'price_premium_annual': { stripePrice: 'price_1234premium_annual', planType: 'premium' },
+      'price_pro_monthly': { stripePrice: 'price_1234pro_monthly', planType: 'pro' },
+      'price_pro_annual': { stripePrice: 'price_1234pro_annual', planType: 'pro' }
+    }
+
+    const priceInfo = priceMapping[priceId]
+    if (!priceInfo) {
+      return new Response(
+        JSON.stringify({ error: 'Invalid price ID' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      )
+    }
+
+    // Create Stripe checkout session
+    const session = await stripe.checkout.sessions.create({
+      customer: customerId,
+      payment_method_types: ['card'],
+      line_items: [
+        {
+          price: priceInfo.stripePrice,
+          quantity: 1,
+        },
+      ],
+      mode: 'subscription',
+      success_url: `${req.headers.get('origin')}/subscription-success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${req.headers.get('origin')}/`,
+      subscription_data: {
+        trial_period_days: 7,
+        metadata: {
+          supabase_user_id: userId,
+          plan_type: priceInfo.planType
+        }
+      },
+      metadata: {
+        supabase_user_id: userId,
+        plan_type: priceInfo.planType
+      }
+    })
+
+    console.log('Created checkout session:', session.id)
+
+    return new Response(
+      JSON.stringify({ url: session.url }),
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    )
+  } catch (error) {
+    console.error('Error creating checkout session:', error)
+    return new Response(
+      JSON.stringify({ error: 'Internal server error' }),
+      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    )
+  }
+})

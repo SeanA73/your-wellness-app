@@ -1,0 +1,334 @@
+import { useState } from 'react';
+import { motion } from 'framer-motion';
+import { useSubscription } from '@/hooks/useSubscription';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Switch } from '@/components/ui/switch';
+import { 
+  Check, 
+  Crown, 
+  Zap, 
+  Star,
+  Target,
+  TrendingUp,
+  Users,
+  Headphones,
+  Smartphone,
+  BarChart3
+} from 'lucide-react';
+
+interface PricingPlan {
+  id: 'free' | 'premium' | 'pro';
+  name: string;
+  icon: React.ReactNode;
+  price: {
+    monthly: number;
+    annual: number;
+  };
+  description: string;
+  features: string[];
+  limitations?: string[];
+  popular?: boolean;
+  gradient: string;
+}
+
+const PRICING_PLANS: PricingPlan[] = [
+  {
+    id: 'free',
+    name: 'FitMate Free',
+    icon: <Target className="h-6 w-6" />,
+    price: { monthly: 0, annual: 0 },
+    description: 'Perfect for fitness beginners',
+    features: [
+      'Basic workout tracking (3/week)',
+      'Simple nutrition logging',
+      'AI coaching (3 interactions/day)',
+      'Community access',
+      'Manual biometric entry',
+      'Basic progress charts'
+    ],
+    limitations: [
+      'Limited workouts per week',
+      'Ads between features',
+      'Basic reporting only'
+    ],
+    gradient: 'from-gray-50 to-gray-100'
+  },
+  {
+    id: 'premium',
+    name: 'FitMate Premium',
+    icon: <Zap className="h-6 w-6" />,
+    price: { monthly: 9.99, annual: 89.99 },
+    description: 'For committed fitness enthusiasts',
+    features: [
+      'Unlimited workout tracking',
+      'Advanced meal planning',
+      'Unlimited AI coaching',
+      'Wearable device integration',
+      'Custom workout plans',
+      'Priority group classes',
+      'Weekly progress reports',
+      'Export health data',
+      'Dark mode & themes',
+      'Ad-free experience'
+    ],
+    popular: true,
+    gradient: 'from-primary/10 to-primary/5'
+  },
+  {
+    id: 'pro',
+    name: 'FitMate Pro',
+    icon: <Crown className="h-6 w-6" />,
+    price: { monthly: 19.99, annual: 179.99 },
+    description: 'For serious athletes & professionals',
+    features: [
+      'Everything in Premium',
+      '1-on-1 virtual coaching (2/month)',
+      'Advanced analytics & insights',
+      'Meal delivery integration',
+      'Corporate wellness features',
+      'API access',
+      'Custom macro planning',
+      'Supplement recommendations',
+      'Early access to features',
+      'White-label options'
+    ],
+    gradient: 'from-yellow-50 to-orange-50'
+  }
+];
+
+interface PricingSectionProps {
+  showTitle?: boolean;
+  className?: string;
+}
+
+export const PricingSection = ({ showTitle = true, className }: PricingSectionProps) => {
+  const { createCheckoutSession, getCurrentPlan, hasPremiumAccess } = useSubscription();
+  const [isAnnual, setIsAnnual] = useState(false);
+  const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
+
+  const currentPlan = getCurrentPlan();
+
+  const handleSelectPlan = async (planId: 'premium' | 'pro') => {
+    setLoadingPlan(planId);
+    try {
+      await createCheckoutSession(planId, isAnnual);
+    } catch (error) {
+      console.error('Error selecting plan:', error);
+    } finally {
+      setLoadingPlan(null);
+    }
+  };
+
+  const getButtonText = (plan: PricingPlan) => {
+    if (plan.id === 'free') {
+      return currentPlan === 'free' ? 'Current Plan' : 'Downgrade';
+    }
+    
+    if (currentPlan === plan.id) {
+      return 'Current Plan';
+    }
+    
+    if (plan.id === 'premium' && currentPlan === 'pro') {
+      return 'Downgrade';
+    }
+    
+    return currentPlan === 'free' ? 'Start Free Trial' : 'Upgrade';
+  };
+
+  const getButtonVariant = (plan: PricingPlan) => {
+    if (currentPlan === plan.id) return 'secondary';
+    if (plan.popular) return 'default';
+    return 'outline';
+  };
+
+  const calculateSavings = (plan: PricingPlan) => {
+    if (plan.price.monthly === 0) return 0;
+    const annualMonthly = plan.price.annual / 12;
+    const savings = ((plan.price.monthly - annualMonthly) / plan.price.monthly) * 100;
+    return Math.round(savings);
+  };
+
+  return (
+    <div className={`space-y-8 ${className}`}>
+      {showTitle && (
+        <div className="text-center space-y-4">
+          <h2 className="text-3xl font-bold">Choose Your FitMate Plan</h2>
+          <p className="text-muted-foreground max-w-2xl mx-auto">
+            Start free and upgrade when you're ready. All plans include our core fitness tracking features.
+          </p>
+          
+          {/* Annual/Monthly Toggle */}
+          <div className="flex items-center justify-center gap-4 mt-6">
+            <span className={`text-sm ${!isAnnual ? 'font-medium' : 'text-muted-foreground'}`}>
+              Monthly
+            </span>
+            <Switch
+              checked={isAnnual}
+              onCheckedChange={setIsAnnual}
+              className="data-[state=checked]:bg-primary"
+            />
+            <span className={`text-sm ${isAnnual ? 'font-medium' : 'text-muted-foreground'}`}>
+              Annual
+            </span>
+            <Badge variant="secondary" className="ml-2">
+              Save up to 25%
+            </Badge>
+          </div>
+        </div>
+      )}
+
+      {/* Pricing Cards */}
+      <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+        {PRICING_PLANS.map((plan, index) => {
+          const isCurrentPlan = currentPlan === plan.id;
+          const savings = calculateSavings(plan);
+          
+          return (
+            <motion.div
+              key={plan.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.1 }}
+              className="relative"
+            >
+              {plan.popular && (
+                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                  <Badge className="bg-primary text-primary-foreground px-4 py-1">
+                    <Star className="h-3 w-3 mr-1" />
+                    Most Popular
+                  </Badge>
+                </div>
+              )}
+              
+              <Card className={`relative p-6 h-full bg-gradient-to-br ${plan.gradient} ${
+                plan.popular ? 'border-primary shadow-lg scale-105' : ''
+              } ${isCurrentPlan ? 'ring-2 ring-primary ring-opacity-50' : ''}`}>
+                {isCurrentPlan && (
+                  <div className="absolute top-4 right-4">
+                    <Badge variant="secondary">Current</Badge>
+                  </div>
+                )}
+
+                <div className="space-y-6">
+                  {/* Plan header */}
+                  <div className="text-center space-y-2">
+                    <div className={`inline-flex p-3 rounded-full ${
+                      plan.id === 'free' ? 'bg-gray-100' :
+                      plan.id === 'premium' ? 'bg-primary/10' : 'bg-yellow-100'
+                    }`}>
+                      <div className={`${
+                        plan.id === 'free' ? 'text-gray-600' :
+                        plan.id === 'premium' ? 'text-primary' : 'text-yellow-600'
+                      }`}>
+                        {plan.icon}
+                      </div>
+                    </div>
+                    <h3 className="text-xl font-bold">{plan.name}</h3>
+                    <p className="text-sm text-muted-foreground">{plan.description}</p>
+                  </div>
+
+                  {/* Pricing */}
+                  <div className="text-center space-y-2">
+                    {plan.price.monthly === 0 ? (
+                      <div className="text-3xl font-bold">Free</div>
+                    ) : (
+                      <>
+                        <div className="text-3xl font-bold">
+                          ${isAnnual ? (plan.price.annual / 12).toFixed(2) : plan.price.monthly}
+                          <span className="text-lg font-normal text-muted-foreground">/month</span>
+                        </div>
+                        {isAnnual && (
+                          <div className="text-sm text-muted-foreground">
+                            Billed annually (${plan.price.annual}/year)
+                            {savings > 0 && (
+                              <Badge variant="secondary" className="ml-2">
+                                Save {savings}%
+                              </Badge>
+                            )}
+                          </div>
+                        )}
+                      </>
+                    )}
+                  </div>
+
+                  {/* Features */}
+                  <div className="space-y-3">
+                    {plan.features.map((feature, featureIndex) => (
+                      <div key={featureIndex} className="flex items-start gap-3 text-sm">
+                        <Check className="h-4 w-4 text-success mt-0.5 flex-shrink-0" />
+                        <span>{feature}</span>
+                      </div>
+                    ))}
+                    
+                    {plan.limitations && (
+                      <div className="pt-2 border-t border-border/50">
+                        {plan.limitations.map((limitation, limitIndex) => (
+                          <div key={limitIndex} className="flex items-start gap-3 text-sm text-muted-foreground">
+                            <div className="w-4 h-4 mt-0.5 flex-shrink-0 text-muted-foreground">•</div>
+                            <span>{limitation}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* CTA Button */}
+                  <Button
+                    className="w-full"
+                    variant={getButtonVariant(plan)}
+                    size="lg"
+                    disabled={loadingPlan === plan.id || (plan.id === 'free' && currentPlan === 'free')}
+                    onClick={() => {
+                      if (plan.id !== 'free' && plan.id !== currentPlan) {
+                        handleSelectPlan(plan.id as 'premium' | 'pro');
+                      }
+                    }}
+                  >
+                    {loadingPlan === plan.id ? (
+                      <div className="flex items-center gap-2">
+                        <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                        Processing...
+                      </div>
+                    ) : (
+                      getButtonText(plan)
+                    )}
+                  </Button>
+
+                  {plan.id !== 'free' && currentPlan === 'free' && (
+                    <p className="text-xs text-center text-muted-foreground">
+                      7-day free trial • Cancel anytime
+                    </p>
+                  )}
+                </div>
+              </Card>
+            </motion.div>
+          );
+        })}
+      </div>
+
+      {/* Trust indicators */}
+      <div className="text-center space-y-4 pt-8">
+        <div className="flex justify-center items-center gap-8 text-sm text-muted-foreground">
+          <div className="flex items-center gap-2">
+            <Check className="h-4 w-4 text-success" />
+            <span>No setup fees</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <Check className="h-4 w-4 text-success" />
+            <span>Cancel anytime</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <Check className="h-4 w-4 text-success" />
+            <span>30-day guarantee</span>
+          </div>
+        </div>
+        
+        <div className="text-xs text-muted-foreground">
+          All plans include secure data encryption and GDPR compliance
+        </div>
+      </div>
+    </div>
+  );
+};

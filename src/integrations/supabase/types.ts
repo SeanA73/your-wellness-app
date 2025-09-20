@@ -407,6 +407,47 @@ export type Database = {
           },
         ]
       }
+      temporary_access: {
+        Row: {
+          created_at: string | null
+          expires_at: string
+          features: Json
+          granted_at: string
+          granted_via: string
+          id: string
+          used_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          expires_at: string
+          features: Json
+          granted_at?: string
+          granted_via: string
+          id?: string
+          used_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          expires_at?: string
+          features?: Json
+          granted_at?: string
+          granted_via?: string
+          id?: string
+          used_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "temporary_access_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       usage_tracking: {
         Row: {
           created_at: string | null
@@ -717,6 +758,10 @@ export type Database = {
       get_user_plan: {
         Args: { user_uuid: string }
         Returns: string
+      }
+      has_temporary_access: {
+        Args: { feature_name: string; user_uuid: string }
+        Returns: boolean
       }
       increment_usage: {
         Args: { feature: string; period: string; user_uuid: string }
