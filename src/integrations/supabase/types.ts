@@ -14,6 +14,50 @@ export type Database = {
   }
   public: {
     Tables: {
+      ad_interactions: {
+        Row: {
+          ad_placement: string
+          ad_provider: string | null
+          ad_type: string
+          created_at: string | null
+          id: string
+          interaction_type: string
+          revenue_cents: number | null
+          session_id: string | null
+          user_id: string | null
+        }
+        Insert: {
+          ad_placement: string
+          ad_provider?: string | null
+          ad_type: string
+          created_at?: string | null
+          id?: string
+          interaction_type: string
+          revenue_cents?: number | null
+          session_id?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          ad_placement?: string
+          ad_provider?: string | null
+          ad_type?: string
+          created_at?: string | null
+          id?: string
+          interaction_type?: string
+          revenue_cents?: number | null
+          session_id?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ad_interactions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       biometric_data: {
         Row: {
           additional_data: Json | null
@@ -191,6 +235,33 @@ export type Database = {
           },
         ]
       }
+      plan_limits: {
+        Row: {
+          created_at: string | null
+          feature_name: string
+          id: string
+          limit_period: string | null
+          limit_value: number | null
+          plan_type: string
+        }
+        Insert: {
+          created_at?: string | null
+          feature_name: string
+          id?: string
+          limit_period?: string | null
+          limit_value?: number | null
+          plan_type: string
+        }
+        Update: {
+          created_at?: string | null
+          feature_name?: string
+          id?: string
+          limit_period?: string | null
+          limit_value?: number | null
+          plan_type?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           activity_level: string | null
@@ -204,6 +275,7 @@ export type Database = {
           health_conditions: string[] | null
           height_cm: number | null
           id: string
+          subscription_plan: string | null
           updated_at: string | null
           weight_kg: number | null
         }
@@ -219,6 +291,7 @@ export type Database = {
           health_conditions?: string[] | null
           height_cm?: number | null
           id: string
+          subscription_plan?: string | null
           updated_at?: string | null
           weight_kg?: number | null
         }
@@ -234,10 +307,146 @@ export type Database = {
           health_conditions?: string[] | null
           height_cm?: number | null
           id?: string
+          subscription_plan?: string | null
           updated_at?: string | null
           weight_kg?: number | null
         }
         Relationships: []
+      }
+      revenue_events: {
+        Row: {
+          amount_cents: number
+          created_at: string | null
+          currency: string | null
+          event_type: string
+          id: string
+          metadata: Json | null
+          platform: string | null
+          user_id: string | null
+        }
+        Insert: {
+          amount_cents: number
+          created_at?: string | null
+          currency?: string | null
+          event_type: string
+          id?: string
+          metadata?: Json | null
+          platform?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          amount_cents?: number
+          created_at?: string | null
+          currency?: string | null
+          event_type?: string
+          id?: string
+          metadata?: Json | null
+          platform?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "revenue_events_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      subscriptions: {
+        Row: {
+          cancel_at_period_end: boolean | null
+          created_at: string | null
+          current_period_end: string
+          current_period_start: string
+          id: string
+          plan_type: string
+          status: string
+          stripe_customer_id: string | null
+          stripe_subscription_id: string | null
+          trial_end: string | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          cancel_at_period_end?: boolean | null
+          created_at?: string | null
+          current_period_end: string
+          current_period_start: string
+          id?: string
+          plan_type: string
+          status: string
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          trial_end?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          cancel_at_period_end?: boolean | null
+          created_at?: string | null
+          current_period_end?: string
+          current_period_start?: string
+          id?: string
+          plan_type?: string
+          status?: string
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          trial_end?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subscriptions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      usage_tracking: {
+        Row: {
+          created_at: string | null
+          feature_type: string
+          id: string
+          last_reset: string | null
+          period_start: string | null
+          reset_period: string
+          usage_count: number | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          feature_type: string
+          id?: string
+          last_reset?: string | null
+          period_start?: string | null
+          reset_period: string
+          usage_count?: number | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          feature_type?: string
+          id?: string
+          last_reset?: string | null
+          period_start?: string | null
+          reset_period?: string
+          usage_count?: number | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "usage_tracking_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_goals: {
         Row: {
@@ -501,7 +710,18 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      check_usage_limit: {
+        Args: { feature: string; period: string; user_uuid: string }
+        Returns: boolean
+      }
+      get_user_plan: {
+        Args: { user_uuid: string }
+        Returns: string
+      }
+      increment_usage: {
+        Args: { feature: string; period: string; user_uuid: string }
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never
