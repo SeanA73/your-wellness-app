@@ -1,3 +1,4 @@
+import { useAuth } from "@/hooks/useAuth";
 import FitMateHeader from "@/components/FitMateHeader";
 import WelcomeSection from "@/components/WelcomeSection";
 import DailyCheckIn from "@/components/DailyCheckIn";
@@ -5,8 +6,36 @@ import WorkoutPlanning from "@/components/WorkoutPlanning";
 import NutritionTracking from "@/components/NutritionTracking";
 import ProgressVisualization from "@/components/ProgressVisualization";
 import MentalWellness from "@/components/MentalWellness";
+import LandingHero from "@/components/landing/LandingHero";
+import FeaturesSection from "@/components/landing/FeaturesSection";
+import PricingSection from "@/components/subscription/PricingSection";
 
 const Index = () => {
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
+  // Show landing page for non-authenticated users
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-background">
+        <FitMateHeader />
+        <main>
+          <LandingHero />
+          <FeaturesSection />
+          <PricingSection />
+        </main>
+      </div>
+    );
+  }
+
+  // Show dashboard for authenticated users
   return (
     <div className="min-h-screen bg-background">
       <FitMateHeader />

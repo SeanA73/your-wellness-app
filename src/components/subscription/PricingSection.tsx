@@ -332,3 +332,5 @@ export const PricingSection = ({ showTitle = true, className }: PricingSectionPr
     </div>
   );
 };
+
+export default PricingSection;
