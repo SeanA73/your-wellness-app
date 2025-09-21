@@ -25,14 +25,14 @@ const LandingHero = () => {
           <span className="font-medium">Your Personal Wellness Coach</span>
         </div>
 
-        <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
-          Transform Your
+        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-6 leading-tight">
+          <span className="block">Transform Your</span>
           <span className="block bg-gradient-to-r from-accent to-secondary bg-clip-text text-transparent">
             Fitness Journey
           </span>
         </h1>
 
-        <p className="text-xl md:text-2xl mb-8 text-white/90 max-w-3xl mx-auto">
+        <p className="text-base sm:text-lg md:text-xl lg:text-2xl mb-8 text-white/90 max-w-3xl mx-auto">
           Meet FitMate Pro - Your AI-powered companion for workouts, nutrition, and mental wellness. 
           Get personalized guidance, track your progress, and build lasting healthy habits.
         </p>

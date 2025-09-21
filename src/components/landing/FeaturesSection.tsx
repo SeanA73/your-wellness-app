@@ -101,11 +101,11 @@ const FeaturesSection = () => {
             <Zap className="w-4 h-4 text-primary" />
             <span className="text-sm font-medium text-primary">Powerful Features</span>
           </div>
-          <h2 className="text-4xl md:text-5xl font-bold mb-6">
-            Everything You Need for
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-6">
+            <span className="block">Everything You Need for</span>
             <span className="block text-primary">Complete Wellness</span>
           </h2>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+          <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
             From personalized workouts to AI coaching, FitMate Pro provides comprehensive tools 
             to support your fitness journey at every step.
           </p>
@@ -168,10 +168,10 @@ const FeaturesSection = () => {
         {/* CTA Section */}
         <div className="text-center mt-16">
           <div className="bg-gradient-to-r from-primary to-secondary rounded-3xl p-8 md:p-12 text-white">
-            <h3 className="text-3xl md:text-4xl font-bold mb-4">
+            <h3 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-4">
               Ready to Start Your Transformation?
             </h3>
-            <p className="text-xl mb-8 text-white/90 max-w-2xl mx-auto">
+            <p className="text-base sm:text-lg md:text-xl mb-8 text-white/90 max-w-2xl mx-auto">
               Join thousands of users who have already transformed their lives with FitMate Pro. 
               Start your free trial today!
             </p>

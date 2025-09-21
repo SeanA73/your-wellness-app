@@ -21,7 +21,7 @@ const WelcomeSection = () => {
               <Sparkles className="w-4 h-4" />
               <span className="text-sm font-medium">Welcome back!</span>
             </div>
-            <h2 className="text-2xl font-bold mb-2">Ready for today's wellness journey?</h2>
+            <h2 className="text-lg sm:text-xl md:text-2xl font-bold mb-2">Ready for today's wellness journey?</h2>
             <p className="text-white/90 text-sm">Let's check in and see how you're feeling!</p>
           </div>
         </div>

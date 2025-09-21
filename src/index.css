@@ -53,6 +53,14 @@ All colors MUST be HSL.
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-bounce: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 
+    /* Responsive typography */
+    --font-size-hero-mobile: 2.5rem;
+    --font-size-hero-desktop: 4.5rem;
+    --font-size-heading-mobile: 1.5rem;
+    --font-size-heading-desktop: 2.25rem;
+    --font-size-title-mobile: 1.25rem;
+    --font-size-title-desktop: 1.5rem;
+
     --radius: 0.5rem;
 
     --sidebar-background: 0 0% 98%;

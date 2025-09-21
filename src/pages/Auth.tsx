@@ -110,11 +110,11 @@ const Auth = () => {
 
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-2 mb-4">
-            <Heart className="w-8 h-8 text-primary" />
-            <h1 className="text-3xl font-bold">FitMate Pro</h1>
+            <Heart className="w-6 sm:w-8 h-6 sm:h-8 text-primary" />
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold">FitMate Pro</h1>
           </div>
-          <p className="text-muted-foreground">Your Personal Health & Wellness Coach</p>
-          <p className="text-sm text-muted-foreground mt-2">Sign in to save your progress and get personalized coaching</p>
+          <p className="text-sm sm:text-base text-muted-foreground">Your Personal Health & Wellness Coach</p>
+          <p className="text-xs sm:text-sm text-muted-foreground mt-2">Sign in to save your progress and get personalized coaching</p>
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
