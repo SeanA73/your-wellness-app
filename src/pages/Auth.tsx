@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -12,7 +12,9 @@ import { useAuth } from "@/hooks/useAuth";
 
 const Auth = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { signUp, signIn, loading } = useAuth();
+  const [activeTab, setActiveTab] = useState("signin");
   
   const [signInData, setSignInData] = useState({
     email: "",
@@ -55,6 +57,15 @@ const Auth = () => {
       navigate("/");
     }
   };
+
+  // Check URL parameters for trial signup
+  useEffect(() => {
+    const trial = searchParams.get('trial');
+    const plan = searchParams.get('plan');
+    if (trial === 'true' || plan) {
+      setActiveTab("signup");
+    }
+  }, [searchParams]);
 
   const toggleFitnessGoal = (goal: string) => {
     setSignUpData(prev => ({
@@ -106,7 +117,7 @@ const Auth = () => {
           <p className="text-sm text-muted-foreground mt-2">Sign in to save your progress and get personalized coaching</p>
         </div>
 
-        <Tabs defaultValue="signin" className="w-full">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="signin">Sign In</TabsTrigger>
             <TabsTrigger value="signup">Sign Up</TabsTrigger>
@@ -167,8 +178,15 @@ const Auth = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Dumbbell className="w-5 h-5" />
-                  Join FitMate Pro
+                  {searchParams.get('trial') === 'true' || searchParams.get('plan') ? 'Start Your 7-Day Free Trial' : 'Join FitMate Pro'}
                 </CardTitle>
+                {(searchParams.get('trial') === 'true' || searchParams.get('plan')) && (
+                  <div className="bg-primary/10 rounded-lg p-3 mt-2">
+                    <p className="text-sm text-primary font-medium">
+                      🎉 7-day free trial • {searchParams.get('plan') === 'pro' ? 'FitMate Pro Elite' : 'FitMate Pro Premium'} • Cancel anytime
+                    </p>
+                  </div>
+                )}
               </CardHeader>
               <CardContent>
                 <form onSubmit={handleSignUp} className="space-y-4">

@@ -291,7 +291,11 @@ export const PricingSection = ({ showTitle = true, className }: PricingSectionPr
                     disabled={loadingPlan === plan.id || (user && plan.id === 'free' && currentPlan === 'free')}
                     onClick={() => {
                       if (!user) {
-                        window.location.href = '/auth';
+                        if (plan.id === 'free') {
+                          window.location.href = '/auth';
+                        } else {
+                          window.location.href = `/auth?trial=true&plan=${plan.id}`;
+                        }
                       } else if (plan.id !== 'free' && plan.id !== currentPlan) {
                         handleSelectPlan(plan.id as 'premium' | 'pro');
                       }

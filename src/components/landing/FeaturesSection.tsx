@@ -178,7 +178,7 @@ const FeaturesSection = () => {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button 
                 className="bg-white text-primary hover:bg-white/90 transition-colors px-8 py-4 rounded-full font-semibold text-lg"
-                onClick={() => navigate("/auth")}
+                onClick={() => navigate("/auth?trial=true&plan=premium")}
               >
                 Start Free Trial
               </button>
