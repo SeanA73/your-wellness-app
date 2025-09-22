@@ -121,9 +121,9 @@ const FeaturesSection = () => {
                 '/features/ai-coaching',
                 '/features/advanced-analytics',
                 '/features/community-features',
-                '/auth', // Goal Setting - redirect to auth for now
-                '/auth', // Wearable Integration - redirect to auth for now
-                '/auth'  // 1-on-1 Coaching - redirect to auth for now
+                '/features/goal-setting',
+                '/features/wearable-integration',
+                '/features/personal-coaching'
               ];
               return routes[index] || '/auth';
             };

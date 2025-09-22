@@ -20,6 +20,9 @@ import MentalWellness from "./pages/features/MentalWellness";
 import AICoaching from "./pages/features/AICoaching";
 import AdvancedAnalytics from "./pages/features/AdvancedAnalytics";
 import CommunityFeatures from "./pages/features/CommunityFeatures";
+import GoalSetting from "./pages/features/GoalSetting";
+import WearableIntegration from "./pages/features/WearableIntegration";
+import PersonalCoaching from "./pages/features/PersonalCoaching";
 
 const queryClient = new QueryClient();
 
@@ -40,6 +43,9 @@ const AppRoutes = () => {
       <Route path="/features/ai-coaching" element={<AICoaching />} />
       <Route path="/features/advanced-analytics" element={<AdvancedAnalytics />} />
       <Route path="/features/community-features" element={<CommunityFeatures />} />
+      <Route path="/features/goal-setting" element={<GoalSetting />} />
+      <Route path="/features/wearable-integration" element={<WearableIntegration />} />
+      <Route path="/features/personal-coaching" element={<PersonalCoaching />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
