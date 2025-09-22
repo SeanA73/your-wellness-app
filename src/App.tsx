@@ -23,6 +23,7 @@ import CommunityFeatures from "./pages/features/CommunityFeatures";
 import GoalSetting from "./pages/features/GoalSetting";
 import WearableIntegration from "./pages/features/WearableIntegration";
 import PersonalCoaching from "./pages/features/PersonalCoaching";
+import AdminDashboard from "./pages/AdminDashboard";
 
 const queryClient = new QueryClient();
 
@@ -46,6 +47,7 @@ const AppRoutes = () => {
       <Route path="/features/goal-setting" element={<GoalSetting />} />
       <Route path="/features/wearable-integration" element={<WearableIntegration />} />
       <Route path="/features/personal-coaching" element={<PersonalCoaching />} />
+      <Route path="/admin" element={<AdminDashboard />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
