@@ -79,14 +79,31 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         .from('profiles')
         .select('*')
         .eq('id', userId)
-        .single();
+        .maybeSingle();
 
       if (error) {
         console.error('Error fetching profile:', error);
         return;
       }
 
-      setProfile(data);
+      if (data) {
+        setProfile(data);
+      } else {
+        // Profile doesn't exist, create a minimal one
+        const { data: newProfile, error: insertError } = await supabase
+          .from('profiles')
+          .insert([{
+            id: userId,
+            email: user?.email || '',
+            full_name: user?.user_metadata?.full_name || '',
+          }])
+          .select()
+          .single();
+
+        if (!insertError && newProfile) {
+          setProfile(newProfile);
+        }
+      }
     } catch (error) {
       console.error('Error:', error);
     }
