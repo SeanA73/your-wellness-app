@@ -18,6 +18,8 @@ import WorkoutPlanning from "./pages/features/WorkoutPlanning";
 import NutritionTracking from "./pages/features/NutritionTracking";
 import MentalWellness from "./pages/features/MentalWellness";
 import AICoaching from "./pages/features/AICoaching";
+import AdvancedAnalytics from "./pages/features/AdvancedAnalytics";
+import CommunityFeatures from "./pages/features/CommunityFeatures";
 
 const queryClient = new QueryClient();
 
@@ -36,6 +38,8 @@ const AppRoutes = () => {
       <Route path="/features/nutrition-tracking" element={<NutritionTracking />} />
       <Route path="/features/mental-wellness" element={<MentalWellness />} />
       <Route path="/features/ai-coaching" element={<AICoaching />} />
+      <Route path="/features/advanced-analytics" element={<AdvancedAnalytics />} />
+      <Route path="/features/community-features" element={<CommunityFeatures />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
