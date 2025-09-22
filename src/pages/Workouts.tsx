@@ -3,12 +3,20 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { ArrowLeft, Search, Clock, Users, Flame, Filter, Play } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ArrowLeft, Search, Clock, Users, Flame, Filter, Play, Plus, Target } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { preBuiltPrograms, WorkoutProgram } from "@/data/workoutPrograms";
+import WorkoutProgramCard from "@/components/workout/WorkoutProgramCard";
+import CreateWorkoutForm from "@/components/workout/CreateWorkoutForm";
 
 const Workouts = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
+  const [activeTab, setActiveTab] = useState("programs");
+  const [customPrograms, setCustomPrograms] = useState<WorkoutProgram[]>([]);
+  const [showCreateForm, setShowCreateForm] = useState(false);
+  const [editingProgram, setEditingProgram] = useState<WorkoutProgram | null>(null);
 
   const workoutCategories = [
     { name: "HIIT", count: 45, color: "bg-motivation-gradient" },
@@ -91,6 +99,41 @@ const Workouts = () => {
     workout.type.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const allPrograms = [...preBuiltPrograms, ...customPrograms];
+  
+  const filteredPrograms = allPrograms.filter(program =>
+    program.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    program.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    program.goals.some(goal => goal.toLowerCase().includes(searchTerm.toLowerCase()))
+  );
+
+  const handleStartProgram = (programId: string) => {
+    navigate(`/program/${programId}`);
+  };
+
+  const handleCustomizeProgram = (programId: string) => {
+    const program = allPrograms.find(p => p.id === programId);
+    if (program) {
+      setEditingProgram(program);
+      setShowCreateForm(true);
+    }
+  };
+
+  const handleSaveProgram = (program: WorkoutProgram) => {
+    if (editingProgram) {
+      setCustomPrograms(prev => prev.map(p => p.id === program.id ? program : p));
+      setEditingProgram(null);
+    } else {
+      setCustomPrograms(prev => [...prev, program]);
+    }
+    setShowCreateForm(false);
+  };
+
+  const handleCancelForm = () => {
+    setShowCreateForm(false);
+    setEditingProgram(null);
+  };
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
@@ -110,99 +153,176 @@ const Workouts = () => {
       </div>
 
       <div className="max-w-7xl mx-auto px-6 py-8">
-        {/* Search & Filters */}
-        <div className="flex gap-4 mb-8">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <Input
-              placeholder="Search workouts..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10"
+        {showCreateForm ? (
+          <div>
+            <div className="flex items-center gap-4 mb-6">
+              <Button variant="ghost" onClick={handleCancelForm}>
+                <ArrowLeft className="w-4 h-4" />
+                Back
+              </Button>
+              <h2 className="text-2xl font-bold">
+                {editingProgram ? 'Customize Program' : 'Create New Program'}
+              </h2>
+            </div>
+            <CreateWorkoutForm
+              initialProgram={editingProgram || undefined}
+              onSave={handleSaveProgram}
+              onCancel={handleCancelForm}
             />
           </div>
-          <Button variant="outline">
-            <Filter className="w-4 h-4" />
-            Filters
-          </Button>
-        </div>
+        ) : (
+          <>
+            {/* Search & Filters */}
+            <div className="flex gap-4 mb-8">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Input
+                  placeholder="Search programs and workouts..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10"
+                />
+              </div>
+              <Button variant="outline">
+                <Filter className="w-4 h-4" />
+                Filters
+              </Button>
+              <Button onClick={() => setShowCreateForm(true)}>
+                <Plus className="w-4 h-4 mr-2" />
+                Create Program
+              </Button>
+            </div>
 
-        {/* Categories */}
-        <div className="mb-8">
-          <h2 className="text-lg font-semibold mb-4">Categories</h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {workoutCategories.map((category) => (
-              <Card key={category.name} className="cursor-pointer hover:shadow-card-hover transition-smooth">
-                <CardContent className="p-4 text-center">
-                  <div className={`w-12 h-12 ${category.color} rounded-full mx-auto mb-2 flex items-center justify-center text-white font-bold text-lg`}>
-                    {category.count}
-                  </div>
-                  <h3 className="font-semibold">{category.name}</h3>
-                  <p className="text-xs text-muted-foreground">{category.count} workouts</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
+            {/* Tabs */}
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-8">
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="programs">Workout Programs</TabsTrigger>
+                <TabsTrigger value="individual">Individual Workouts</TabsTrigger>
+              </TabsList>
 
-        {/* Workout List */}
-        <div>
-          <h2 className="text-lg font-semibold mb-4">All Workouts ({filteredWorkouts.length})</h2>
-          <div className="grid gap-4">
-            {filteredWorkouts.map((workout, index) => (
-              <Card key={index} className="hover:shadow-card-hover transition-smooth">
-                <CardContent className="p-6">
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-2">
-                        <h3 className="text-lg font-semibold">{workout.title}</h3>
-                        <Badge variant="outline">{workout.type}</Badge>
-                        <Badge variant={workout.difficulty === "Beginner" ? "secondary" : workout.difficulty === "Advanced" ? "destructive" : "default"}>
-                          {workout.difficulty}
-                        </Badge>
-                      </div>
-                      
-                      <p className="text-muted-foreground mb-3">{workout.description}</p>
-                      
-                      <div className="flex items-center gap-6 text-sm text-muted-foreground mb-3">
-                        <div className="flex items-center gap-1">
-                          <Clock className="w-4 h-4" />
-                          {workout.duration}
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <Flame className="w-4 h-4" />
-                          {workout.calories} cal
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <Users className="w-4 h-4" />
-                          {workout.participants} joined
-                        </div>
-                      </div>
-                      
-                      <div className="flex items-center gap-4 text-sm">
-                        <span className="text-muted-foreground">Instructor: {workout.instructor}</span>
-                        <div className="flex items-center gap-1">
-                          <span className="text-yellow-500">★</span>
-                          <span className="font-medium">{workout.rating}</span>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div className="flex flex-col gap-2">
-                      <Button variant="wellness" onClick={() => navigate(`/workout/${index}`)}>
-                        <Play className="w-4 h-4" />
-                        Start Workout
-                      </Button>
-                      <Button variant="outline" size="sm">
-                        Preview
-                      </Button>
-                    </div>
+              <TabsContent value="programs" className="space-y-8">
+                {/* Program Categories */}
+                <div>
+                  <h2 className="text-lg font-semibold mb-4">Categories</h2>
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                    {['All', 'Weightlifting', 'Bodybuilding', 'General Fitness', 'Cardio', 'Strength', 'Powerlifting'].map((category) => (
+                      <Card key={category} className="cursor-pointer hover:shadow-card-hover transition-smooth">
+                        <CardContent className="p-4 text-center">
+                          <div className="w-12 h-12 bg-primary/20 rounded-full mx-auto mb-2 flex items-center justify-center">
+                            <Target className="w-6 h-6 text-primary" />
+                          </div>
+                          <h3 className="font-semibold text-sm">{category}</h3>
+                        </CardContent>
+                      </Card>
+                    ))}
                   </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
+                </div>
+
+                {/* Workout Programs */}
+                <div>
+                  <h2 className="text-lg font-semibold mb-4">
+                    Available Programs ({filteredPrograms.length})
+                  </h2>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {filteredPrograms.map((program) => (
+                      <WorkoutProgramCard
+                        key={program.id}
+                        program={program}
+                        onStart={handleStartProgram}
+                        onCustomize={handleCustomizeProgram}
+                      />
+                    ))}
+                  </div>
+                  {filteredPrograms.length === 0 && (
+                    <div className="text-center py-12">
+                      <p className="text-muted-foreground">No programs found matching your search.</p>
+                    </div>
+                  )}
+                </div>
+              </TabsContent>
+
+              <TabsContent value="individual" className="space-y-8">
+
+                {/* Categories */}
+                <div className="mb-8">
+                  <h2 className="text-lg font-semibold mb-4">Categories</h2>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    {workoutCategories.map((category) => (
+                      <Card key={category.name} className="cursor-pointer hover:shadow-card-hover transition-smooth">
+                        <CardContent className="p-4 text-center">
+                          <div className={`w-12 h-12 ${category.color} rounded-full mx-auto mb-2 flex items-center justify-center text-white font-bold text-lg`}>
+                            {category.count}
+                          </div>
+                          <h3 className="font-semibold">{category.name}</h3>
+                          <p className="text-xs text-muted-foreground">{category.count} workouts</p>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Workout List */}
+                <div>
+                  <h2 className="text-lg font-semibold mb-4">All Workouts ({filteredWorkouts.length})</h2>
+                  <div className="grid gap-4">
+                    {filteredWorkouts.map((workout, index) => (
+                      <Card key={index} className="hover:shadow-card-hover transition-smooth">
+                        <CardContent className="p-6">
+                          <div className="flex items-start justify-between">
+                            <div className="flex-1">
+                              <div className="flex items-center gap-3 mb-2">
+                                <h3 className="text-lg font-semibold">{workout.title}</h3>
+                                <Badge variant="outline">{workout.type}</Badge>
+                                <Badge variant={workout.difficulty === "Beginner" ? "secondary" : workout.difficulty === "Advanced" ? "destructive" : "default"}>
+                                  {workout.difficulty}
+                                </Badge>
+                              </div>
+                              
+                              <p className="text-muted-foreground mb-3">{workout.description}</p>
+                              
+                              <div className="flex items-center gap-6 text-sm text-muted-foreground mb-3">
+                                <div className="flex items-center gap-1">
+                                  <Clock className="w-4 h-4" />
+                                  {workout.duration}
+                                </div>
+                                <div className="flex items-center gap-1">
+                                  <Flame className="w-4 h-4" />
+                                  {workout.calories} cal
+                                </div>
+                                <div className="flex items-center gap-1">
+                                  <Users className="w-4 h-4" />
+                                  {workout.participants} joined
+                                </div>
+                              </div>
+                              
+                              <div className="flex items-center gap-4 text-sm">
+                                <span className="text-muted-foreground">Instructor: {workout.instructor}</span>
+                                <div className="flex items-center gap-1">
+                                  <span className="text-yellow-500">★</span>
+                                  <span className="font-medium">{workout.rating}</span>
+                                </div>
+                              </div>
+                            </div>
+                            
+                            <div className="flex flex-col gap-2">
+                              <Button variant="wellness" onClick={() => navigate(`/workout/${index}`)}>
+                                <Play className="w-4 h-4" />
+                                Start Workout
+                              </Button>
+                              <Button variant="outline" size="sm">
+                                Preview
+                              </Button>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </div>
+              </TabsContent>
+            </Tabs>
+          </>
+        )}
       </div>
     </div>
   );

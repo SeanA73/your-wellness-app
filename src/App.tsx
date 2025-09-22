@@ -10,6 +10,7 @@ import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Workouts from "./pages/Workouts";
 import WorkoutSession from "./pages/WorkoutSession";
+import ProgramDetails from "./pages/ProgramDetails";
 import Nutrition from "./pages/Nutrition";
 import Chat from "./pages/Chat";
 import NotFound from "./pages/NotFound";
@@ -27,6 +28,8 @@ const AppRoutes = () => {
       <Route path="/auth" element={<Auth />} />
       <Route path="/workouts" element={<Workouts />} />
       <Route path="/workout/:id" element={<WorkoutSession />} />
+      <Route path="/workout/program/:programId/day/:dayId" element={<WorkoutSession />} />
+      <Route path="/program/:id" element={<ProgramDetails />} />
       <Route path="/nutrition" element={<Nutrition />} />
       <Route path="/chat" element={<Chat />} />
       <Route path="/features/workout-planning" element={<WorkoutPlanning />} />

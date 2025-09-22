@@ -5,29 +5,60 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Play, Pause, RotateCcw, Heart, Clock, Flame } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
+import { preBuiltPrograms } from "@/data/workoutPrograms";
 
 const WorkoutSession = () => {
   const navigate = useNavigate();
-  const { id } = useParams();
+  const { id, programId, dayId } = useParams();
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [currentExercise, setCurrentExercise] = useState(0);
 
-  const workout = {
-    title: "Morning Energy Boost",
-    duration: 900, // 15 minutes in seconds
-    difficulty: "Beginner",
-    instructor: "Sarah M.",
-    exercises: [
-      { name: "Warm-up Stretches", duration: 120, description: "Gentle movements to prepare your body" },
-      { name: "Jumping Jacks", duration: 60, description: "Get your heart rate up with classic cardio" },
-      { name: "Bodyweight Squats", duration: 90, description: "Strengthen your legs and glutes" },
-      { name: "Push-ups (Modified)", duration: 60, description: "Build upper body strength at your pace" },
-      { name: "Plank Hold", duration: 45, description: "Core strengthening exercise" },
-      { name: "Mountain Climbers", duration: 75, description: "Full body cardio movement" },
-      { name: "Cool-down Stretches", duration: 150, description: "Relax and stretch your worked muscles" },
-    ]
+  // Get workout data based on whether it's a program or individual workout
+  const getWorkoutData = () => {
+    if (programId && dayId) {
+      // Program-based workout
+      const program = preBuiltPrograms.find(p => p.id === programId);
+      const dayIndex = parseInt(dayId);
+      
+      if (program && program.workout_days[dayIndex]) {
+        const workoutDay = program.workout_days[dayIndex];
+        return {
+          title: workoutDay.name,
+          duration: workoutDay.estimated_duration * 60, // Convert to seconds
+          difficulty: program.difficulty,
+          instructor: program.created_by,
+          exercises: workoutDay.exercises.map(exercise => ({
+            name: exercise.name,
+            duration: exercise.duration || (exercise.sets || 3) * 30, // Estimate duration for sets
+            description: exercise.description,
+            sets: exercise.sets,
+            reps: exercise.reps,
+            rest_time: exercise.rest_time
+          }))
+        };
+      }
+    }
+    
+    // Default individual workout
+    return {
+      title: "Morning Energy Boost",
+      duration: 900, // 15 minutes in seconds
+      difficulty: "Beginner",
+      instructor: "Sarah M.",
+      exercises: [
+        { name: "Warm-up Stretches", duration: 120, description: "Gentle movements to prepare your body" },
+        { name: "Jumping Jacks", duration: 60, description: "Get your heart rate up with classic cardio" },
+        { name: "Bodyweight Squats", duration: 90, description: "Strengthen your legs and glutes" },
+        { name: "Push-ups (Modified)", duration: 60, description: "Build upper body strength at your pace" },
+        { name: "Plank Hold", duration: 45, description: "Core strengthening exercise" },
+        { name: "Mountain Climbers", duration: 75, description: "Full body cardio movement" },
+        { name: "Cool-down Stretches", duration: 150, description: "Relax and stretch your worked muscles" },
+      ]
+    };
   };
+
+  const workout = getWorkoutData();
 
   const currentExerciseData = workout.exercises[currentExercise];
   const totalProgress = (currentTime / workout.duration) * 100;
@@ -82,9 +113,9 @@ const WorkoutSession = () => {
       <div className="border-b border-border bg-card/50 backdrop-blur-sm">
         <div className="max-w-4xl mx-auto px-6 py-4">
           <div className="flex items-center gap-4">
-            <Button variant="ghost" size="sm" onClick={() => navigate("/workouts")}>
+            <Button variant="ghost" size="sm" onClick={() => navigate(programId ? `/program/${programId}` : "/workouts")}>
               <ArrowLeft className="w-4 h-4" />
-              Back to Workouts
+              {programId ? "Back to Program" : "Back to Workouts"}
             </Button>
             <div className="flex-1">
               <h1 className="text-xl font-bold">{workout.title}</h1>
@@ -225,8 +256,8 @@ const WorkoutSession = () => {
               </div>
               
               <div className="flex gap-4 justify-center">
-                <Button variant="outline" onClick={() => navigate("/workouts")}>
-                  Browse More Workouts
+                <Button variant="outline" onClick={() => navigate(programId ? `/program/${programId}` : "/workouts")}>
+                  {programId ? "Back to Program" : "Browse More Workouts"}
                 </Button>
                 <Button variant="wellness" onClick={() => navigate("/")}>
                   Back to Dashboard
