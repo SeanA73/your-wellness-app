@@ -15,6 +15,7 @@ interface Profile {
   activity_level?: string;
   fitness_goals?: string[];
   health_conditions?: string[];
+  subscription_plan?: string;
   created_at: string;
   updated_at: string;
 }

@@ -41,6 +41,7 @@ const Profile = () => {
     weight_kg: "",
     activity_level: "",
     fitness_goals: [] as string[],
+    health_conditions: [] as string[],
   });
 
   useEffect(() => {
@@ -54,6 +55,7 @@ const Profile = () => {
         weight_kg: profile.weight_kg?.toString() || "",
         activity_level: profile.activity_level || "",
         fitness_goals: profile.fitness_goals || [],
+        health_conditions: profile.health_conditions || [],
       });
     } else if (user && !profile) {
       // If user exists but no profile, create empty profile data with user's email
@@ -65,6 +67,7 @@ const Profile = () => {
         weight_kg: "",
         activity_level: "",
         fitness_goals: [],
+        health_conditions: [],
       });
     }
   }, [profile, user]);
@@ -82,6 +85,7 @@ const Profile = () => {
         weight_kg: profileData.weight_kg ? parseFloat(profileData.weight_kg) : null,
         activity_level: profileData.activity_level || null,
         fitness_goals: profileData.fitness_goals,
+        health_conditions: profileData.health_conditions,
       });
 
       if (error) {
@@ -117,6 +121,15 @@ const Profile = () => {
     }));
   };
 
+  const toggleHealthCondition = (condition: string) => {
+    setProfileData(prev => ({
+      ...prev,
+      health_conditions: prev.health_conditions.includes(condition)
+        ? prev.health_conditions.filter(c => c !== condition)
+        : [...prev.health_conditions, condition]
+    }));
+  };
+
   const fitnessGoals = [
     "weight_loss",
     "muscle_gain", 
@@ -124,6 +137,17 @@ const Profile = () => {
     "flexibility",
     "strength",
     "general_health"
+  ];
+
+  const healthConditions = [
+    "diabetes",
+    "hypertension",
+    "heart_disease",
+    "arthritis",
+    "asthma",
+    "back_problems",
+    "knee_problems",
+    "other"
   ];
 
   const planBadgeVariant = (plan: string) => {
@@ -357,6 +381,25 @@ const Profile = () => {
                           />
                           <Label htmlFor={`goal-${goal}`} className="text-sm capitalize">
                             {goal.replace('_', ' ')}
+                          </Label>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="md:col-span-2">
+                    <Label>Health Conditions</Label>
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mt-2">
+                      {healthConditions.map(condition => (
+                        <div key={condition} className="flex items-center space-x-2">
+                          <Checkbox
+                            id={`condition-${condition}`}
+                            checked={profileData.health_conditions.includes(condition)}
+                            onCheckedChange={() => toggleHealthCondition(condition)}
+                            disabled={!isEditing}
+                          />
+                          <Label htmlFor={`condition-${condition}`} className="text-sm capitalize">
+                            {condition.replace('_', ' ')}
                           </Label>
                         </div>
                       ))}
