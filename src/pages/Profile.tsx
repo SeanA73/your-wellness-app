@@ -44,6 +44,7 @@ const Profile = () => {
   });
 
   useEffect(() => {
+    console.log('Profile data:', profile); // Debug log
     if (profile) {
       setProfileData({
         full_name: profile.full_name || "",
@@ -54,8 +55,19 @@ const Profile = () => {
         activity_level: profile.activity_level || "",
         fitness_goals: profile.fitness_goals || [],
       });
+    } else if (user && !profile) {
+      // If user exists but no profile, create empty profile data with user's email
+      setProfileData({
+        full_name: user.user_metadata?.full_name || "",
+        date_of_birth: "",
+        gender: "",
+        height_cm: "",
+        weight_kg: "",
+        activity_level: "",
+        fitness_goals: [],
+      });
     }
-  }, [profile]);
+  }, [profile, user]);
 
   const handleSave = async () => {
     if (!user) return;
