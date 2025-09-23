@@ -96,6 +96,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             id: userId,
             email: user?.email || '',
             full_name: user?.user_metadata?.full_name || '',
+            date_of_birth: null,
+            gender: null,
+            height_cm: null,
+            weight_kg: null,
+            activity_level: null,
+            fitness_goals: [],
+            health_conditions: []
           }])
           .select()
           .single();
@@ -132,8 +139,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           .insert([{
             id: data.user.id,
             email: data.user.email!,
-            full_name: additionalData.full_name,
-            ...additionalData
+            full_name: additionalData.full_name || '',
+            date_of_birth: additionalData.date_of_birth || null,
+            gender: additionalData.gender || null,
+            height_cm: additionalData.height_cm || null,
+            weight_kg: additionalData.weight_kg || null,
+            activity_level: additionalData.activity_level || null,
+            fitness_goals: additionalData.fitness_goals || [],
+            health_conditions: additionalData.health_conditions || []
           }]);
 
         if (profileError) {
