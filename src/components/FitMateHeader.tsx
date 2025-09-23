@@ -29,6 +29,7 @@ const FitMateHeader = () => {
         <div className="flex items-center gap-3">
           {user ? (
             <>
+              {/* Notifications */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="icon">
@@ -47,60 +48,32 @@ const FitMateHeader = () => {
                 </DropdownMenuContent>
               </DropdownMenu>
               
+              {/* User Profile */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon">
-                    <Settings className="w-5 h-5" />
-                  </Button>
+                  <Avatar className="cursor-pointer">
+                    <AvatarImage src={profile?.avatar_url || "/placeholder.svg"} />
+                    <AvatarFallback className="bg-primary text-primary-foreground">
+                      {profile?.full_name ? profile.full_name.charAt(0).toUpperCase() : 'FM'}
+                    </AvatarFallback>
+                  </Avatar>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                   <DropdownMenuItem onClick={() => navigate("/profile")}>
                     <User className="w-4 h-4 mr-2" />
-                    Profile Settings
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <Bell className="w-4 h-4 mr-2" />
-                    Notifications
+                    Profile
                   </DropdownMenuItem>
                   <DropdownMenuItem>
                     <Settings className="w-4 h-4 mr-2" />
-                    Preferences
+                    Settings
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleSignOut}>
+                    <LogOut className="w-4 h-4 mr-2" />
+                    Sign Out
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             </>
-          ) : (
-            <>
-              <Button variant="ghost" size="icon" onClick={() => navigate("/auth")}>
-                <Bell className="w-5 h-5" />
-              </Button>
-              <Button variant="ghost" size="icon" onClick={() => navigate("/auth")}>
-                <Settings className="w-5 h-5" />
-              </Button>
-            </>
-          )}
-          
-          {user ? (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Avatar className="cursor-pointer">
-                  <AvatarImage src={profile?.avatar_url || "/placeholder.svg"} />
-                  <AvatarFallback className="bg-primary text-primary-foreground">
-                    {profile?.full_name ? profile.full_name.charAt(0).toUpperCase() : 'FM'}
-                  </AvatarFallback>
-                </Avatar>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => navigate("/profile")}>
-                  <User className="w-4 h-4 mr-2" />
-                  Profile
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleSignOut}>
-                  <LogOut className="w-4 h-4 mr-2" />
-                  Sign Out
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
           ) : (
             <Button variant="wellness" onClick={() => navigate("/auth")}>
               <LogIn className="w-4 h-4 mr-2" />
