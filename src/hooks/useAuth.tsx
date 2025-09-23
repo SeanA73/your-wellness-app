@@ -203,21 +203,34 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const signOut = async () => {
     try {
-      await supabase.auth.signOut();
+      setLoading(true);
+      
+      // Clear state first
       setUser(null);
       setProfile(null);
       setSession(null);
+      
+      // Then sign out from Supabase
+      const { error } = await supabase.auth.signOut();
+      
+      if (error) throw error;
       
       toast({
         title: "Signed out",
         description: "See you next time!",
       });
+      
+      // Force redirect to home page
+      window.location.href = '/';
+      
     } catch (error: any) {
       toast({
         title: "Error signing out",
         description: error.message,
         variant: "destructive",
       });
+    } finally {
+      setLoading(false);
     }
   };
 
