@@ -48,7 +48,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setUser(session?.user ?? null);
       
       if (session?.user) {
-        await fetchProfile(session.user.id);
+        await fetchProfile(
+          session.user.id,
+          session.user.email ?? undefined,
+          (session.user.user_metadata as any)?.full_name
+        );
       }
       setLoading(false);
     };
@@ -57,12 +61,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
+      (event, session) => {
         setSession(session);
         setUser(session?.user ?? null);
         
         if (session?.user) {
-          await fetchProfile(session.user.id);
+          // Defer any Supabase calls to avoid deadlocks inside the callback
+          setTimeout(() => {
+            fetchProfile(
+              session.user!.id,
+              session.user!.email ?? undefined,
+              (session.user!.user_metadata as any)?.full_name
+            );
+          }, 0);
         } else {
           setProfile(null);
         }
@@ -74,7 +85,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return () => subscription.unsubscribe();
   }, []);
 
-  const fetchProfile = async (userId: string) => {
+  const fetchProfile = async (userId: string, email?: string, fullName?: string) => {
     try {
       const { data, error } = await supabase
         .from('profiles')
@@ -95,8 +106,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           .from('profiles')
           .insert([{
             id: userId,
-            email: user?.email || '',
-            full_name: user?.user_metadata?.full_name || '',
+            email: email ?? user?.email ?? '',
+            full_name: fullName ?? (user?.user_metadata as any)?.full_name ?? '',
             date_of_birth: null,
             gender: null,
             height_cm: null,
@@ -108,7 +119,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           .select()
           .single();
 
-        if (!insertError && newProfile) {
+        if (insertError) {
+          console.error('Error creating profile:', insertError);
+          return;
+        }
+
+        if (newProfile) {
           setProfile(newProfile);
         }
       }
