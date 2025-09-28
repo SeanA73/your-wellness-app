@@ -116,7 +116,7 @@ export const AdManager = ({ placement, context, className, onAdInteraction }: Ad
         session_id: sessionId
       }]);
     } catch (error) {
-      console.error('Error tracking ad interaction:', error);
+      // Silent fail for ad tracking
     }
 
     onAdInteraction?.(interactionType);
@@ -155,7 +155,7 @@ export const AdManager = ({ placement, context, className, onAdInteraction }: Ad
           }
         });
       } catch (error) {
-        console.error('Error granting temporary access:', error);
+        // Silent fail for temporary access
       }
     }
     

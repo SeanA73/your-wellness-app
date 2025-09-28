@@ -48,7 +48,7 @@ export const useSubscription = () => {
       if (error) throw error;
       setSubscription(data as Subscription);
     } catch (error) {
-      console.error('Error fetching subscription:', error);
+      // Silent fail for subscription fetch
     }
   };
 
@@ -71,7 +71,6 @@ export const useSubscription = () => {
       if (error) throw error;
       return data || false;
     } catch (error) {
-      console.error('Error checking usage limit:', error);
       return false;
     }
   };
@@ -89,7 +88,7 @@ export const useSubscription = () => {
 
       if (error) throw error;
     } catch (error) {
-      console.error('Error incrementing usage:', error);
+      // Silent fail for usage tracking
     }
   };
 
@@ -125,7 +124,7 @@ export const useSubscription = () => {
 
       setUsageLimits(limitsWithUsage);
     } catch (error) {
-      console.error('Error fetching usage limits:', error);
+      // Silent fail for usage limits
     }
   };
 
@@ -164,7 +163,6 @@ export const useSubscription = () => {
 
       return data?.reduce((sum, record) => sum + (record.usage_count || 0), 0) || 0;
     } catch (error) {
-      console.error('Error getting current usage:', error);
       return 0;
     }
   };
@@ -192,7 +190,6 @@ export const useSubscription = () => {
         window.location.href = data.url;
       }
     } catch (error) {
-      console.error('Error creating checkout session:', error);
       toast({
         title: "Error",
         description: "Failed to start checkout process. Please try again.",
@@ -219,7 +216,6 @@ export const useSubscription = () => {
 
       await fetchSubscription();
     } catch (error) {
-      console.error('Error canceling subscription:', error);
       toast({
         title: "Error",
         description: "Failed to cancel subscription. Please try again.",

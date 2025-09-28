@@ -66,7 +66,6 @@ export const useNutrition = () => {
       setTodaysMeals(todaysData);
       
     } catch (error: any) {
-      console.error('Error fetching meals:', error);
       toast({
         title: "Error loading meals",
         description: error.message,
@@ -87,7 +86,7 @@ export const useNutrition = () => {
       if (error) throw error;
       setFoodDatabase(data || []);
     } catch (error: any) {
-      console.error('Error fetching food database:', error);
+      // Silent fail for food database
     }
   };
 

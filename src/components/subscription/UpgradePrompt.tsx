@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useSubscription } from '@/hooks/useSubscription';
+import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -63,6 +64,7 @@ const UPGRADE_SCENARIOS = {
 
 export const UpgradePrompt = ({ trigger, featureName, onClose, className }: UpgradePromptProps) => {
   const { createCheckoutSession, hasPremiumAccess } = useSubscription();
+  const { toast } = useToast();
   const [showRewardAd, setShowRewardAd] = useState(false);
   const [isUpgrading, setIsUpgrading] = useState(false);
 
@@ -75,8 +77,12 @@ export const UpgradePrompt = ({ trigger, featureName, onClose, className }: Upgr
     setIsUpgrading(true);
     try {
       await createCheckoutSession(planType, false);
-    } catch (error) {
-      console.error('Upgrade error:', error);
+    } catch (error: any) {
+      toast({
+        title: "Upgrade Error",
+        description: "Failed to upgrade. Please try again.",
+        variant: "destructive",
+      });
     } finally {
       setIsUpgrading(false);
     }

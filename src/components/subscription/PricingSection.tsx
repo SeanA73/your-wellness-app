@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useSubscription } from '@/hooks/useSubscription';
+import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -107,6 +108,7 @@ interface PricingSectionProps {
 export const PricingSection = ({ showTitle = true, className }: PricingSectionProps) => {
   const { createCheckoutSession, getCurrentPlan, hasPremiumAccess } = useSubscription();
   const { user } = useAuth();
+  const { toast } = useToast();
   const [isAnnual, setIsAnnual] = useState(false);
   const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
 
@@ -116,8 +118,12 @@ export const PricingSection = ({ showTitle = true, className }: PricingSectionPr
     setLoadingPlan(planId);
     try {
       await createCheckoutSession(planId, isAnnual);
-    } catch (error) {
-      console.error('Error selecting plan:', error);
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: "Failed to start subscription. Please try again.",
+        variant: "destructive",
+      });
     } finally {
       setLoadingPlan(null);
     }

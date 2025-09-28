@@ -45,7 +45,6 @@ const Profile = () => {
   });
 
   useEffect(() => {
-    console.log('Profile data:', profile); // Debug log
     if (profile) {
       setProfileData({
         full_name: profile.full_name || "",

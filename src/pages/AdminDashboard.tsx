@@ -70,7 +70,6 @@ export default function AdminDashboard() {
       const isAdminUser = user.email === 'admin@test.com' || user.id === '550e8400-e29b-41d4-a716-446655440004';
       setIsAdmin(isAdminUser);
     } catch (error) {
-      console.error('Error checking admin access:', error);
       toast({
         title: "Access Error",
         description: "Could not verify admin access.",
@@ -171,7 +170,6 @@ export default function AdminDashboard() {
 
       setUsers(recentUsers || []);
     } catch (error) {
-      console.error('Error fetching dashboard data:', error);
       toast({
         title: "Error",
         description: "Failed to load dashboard data.",

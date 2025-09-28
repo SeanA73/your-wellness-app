@@ -94,7 +94,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         .maybeSingle();
 
       if (error) {
-        console.error('Error fetching profile:', error);
         return;
       }
 
@@ -120,7 +119,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           .single();
 
         if (insertError) {
-          console.error('Error creating profile:', insertError);
           return;
         }
 
@@ -129,7 +127,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         }
       }
     } catch (error) {
-      console.error('Error:', error);
+      // Silent fail for profile operations
     }
   };
 
@@ -167,7 +165,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           }]);
 
         if (profileError) {
-          console.error('Error creating profile:', profileError);
+          // Silent fail for profile creation
         }
       }
 
