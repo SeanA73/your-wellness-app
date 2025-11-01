@@ -40,7 +40,7 @@ const DailyCheckIn = () => {
             <h4 className="font-semibold mb-2">Track Your Daily Wellness</h4>
             <p className="text-sm text-muted-foreground mb-4">
               Sign in to log your daily energy, mood, sleep quality, and hydration. 
-              Get personalized insights from FitMate to optimize your wellness journey.
+              Get personalized insights from FitMatePro to optimize your wellness journey.
             </p>
             <Button variant="wellness" onClick={() => navigate("/auth")}>
               <LogIn className="w-4 h-4 mr-2" />
@@ -49,7 +49,7 @@ const DailyCheckIn = () => {
           </div>
           
           <div className="bg-calm-gradient rounded-lg p-4">
-            <h4 className="font-semibold mb-2">FitMate's Daily Tips</h4>
+            <h4 className="font-semibold mb-2">FitMatePro's Daily Tips</h4>
             <p className="text-sm text-muted-foreground mb-3">
               "Start each day with intention! Daily check-ins help you understand patterns 
               in your energy, sleep, and mood. Small daily insights lead to big improvements."
@@ -97,7 +97,7 @@ const DailyCheckIn = () => {
         </div>
         
         <div className="bg-calm-gradient rounded-lg p-4">
-          <h4 className="font-semibold mb-2">FitMate's Insight</h4>
+          <h4 className="font-semibold mb-2">FitMatePro's Insight</h4>
           <p className="text-sm text-muted-foreground mb-3">
             "Your energy is good today, but I notice your sleep could use some attention. 
             How about we try a gentle 20-minute yoga session to help you unwind later?"

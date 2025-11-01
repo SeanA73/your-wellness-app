@@ -85,7 +85,7 @@ const CommunityFeatures = () => {
     {
       name: "Sarah M.",
       role: "Community Member",
-      text: "The support I've received from the FitMate community has been incredible. I've made lifelong friends here!",
+      text: "The support I've received from the FitMatePro community has been incredible. I've made lifelong friends here!",
       rating: 5
     },
     {
@@ -276,7 +276,7 @@ const CommunityFeatures = () => {
                 onClick={() => navigate("/auth")}
                 className="bg-white text-primary hover:bg-white/90"
               >
-                Join the FitMate Community
+                Join the FitMatePro Community
               </Button>
             </CardContent>
           </Card>

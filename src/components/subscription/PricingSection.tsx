@@ -21,7 +21,7 @@ import {
 } from 'lucide-react';
 
 interface PricingPlan {
-  id: 'free' | 'premium' | 'pro';
+  id: 'free' | 'premium';
   name: string;
   icon: React.ReactNode;
   price: {
@@ -38,17 +38,17 @@ interface PricingPlan {
 const PRICING_PLANS: PricingPlan[] = [
   {
     id: 'free',
-    name: 'FitMate Pro Free',
+    name: 'FitMatePro Free',
     icon: <Target className="h-6 w-6" />,
     price: { monthly: 0, annual: 0 },
-    description: 'Perfect for fitness beginners',
+    description: 'Perfect for getting started',
     features: [
       'Basic workout tracking (3/week)',
       'Simple nutrition logging',
       'AI coaching (3 interactions/day)',
       'Community access',
-      'Manual biometric entry',
-      'Basic progress charts'
+      'Basic progress charts',
+      'Manual data entry'
     ],
     limitations: [
       'Limited workouts per week',
@@ -59,10 +59,10 @@ const PRICING_PLANS: PricingPlan[] = [
   },
   {
     id: 'premium',
-    name: 'FitMate Pro Premium',
+    name: 'FitMatePro Premium',
     icon: <Zap className="h-6 w-6" />,
-    price: { monthly: 9.99, annual: 89.99 },
-    description: 'For committed fitness enthusiasts',
+    price: { monthly: 7.99, annual: 69.99 },
+    description: 'Unlock everything FitMatePro has to offer',
     features: [
       'Unlimited workout tracking',
       'Advanced meal planning',
@@ -77,26 +77,6 @@ const PRICING_PLANS: PricingPlan[] = [
     ],
     popular: true,
     gradient: 'from-primary/10 to-primary/5'
-  },
-  {
-    id: 'pro',
-    name: 'FitMate Pro Elite',
-    icon: <Crown className="h-6 w-6" />,
-    price: { monthly: 19.99, annual: 179.99 },
-    description: 'For serious athletes & professionals',
-    features: [
-      'Everything in Premium',
-      '1-on-1 virtual coaching (2/month)',
-      'Advanced analytics & insights',
-      'Meal delivery integration',
-      'Corporate wellness features',
-      'API access',
-      'Custom macro planning',
-      'Supplement recommendations',
-      'Early access to features',
-      'White-label options'
-    ],
-    gradient: 'from-yellow-50 to-orange-50'
   }
 ];
 
@@ -114,7 +94,7 @@ export const PricingSection = ({ showTitle = true, className }: PricingSectionPr
 
   const currentPlan = getCurrentPlan();
 
-  const handleSelectPlan = async (planId: 'premium' | 'pro') => {
+  const handleSelectPlan = async (planId: 'premium') => {
     setLoadingPlan(planId);
     try {
       await createCheckoutSession(planId, isAnnual);
@@ -145,10 +125,6 @@ export const PricingSection = ({ showTitle = true, className }: PricingSectionPr
       return 'Current Plan';
     }
     
-    if (plan.id === 'premium' && currentPlan === 'pro') {
-      return 'Downgrade';
-    }
-    
     return currentPlan === 'free' ? 'Start Free Trial' : 'Upgrade';
   };
 
@@ -169,7 +145,7 @@ export const PricingSection = ({ showTitle = true, className }: PricingSectionPr
     <div className={`space-y-8 ${className}`}>
       {showTitle && (
         <div className="text-center space-y-4">
-          <h2 className="text-3xl font-bold">Choose Your FitMate Pro Plan</h2>
+          <h2 className="text-3xl font-bold">Choose Your FitMatePro Plan</h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
             Start free and upgrade when you're ready. All plans include our core fitness tracking features.
           </p>
@@ -188,14 +164,14 @@ export const PricingSection = ({ showTitle = true, className }: PricingSectionPr
               Annual
             </span>
             <Badge variant="secondary" className="ml-2">
-              Save up to 25%
+              Save 27% annually
             </Badge>
           </div>
         </div>
       )}
 
       {/* Pricing Cards */}
-      <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+      <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
         {PRICING_PLANS.map((plan, index) => {
           const isCurrentPlan = currentPlan === plan.id;
           const savings = calculateSavings(plan);
@@ -231,11 +207,11 @@ export const PricingSection = ({ showTitle = true, className }: PricingSectionPr
                   <div className="text-center space-y-2">
                     <div className={`inline-flex p-3 rounded-full ${
                       plan.id === 'free' ? 'bg-gray-100' :
-                      plan.id === 'premium' ? 'bg-primary/10' : 'bg-yellow-100'
+                      'bg-primary/10'
                     }`}>
                       <div className={`${
                         plan.id === 'free' ? 'text-gray-600' :
-                        plan.id === 'premium' ? 'text-primary' : 'text-yellow-600'
+                        'text-primary'
                       }`}>
                         {plan.icon}
                       </div>
@@ -303,7 +279,7 @@ export const PricingSection = ({ showTitle = true, className }: PricingSectionPr
                           window.location.href = `/auth?trial=true&plan=${plan.id}`;
                         }
                       } else if (plan.id !== 'free' && plan.id !== currentPlan) {
-                        handleSelectPlan(plan.id as 'premium' | 'pro');
+                        handleSelectPlan(plan.id);
                       }
                     }}
                   >

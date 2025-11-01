@@ -137,7 +137,7 @@ const WorkoutPlanning = () => {
                 Ready to Transform Your Workouts?
               </h3>
               <p className="text-xl mb-8 text-white/90 max-w-2xl mx-auto">
-                Join FitMate Pro today and get your first personalized workout plan in minutes.
+                Join FitMatePro today and get your first personalized workout plan in minutes.
               </p>
               <Button size="lg" variant="secondary" onClick={() => navigate("/auth")}>
                 Get Started Free

@@ -327,11 +327,11 @@ const NutritionTracking = () => {
           <div className="flex items-start gap-3">
             <Apple className="w-5 h-5 text-accent mt-0.5" />
             <div className="flex-1">
-              <h5 className="font-semibold text-foreground mb-1">FitMate's Nutrition Tip</h5>
+              <h5 className="font-semibold text-foreground mb-1">FitMatePro's Nutrition Tip</h5>
               <p className="text-sm text-muted-foreground mb-2">
                 {user 
                   ? "You're doing great with protein today! For dinner, how about adding some colorful veggies? A rainbow on your plate means a rainbow of nutrients!"
-                  : "Track your nutrition and get personalized tips from FitMate! Sign in to save your progress and get AI-powered coaching."
+                  : "Track your nutrition and get personalized tips from FitMatePro! Sign in to save your progress and get AI-powered coaching."
                 }
               </p>
               <div className="flex gap-2">

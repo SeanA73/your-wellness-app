@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from '@/hooks/useAuth';
+import { useAdmin } from '@/hooks/useAdmin';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { 
@@ -45,38 +46,17 @@ interface UserData {
 
 export default function AdminDashboard() {
   const { user } = useAuth();
+  const { isAdmin, loading: adminLoading } = useAdmin();
   const { toast } = useToast();
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [users, setUsers] = useState<UserData[]>([]);
   const [loading, setLoading] = useState(true);
-  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    checkAdminAccess();
-  }, [user]);
-
-  useEffect(() => {
-    if (isAdmin) {
+    if (isAdmin && !adminLoading) {
       fetchDashboardData();
     }
-  }, [isAdmin]);
-
-  const checkAdminAccess = async () => {
-    if (!user) return;
-    
-    try {
-      // For demo purposes, check if user email is admin@test.com
-      // In production, you would use proper role-based access control
-      const isAdminUser = user.email === 'admin@test.com' || user.id === '550e8400-e29b-41d4-a716-446655440004';
-      setIsAdmin(isAdminUser);
-    } catch (error) {
-      toast({
-        title: "Access Error",
-        description: "Could not verify admin access.",
-        variant: "destructive"
-      });
-    }
-  };
+  }, [isAdmin, adminLoading]);
 
   const fetchDashboardData = async () => {
     try {
@@ -184,6 +164,17 @@ export default function AdminDashboard() {
     return <Navigate to="/auth" replace />;
   }
 
+  if (adminLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+          <p>Checking permissions...</p>
+        </div>
+      </div>
+    );
+  }
+
   if (!isAdmin) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -194,7 +185,7 @@ export default function AdminDashboard() {
               Access Denied
             </CardTitle>
             <CardDescription>
-              You don't have permission to access the admin dashboard.
+              You don't have permission to access the admin dashboard. Only administrators can view this page.
             </CardDescription>
           </CardHeader>
         </Card>

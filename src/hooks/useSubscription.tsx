@@ -6,7 +6,7 @@ import { useToast } from '@/hooks/use-toast';
 export interface Subscription {
   id: string;
   user_id: string;
-  plan_type: 'free' | 'premium' | 'pro';
+  plan_type: 'free' | 'premium' | 'pro'; // 'pro' kept for backward compatibility
   status: 'active' | 'canceled' | 'past_due' | 'unpaid';
   current_period_start: string;
   current_period_end: string;
@@ -53,8 +53,10 @@ export const useSubscription = () => {
   };
 
   // Get current plan
-  const getCurrentPlan = (): 'free' | 'premium' | 'pro' => {
-    return subscription?.plan_type || 'free';
+  const getCurrentPlan = (): 'free' | 'premium' => {
+    const planType = subscription?.plan_type;
+    // Handle legacy 'pro' plans as 'premium'
+    return planType === 'pro' ? 'premium' : (planType === 'premium' ? 'premium' : 'free');
   };
 
   // Check if user can use a feature
@@ -168,13 +170,11 @@ export const useSubscription = () => {
   };
 
   // Create Stripe checkout session
-  const createCheckoutSession = async (planType: 'premium' | 'pro', isAnnual: boolean = false) => {
+  const createCheckoutSession = async (planType: 'premium', isAnnual: boolean = false) => {
     try {
       const priceMap = {
         'premium-monthly': 'price_premium_monthly',
-        'premium-annual': 'price_premium_annual',
-        'pro-monthly': 'price_pro_monthly',
-        'pro-annual': 'price_pro_annual'
+        'premium-annual': 'price_premium_annual'
       };
 
       const priceKey = `${planType}-${isAnnual ? 'annual' : 'monthly'}` as keyof typeof priceMap;
@@ -227,13 +227,7 @@ export const useSubscription = () => {
   // Check if user has access to premium features
   const hasPremiumAccess = (): boolean => {
     const plan = getCurrentPlan();
-    return plan === 'premium' || plan === 'pro';
-  };
-
-  // Check if user has access to pro features
-  const hasProAccess = (): boolean => {
-    const plan = getCurrentPlan();
-    return plan === 'pro';
+    return plan === 'premium';
   };
 
   useEffect(() => {
@@ -256,7 +250,6 @@ export const useSubscription = () => {
     createCheckoutSession,
     cancelSubscription,
     hasPremiumAccess,
-    hasProAccess,
     fetchSubscription,
     fetchUsageLimits
   };

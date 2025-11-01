@@ -3,16 +3,20 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Send, Heart, Zap, Moon, Brain, Target } from "lucide-react";
+import { ArrowLeft, Send, Heart, Zap, Moon, Brain, Target, Infinity, Lock } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useSubscription } from "@/hooks/useSubscription";
+import { UpgradePrompt } from "@/components/subscription/UpgradePrompt";
 
 const Chat = () => {
   const navigate = useNavigate();
+  const { hasPremiumAccess, canUseFeature, incrementUsage } = useSubscription();
   const [message, setMessage] = useState("");
+  const [dailyUsage, setDailyUsage] = useState(0);
   const [messages, setMessages] = useState([
     {
       type: "fitmate",
-      content: "Hi there! 👋 I'm FitMate Pro, your personal wellness coach. I'm here to help you with workouts, nutrition, mental wellness, and building healthy habits. How are you feeling today?",
+      content: "Hi there! 👋 I'm FitMatePro, your personal wellness coach. I'm here to help you with workouts, nutrition, mental wellness, and building healthy habits. How are you feeling today?",
       time: "Just now"
     }
   ]);
@@ -25,8 +29,30 @@ const Chat = () => {
     { icon: Target, label: "Goal Setting", color: "text-motivation" },
   ];
 
-  const sendMessage = () => {
+  useEffect(() => {
+    // Check usage for free users
+    if (!hasPremiumAccess()) {
+      canUseFeature('ai_interactions_per_day', 'daily').then(canUse => {
+        if (!canUse) {
+          // Show upgrade prompt
+        }
+      });
+    }
+  }, [hasPremiumAccess, canUseFeature]);
+
+  const sendMessage = async () => {
     if (!message.trim()) return;
+
+    // Check usage limits for free users
+    if (!hasPremiumAccess()) {
+      const canUse = await canUseFeature('ai_interactions_per_day', 'daily');
+      if (!canUse) {
+        // Limit reached - would show upgrade prompt
+        return;
+      }
+      await incrementUsage('ai_interactions_per_day', 'daily');
+      setDailyUsage(prev => prev + 1);
+    }
     
     setMessages(prev => [...prev, {
       type: "user",
@@ -69,12 +95,27 @@ const Chat = () => {
               Back to Dashboard
             </Button>
             <div className="flex-1">
-              <h1 className="text-xl font-bold">Chat with FitMate Pro</h1>
-              <p className="text-sm text-muted-foreground">Your personal wellness coach is here to help</p>
+              <h1 className="text-xl font-bold">Chat with FitMatePro</h1>
+              <p className="text-sm text-muted-foreground">
+                {hasPremiumAccess() ? (
+                  <span className="flex items-center gap-1">
+                    <Infinity className="w-3 h-3" />
+                    Unlimited AI coaching
+                  </span>
+                ) : (
+                  `Your personal wellness coach is here to help (${3 - dailyUsage}/3 today)`
+                )}
+              </p>
             </div>
             <Badge variant="outline" className="bg-success/10 text-success">
               Online
             </Badge>
+            {hasPremiumAccess() && (
+              <Badge variant="default" className="gap-1">
+                <Infinity className="w-3 h-3" />
+                Premium
+              </Badge>
+            )}
           </div>
         </div>
       </div>
@@ -117,7 +158,7 @@ const Chat = () => {
                     <div className="w-6 h-6 bg-success rounded-full flex items-center justify-center">
                       <Heart className="w-3 h-3 text-white" />
                     </div>
-                    <span className="text-xs font-medium text-success">FitMate Pro</span>
+                    <span className="text-xs font-medium text-success">FitMatePro</span>
                   </div>
                 )}
                 <p className="text-sm">{msg.content}</p>
@@ -134,7 +175,7 @@ const Chat = () => {
         {/* Message Input */}
         <div className="flex gap-3">
           <Input
-            placeholder="Type your message to FitMate Pro..."
+            placeholder="Type your message to FitMatePro..."
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
@@ -148,7 +189,7 @@ const Chat = () => {
         {/* Tips */}
         <div className="mt-4 p-3 bg-calm-gradient rounded-lg">
           <p className="text-xs text-muted-foreground">
-            💡 <strong>Tip:</strong> Ask FitMate Pro about workouts, nutrition advice, goal setting, or just how you're feeling today. 
+            💡 <strong>Tip:</strong> Ask FitMatePro about workouts, nutrition advice, goal setting, or just how you're feeling today. 
             I'm here to support your wellness journey!
           </p>
         </div>

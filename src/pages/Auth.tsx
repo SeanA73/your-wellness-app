@@ -7,14 +7,25 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Heart, Dumbbell, User, Mail, Lock, Calendar, Ruler, Weight, ArrowLeft, X } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Heart, Dumbbell, User, Mail, Lock, Calendar, Ruler, Weight, ArrowLeft, X, Zap, Target, Check, CreditCard, Shield } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { useSubscription } from "@/hooks/useSubscription";
+import { useToast } from "@/hooks/use-toast";
 
 const Auth = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { signUp, signIn, loading } = useAuth();
+  const { createCheckoutSession } = useSubscription();
+  const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("signin");
+  
+  // Plan selection state
+  const [selectedPlan, setSelectedPlan] = useState<'free' | 'premium'>('free');
+  const [billingCycle, setBillingCycle] = useState<'monthly' | 'annual'>('monthly');
   
   const [signInData, setSignInData] = useState({
     email: "",
@@ -37,12 +48,20 @@ const Auth = () => {
     e.preventDefault();
     const { data, error } = await signIn(signInData.email, signInData.password);
     if (data && !error) {
-      navigate("/");
+      // Check if onboarding is complete
+      const onboardingComplete = localStorage.getItem('onboarding_complete');
+      if (!onboardingComplete) {
+        navigate("/onboarding");
+      } else {
+        navigate("/");
+      }
     }
   };
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Create account first
     const { data, error } = await signUp(signUpData.email, signUpData.password, {
       full_name: signUpData.full_name,
       date_of_birth: signUpData.date_of_birth || null,
@@ -54,7 +73,23 @@ const Auth = () => {
     });
     
     if (data && !error) {
-      navigate("/");
+      if (selectedPlan === 'premium') {
+        // Start Stripe checkout for Premium
+        try {
+          await createCheckoutSession('premium', billingCycle === 'annual');
+          // User will be redirected to Stripe checkout
+          return;
+        } catch (error) {
+          toast({
+            title: "Error",
+            description: "Account created but failed to start premium checkout. You can upgrade later.",
+            variant: "destructive"
+          });
+        }
+      }
+      
+      // For free plan, go to onboarding
+      navigate("/onboarding");
     }
   };
 
@@ -62,8 +97,12 @@ const Auth = () => {
   useEffect(() => {
     const trial = searchParams.get('trial');
     const plan = searchParams.get('plan');
-    if (trial === 'true' || plan) {
+    if (trial === 'true' || plan === 'premium') {
       setActiveTab("signup");
+      setSelectedPlan('premium');
+    } else if (plan === 'free') {
+      setActiveTab("signup");
+      setSelectedPlan('free');
     }
   }, [searchParams]);
 
@@ -96,7 +135,7 @@ const Auth = () => {
             className="flex items-center gap-2"
           >
             <ArrowLeft className="w-4 h-4" />
-            Back to FitMate Pro
+            Back to FitMatePro
           </Button>
           <Button 
             variant="outline" 
@@ -111,7 +150,7 @@ const Auth = () => {
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-2 mb-4">
             <Heart className="w-6 sm:w-8 h-6 sm:h-8 text-primary" />
-            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold">FitMate Pro</h1>
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold">FitMatePro</h1>
           </div>
           <p className="text-sm sm:text-base text-muted-foreground">Your Personal Health & Wellness Coach</p>
           <p className="text-xs sm:text-sm text-muted-foreground mt-2">Sign in to save your progress and get personalized coaching</p>
@@ -174,22 +213,166 @@ const Auth = () => {
           </TabsContent>
           
           <TabsContent value="signup">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Dumbbell className="w-5 h-5" />
-                  {searchParams.get('trial') === 'true' || searchParams.get('plan') ? 'Start Your 7-Day Free Trial' : 'Join FitMate Pro'}
-                </CardTitle>
-                {(searchParams.get('trial') === 'true' || searchParams.get('plan')) && (
-                  <div className="bg-primary/10 rounded-lg p-3 mt-2">
-                    <p className="text-sm text-primary font-medium">
-                      🎉 7-day free trial • {searchParams.get('plan') === 'pro' ? 'FitMate Pro Elite' : 'FitMate Pro Premium'} • Cancel anytime
-                    </p>
-                  </div>
-                )}
-              </CardHeader>
-              <CardContent>
-                <form onSubmit={handleSignUp} className="space-y-4">
+            <form onSubmit={handleSignUp} className="space-y-6">
+              {/* Plan Selection */}
+              <Card className="border-2">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Target className="w-5 h-5" />
+                    Choose Your Plan
+                  </CardTitle>
+                  <p className="text-sm text-muted-foreground">Select Free or Premium to get started</p>
+                </CardHeader>
+                <CardContent>
+                  <RadioGroup value={selectedPlan} onValueChange={(value) => setSelectedPlan(value as 'free' | 'premium')} className="space-y-4">
+                    {/* Free Plan Option */}
+                    <label 
+                      htmlFor="plan-free"
+                      className={`relative border-2 rounded-lg p-4 cursor-pointer transition-all block ${
+                        selectedPlan === 'free' 
+                          ? 'border-primary bg-primary/5' 
+                          : 'border-muted hover:border-primary/50'
+                      }`}
+                    >
+                      <div className="flex items-start gap-4">
+                        <RadioGroupItem value="free" id="plan-free" className="mt-1" />
+                        <div className="flex-1">
+                          <div className="flex items-center justify-between mb-2">
+                            <Label htmlFor="plan-free" className="text-lg font-semibold cursor-pointer flex items-center gap-2">
+                              <Target className="w-5 h-5 text-primary" />
+                              FitMatePro Free
+                            </Label>
+                          </div>
+                          <p className="text-sm text-muted-foreground mb-3">Perfect for getting started with basic fitness tracking</p>
+                          <div className="space-y-1 text-sm">
+                            <div className="flex items-center gap-2">
+                              <Check className="w-4 h-4 text-success" />
+                              <span>Basic workout tracking (3/week)</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <Check className="w-4 h-4 text-success" />
+                              <span>Simple nutrition logging</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <Check className="w-4 h-4 text-success" />
+                              <span>AI coaching (3 interactions/day)</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </label>
+
+                    {/* Premium Plan Option */}
+                    <label 
+                      htmlFor="plan-premium"
+                      className={`relative border-2 rounded-lg p-4 cursor-pointer transition-all block ${
+                        selectedPlan === 'premium' 
+                          ? 'border-primary bg-primary/10 shadow-md' 
+                          : 'border-muted hover:border-primary/50'
+                      }`}
+                    >
+                      <div className="flex items-start gap-4">
+                        <RadioGroupItem value="premium" id="plan-premium" className="mt-1" />
+                        <div className="flex-1">
+                          <div className="flex items-center justify-between mb-2">
+                            <Label htmlFor="plan-premium" className="text-lg font-semibold cursor-pointer flex items-center gap-2">
+                              <Zap className="w-5 h-5 text-primary" />
+                              FitMatePro Premium
+                            </Label>
+                          </div>
+                          <p className="text-sm text-muted-foreground mb-3">Unlock everything FitMatePro has to offer</p>
+                          
+                          {/* Billing Cycle Toggle for Premium */}
+                          {selectedPlan === 'premium' && (
+                            <div className="mb-3 p-3 bg-muted rounded-md" onClick={(e) => e.stopPropagation()}>
+                              <div className="flex items-center justify-between mb-2">
+                                <span className="text-sm font-medium">Billing Cycle</span>
+                                <div className="flex gap-2">
+                                  <Button
+                                    type="button"
+                                    variant={billingCycle === 'monthly' ? 'default' : 'outline'}
+                                    size="sm"
+                                    onClick={(e) => {
+                                      e.preventDefault();
+                                      e.stopPropagation();
+                                      setBillingCycle('monthly');
+                                    }}
+                                  >
+                                    Monthly
+                                  </Button>
+                                  <Button
+                                    type="button"
+                                    variant={billingCycle === 'annual' ? 'default' : 'outline'}
+                                    size="sm"
+                                    onClick={(e) => {
+                                      e.preventDefault();
+                                      e.stopPropagation();
+                                      setBillingCycle('annual');
+                                    }}
+                                  >
+                                    Annual <span className="ml-1 text-xs">(Save 27%)</span>
+                                  </Button>
+                                </div>
+                              </div>
+                              <div className="text-lg font-bold text-primary">
+                                ${billingCycle === 'monthly' ? '7.99' : '5.83'}/month
+                                {billingCycle === 'annual' && (
+                                  <span className="text-sm text-muted-foreground font-normal ml-2">
+                                    (${69.99}/year)
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                          )}
+                          
+                          <div className="space-y-1 text-sm">
+                            <div className="flex items-center gap-2">
+                              <Check className="w-4 h-4 text-success" />
+                              <span>Unlimited workout tracking</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <Check className="w-4 h-4 text-success" />
+                              <span>Advanced meal planning</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <Check className="w-4 h-4 text-success" />
+                              <span>Unlimited AI coaching</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <Check className="w-4 h-4 text-success" />
+                              <span>All premium features included</span>
+                            </div>
+                            {selectedPlan === 'premium' && (
+                              <div className="mt-2 pt-2 border-t border-border">
+                                <div className="flex items-center gap-2 text-xs text-primary">
+                                  <Shield className="w-3 h-3" />
+                                  <span>🎉 7-day free trial • Cancel anytime</span>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </label>
+                  </RadioGroup>
+                </CardContent>
+              </Card>
+
+              {/* Account Information */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <User className="w-5 h-5" />
+                    Create Your Account
+                  </CardTitle>
+                  <p className="text-sm text-muted-foreground">
+                    {selectedPlan === 'free' 
+                      ? 'Sign up for free and start your fitness journey today'
+                      : 'Create your account to start your 7-day free trial of Premium'
+                    }
+                  </p>
+                </CardHeader>
+                <CardContent className="space-y-4">
                   <div className="grid grid-cols-2 gap-4">
                     <div className="col-span-2">
                       <Label htmlFor="signup-name">Full Name</Label>
@@ -328,27 +511,102 @@ const Auth = () => {
                       </div>
                     </div>
                   </div>
-                  
-                  <Button type="submit" className="w-full" variant="wellness" disabled={loading}>
-                    {loading ? "Creating Account..." : "Create Account"}
-                  </Button>
-                </form>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+
+              {/* Payment Information - Only for Premium */}
+              {selectedPlan === 'premium' && (
+                <Card className="border-primary/20 bg-primary/5">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <CreditCard className="w-5 h-5 text-primary" />
+                      Payment Information
+                    </CardTitle>
+                    <p className="text-sm text-muted-foreground">
+                      You'll be redirected to secure payment after creating your account. No charge during your 7-day free trial.
+                    </p>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      <div className="p-4 bg-muted rounded-lg border border-border">
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-sm font-medium">Selected Plan</span>
+                          <Badge variant="default">Premium</Badge>
+                        </div>
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-sm text-muted-foreground">Billing Cycle</span>
+                          <span className="text-sm font-semibold capitalize">{billingCycle}</span>
+                        </div>
+                        <Separator className="my-2" />
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-medium">Price</span>
+                          <span className="text-lg font-bold text-primary">
+                            ${billingCycle === 'monthly' ? '7.99' : '69.99'}
+                            <span className="text-sm font-normal text-muted-foreground">/{billingCycle === 'monthly' ? 'month' : 'year'}</span>
+                          </span>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-start gap-3 p-3 bg-success/10 border border-success/20 rounded-lg">
+                        <Shield className="w-5 h-5 text-success mt-0.5 flex-shrink-0" />
+                        <div className="text-sm">
+                          <p className="font-medium text-success mb-1">Secure Payment Process</p>
+                          <p className="text-muted-foreground">
+                            After account creation, you'll be redirected to Stripe for secure payment processing. 
+                            Your card won't be charged until after your 7-day free trial ends.
+                          </p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                        <Shield className="w-4 h-4" />
+                        <span>256-bit SSL encryption • PCI-DSS compliant • Cancel anytime</span>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Submit Button */}
+              <div className="space-y-3">
+                <Button type="submit" className="w-full" variant="wellness" size="lg" disabled={loading}>
+                  {loading ? (
+                    "Creating Account..."
+                  ) : selectedPlan === 'premium' ? (
+                    <>
+                      <Zap className="w-4 h-4 mr-2" />
+                      Create Account & Start Free Trial
+                    </>
+                  ) : (
+                    <>
+                      <Target className="w-4 h-4 mr-2" />
+                      Create Free Account
+                    </>
+                  )}
+                </Button>
+                
+                <p className="text-xs text-center text-muted-foreground">
+                  By creating an account, you agree to our Terms of Service and Privacy Policy
+                </p>
+              </div>
+            </form>
           </TabsContent>
         </Tabs>
         
         {/* Footer message */}
         <div className="text-center mt-6 p-4 bg-muted/30 rounded-lg">
           <p className="text-sm text-muted-foreground">
-            Want to try FitMate Pro first? You can{" "}
+            New to FitMatePro?{" "}
             <button 
-              onClick={() => navigate("/")}
+              onClick={() => {
+                setActiveTab("signup");
+                setSelectedPlan('free');
+              }}
               className="text-primary hover:underline font-medium"
             >
-              continue without an account
+              Create a free account
             </button>
-            {" "}and sign up later to save your progress.
+            {" "}to get started with basic features. Upgrade to Premium anytime for unlimited access to all features.
           </p>
         </div>
       </div>

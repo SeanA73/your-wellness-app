@@ -35,7 +35,7 @@ const UPGRADE_SCENARIOS = {
   },
   'ai_limit_reached': {
     icon: <Star className="h-6 w-6" />,
-    title: "FitMate wants to help more! 🤖",
+    title: "FitMatePro wants to help more! 🤖",
     message: "You've used your daily AI coaching sessions. Upgrade for unlimited guidance!",
     benefits: ["24/7 AI coaching", "Personalized tips", "Instant feedback"],
     cta: "Get Unlimited Coaching",
@@ -73,7 +73,7 @@ export const UpgradePrompt = ({ trigger, featureName, onClose, className }: Upgr
   // Don't show to premium users
   if (hasPremiumAccess()) return null;
 
-  const handleUpgrade = async (planType: 'premium' | 'pro' = 'premium') => {
+  const handleUpgrade = async (planType: 'premium' = 'premium') => {
     setIsUpgrading(true);
     try {
       await createCheckoutSession(planType, false);
@@ -183,9 +183,9 @@ export const UpgradePrompt = ({ trigger, featureName, onClose, className }: Upgr
             {/* Pricing highlight */}
             <div className="bg-primary/5 rounded-lg p-4 border border-primary/20">
               <div className="text-center">
-                <div className="text-2xl font-bold text-primary">$9.99/month</div>
+                <div className="text-2xl font-bold text-primary">$7.99/month</div>
                 <div className="text-sm text-muted-foreground">
-                  or $89.99/year (save 25%)
+                  or $69.99/year (save 27%)
                 </div>
                 <Badge variant="secondary" className="mt-2">
                   7-day free trial

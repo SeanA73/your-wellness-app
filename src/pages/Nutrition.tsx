@@ -1,4 +1,5 @@
 import { useState, useRef } from "react";
+import { ProductRecommendations } from "@/components/shop/ProductRecommendations";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -577,6 +578,17 @@ const Nutrition = () => {
           ) : null}
         </DialogContent>
       </Dialog>
+
+      {/* Product Recommendations */}
+      <div className="mt-8">
+        <ProductRecommendations
+          category="Supplements"
+          tags={["nutrition", "protein", "supplements"]}
+          title="Recommended Supplements & Nutrition Products"
+          limit={4}
+          context="nutrition"
+        />
+      </div>
     </div>
   );
 };

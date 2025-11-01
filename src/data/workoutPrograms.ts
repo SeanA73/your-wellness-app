@@ -209,7 +209,7 @@ export const preBuiltPrograms: WorkoutProgram[] = [
     description: 'Perfect introduction to strength training with fundamental movements',
     goals: ['Build base strength', 'Learn proper form', 'Establish routine'],
     equipment_needed: ['Barbell', 'Dumbbells', 'Bench'],
-    created_by: 'FitMate Pro',
+    created_by: 'FitMatePro',
     rating: 4.8,
     participants: 2847,
     is_template: true,

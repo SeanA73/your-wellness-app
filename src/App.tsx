@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/hooks/useAuth";
+import { ThemeProvider } from "@/contexts/ThemeContext";
 import ScrollToTop from "@/components/ScrollToTop";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
@@ -14,6 +15,7 @@ import WorkoutSession from "./pages/WorkoutSession";
 import ProgramDetails from "./pages/ProgramDetails";
 import Nutrition from "./pages/Nutrition";
 import Chat from "./pages/Chat";
+import Shop from "./pages/Shop";
 import NotFound from "./pages/NotFound";
 import Profile from "./pages/Profile";
 import WorkoutPlanning from "./pages/features/WorkoutPlanning";
@@ -26,6 +28,8 @@ import GoalSetting from "./pages/features/GoalSetting";
 import WearableIntegration from "./pages/features/WearableIntegration";
 import PersonalCoaching from "./pages/features/PersonalCoaching";
 import AdminDashboard from "./pages/AdminDashboard";
+import Onboarding from "./pages/Onboarding";
+import PremiumFeatures from "./pages/PremiumFeatures";
 
 const queryClient = new QueryClient();
 
@@ -34,12 +38,14 @@ const AppRoutes = () => {
     <Routes>
       <Route path="/" element={<Index />} />
       <Route path="/auth" element={<Auth />} />
+      <Route path="/onboarding" element={<Onboarding />} />
       <Route path="/workouts" element={<Workouts />} />
       <Route path="/workout/:id" element={<WorkoutSession />} />
       <Route path="/workout/program/:programId/day/:dayId" element={<WorkoutSession />} />
       <Route path="/program/:id" element={<ProgramDetails />} />
       <Route path="/nutrition" element={<Nutrition />} />
       <Route path="/chat" element={<Chat />} />
+      <Route path="/shop" element={<Shop />} />
       <Route path="/profile" element={<Profile />} />
       <Route path="/features/workout-planning" element={<WorkoutPlanning />} />
       <Route path="/features/nutrition-tracking" element={<NutritionTracking />} />
@@ -50,6 +56,7 @@ const AppRoutes = () => {
       <Route path="/features/goal-setting" element={<GoalSetting />} />
       <Route path="/features/wearable-integration" element={<WearableIntegration />} />
       <Route path="/features/personal-coaching" element={<PersonalCoaching />} />
+      <Route path="/premium" element={<PremiumFeatures />} />
       <Route path="/admin" element={<AdminDashboard />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
@@ -58,16 +65,18 @@ const AppRoutes = () => {
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <AuthProvider>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <ScrollToTop />
-          <AppRoutes />
-        </BrowserRouter>
-      </TooltipProvider>
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <ScrollToTop />
+            <AppRoutes />
+          </BrowserRouter>
+        </TooltipProvider>
+      </AuthProvider>
+    </ThemeProvider>
   </QueryClientProvider>
 );
 

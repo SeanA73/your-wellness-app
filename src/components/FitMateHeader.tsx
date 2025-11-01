@@ -1,13 +1,17 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Bell, Settings, Heart, User, LogOut, LogIn } from "lucide-react";
+import { Bell, Settings, Heart, User, LogOut, LogIn, ShoppingBag, Dumbbell, Apple, MessageSquare, Moon, Sun, Crown, Shield } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { useAdmin } from "@/hooks/useAdmin";
 import { useNavigate } from "react-router-dom";
+import { useTheme } from "@/contexts/ThemeContext";
 
 const FitMateHeader = () => {
   const { user, profile, signOut } = useAuth();
+  const { isAdmin } = useAdmin();
   const navigate = useNavigate();
+  const { theme, setTheme, actualTheme } = useTheme();
 
   const handleSignOut = async () => {
     await signOut();
@@ -21,7 +25,7 @@ const FitMateHeader = () => {
             <Heart className="w-6 h-6 text-white" />
           </div>
           <div>
-            <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-foreground">FitMate Pro</h1>
+            <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-foreground">FitMatePro</h1>
             <p className="text-xs sm:text-sm text-muted-foreground hidden sm:block">Your Personal Wellness Coach</p>
           </div>
         </div>
@@ -29,6 +33,40 @@ const FitMateHeader = () => {
         <div className="flex items-center gap-3">
           {user ? (
             <>
+              {/* Navigation Links */}
+              <div className="hidden md:flex items-center gap-2">
+                <Button variant="ghost" size="sm" onClick={() => navigate("/workouts")}>
+                  <Dumbbell className="w-4 h-4 mr-2" />
+                  Workouts
+                </Button>
+                <Button variant="ghost" size="sm" onClick={() => navigate("/nutrition")}>
+                  <Apple className="w-4 h-4 mr-2" />
+                  Nutrition
+                </Button>
+                <Button variant="ghost" size="sm" onClick={() => navigate("/chat")}>
+                  <MessageSquare className="w-4 h-4 mr-2" />
+                  AI Coach
+                </Button>
+                <Button variant="default" size="sm" onClick={() => navigate("/shop")} className="bg-gradient-to-r from-primary to-accent">
+                  <ShoppingBag className="w-4 h-4 mr-2" />
+                  Shop
+                </Button>
+              </div>
+
+              {/* Theme Toggle */}
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setTheme(actualTheme === 'dark' ? 'light' : 'dark')}
+                title="Toggle theme"
+              >
+                {actualTheme === 'dark' ? (
+                  <Sun className="w-5 h-5" />
+                ) : (
+                  <Moon className="w-5 h-5" />
+                )}
+              </Button>
+
               {/* Notifications */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -63,10 +101,20 @@ const FitMateHeader = () => {
                     <User className="w-4 h-4 mr-2" />
                     Profile
                   </DropdownMenuItem>
-                  <DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate("/profile")}>
                     <Settings className="w-4 h-4 mr-2" />
                     Settings
                   </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate("/premium")}>
+                    <Crown className="w-4 h-4 mr-2" />
+                    Premium Features
+                  </DropdownMenuItem>
+                  {isAdmin && (
+                    <DropdownMenuItem onClick={() => navigate("/admin")}>
+                      <Shield className="w-4 h-4 mr-2" />
+                      Admin Dashboard
+                    </DropdownMenuItem>
+                  )}
                   <DropdownMenuItem onClick={handleSignOut}>
                     <LogOut className="w-4 h-4 mr-2" />
                     Sign Out

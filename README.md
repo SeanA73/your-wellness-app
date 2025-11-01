@@ -1,4 +1,4 @@
-# Welcome to your Lovable project
+# FitMatePro - Your Personal Health & Wellness Coach
 
 ## Project info
 

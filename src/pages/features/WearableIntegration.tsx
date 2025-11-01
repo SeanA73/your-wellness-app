@@ -241,7 +241,7 @@ const WearableIntegration = () => {
                   <div>
                     <h3 className="font-semibold text-lg mb-2">1. Connect</h3>
                     <p className="text-muted-foreground">
-                      Link your fitness trackers and smartwatches to FitMate Pro with secure authentication.
+                      Link your fitness trackers and smartwatches to FitMatePro with secure authentication.
                     </p>
                   </div>
                   <div>

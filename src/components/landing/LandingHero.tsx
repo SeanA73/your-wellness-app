@@ -33,7 +33,7 @@ const LandingHero = () => {
         </h1>
 
         <p className="text-base sm:text-lg md:text-xl lg:text-2xl mb-8 text-white/90 max-w-3xl mx-auto">
-          Meet FitMate Pro - Your AI-powered companion for workouts, nutrition, and mental wellness. 
+          Meet FitMatePro - Your AI-powered companion for workouts, nutrition, and mental wellness. 
           Get personalized guidance, track your progress, and build lasting healthy habits.
         </p>
 
@@ -41,8 +41,8 @@ const LandingHero = () => {
           <Button 
             size="lg" 
             variant="secondary"
-            className="text-lg px-8 py-6 h-auto"
-            onClick={() => navigate("/auth")}
+            className="text-lg px-8 py-6 h-auto bg-white text-primary hover:bg-white/90"
+            onClick={() => navigate("/auth?trial=true")}
           >
             <Sparkles className="w-5 h-5 mr-2" />
             Start Your Journey Free
@@ -52,8 +52,11 @@ const LandingHero = () => {
             variant="outline"
             className="text-lg px-8 py-6 h-auto border-white/30 text-white hover:bg-white/10 hover:text-white bg-transparent"
             onClick={() => {
-              const featuresSection = document.getElementById('features');
-              featuresSection?.scrollIntoView({ behavior: 'smooth' });
+              // Scroll to features section
+              setTimeout(() => {
+                const featuresSection = document.getElementById('features');
+                featuresSection?.scrollIntoView({ behavior: 'smooth' });
+              }, 100);
             }}
           >
             <Target className="w-5 h-5 mr-2" />
