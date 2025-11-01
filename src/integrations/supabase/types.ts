@@ -58,6 +58,137 @@ export type Database = {
           },
         ]
       }
+      affiliate_clicks: {
+        Row: {
+          clicked_at: string | null
+          conversion_amount_cents: number | null
+          converted: boolean | null
+          created_at: string | null
+          id: string
+          product_id: string | null
+          referrer_page: string | null
+          session_id: string | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          clicked_at?: string | null
+          conversion_amount_cents?: number | null
+          converted?: boolean | null
+          created_at?: string | null
+          id?: string
+          product_id?: string | null
+          referrer_page?: string | null
+          session_id?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          clicked_at?: string | null
+          conversion_amount_cents?: number | null
+          converted?: boolean | null
+          created_at?: string | null
+          id?: string
+          product_id?: string | null
+          referrer_page?: string | null
+          session_id?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "affiliate_clicks_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "affiliate_products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      affiliate_products: {
+        Row: {
+          additional_images: Json | null
+          affiliate_network: string
+          affiliate_url: string
+          brand: string | null
+          category: string
+          commission_rate: number | null
+          created_at: string | null
+          currency: string
+          description: string | null
+          features: Json | null
+          id: string
+          image_url: string | null
+          is_active: boolean | null
+          is_featured: boolean | null
+          name: string
+          original_price_cents: number | null
+          price_cents: number
+          rating: number | null
+          review_count: number | null
+          short_description: string | null
+          specifications: Json | null
+          stock_status: string | null
+          subcategory: string | null
+          tags: string[] | null
+          updated_at: string | null
+        }
+        Insert: {
+          additional_images?: Json | null
+          affiliate_network?: string
+          affiliate_url: string
+          brand?: string | null
+          category: string
+          commission_rate?: number | null
+          created_at?: string | null
+          currency?: string
+          description?: string | null
+          features?: Json | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          is_featured?: boolean | null
+          name: string
+          original_price_cents?: number | null
+          price_cents: number
+          rating?: number | null
+          review_count?: number | null
+          short_description?: string | null
+          specifications?: Json | null
+          stock_status?: string | null
+          subcategory?: string | null
+          tags?: string[] | null
+          updated_at?: string | null
+        }
+        Update: {
+          additional_images?: Json | null
+          affiliate_network?: string
+          affiliate_url?: string
+          brand?: string | null
+          category?: string
+          commission_rate?: number | null
+          created_at?: string | null
+          currency?: string
+          description?: string | null
+          features?: Json | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          is_featured?: boolean | null
+          name?: string
+          original_price_cents?: number | null
+          price_cents?: number
+          rating?: number | null
+          review_count?: number | null
+          short_description?: string | null
+          specifications?: Json | null
+          stock_status?: string | null
+          subcategory?: string | null
+          tags?: string[] | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       biometric_data: {
         Row: {
           additional_data: Json | null
@@ -261,6 +392,50 @@ export type Database = {
           plan_type?: string
         }
         Relationships: []
+      }
+      product_categories: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          display_order: number | null
+          icon: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          parent_category_id: string | null
+          slug: string
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          display_order?: number | null
+          icon?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          parent_category_id?: string | null
+          slug: string
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          display_order?: number | null
+          icon?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          parent_category_id?: string | null
+          slug?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_categories_parent_category_id_fkey"
+            columns: ["parent_category_id"]
+            isOneToOne: false
+            referencedRelation: "product_categories"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
@@ -755,10 +930,7 @@ export type Database = {
         Args: { feature: string; period: string; user_uuid: string }
         Returns: boolean
       }
-      get_user_plan: {
-        Args: { user_uuid: string }
-        Returns: string
-      }
+      get_user_plan: { Args: { user_uuid: string }; Returns: string }
       has_temporary_access: {
         Args: { feature_name: string; user_uuid: string }
         Returns: boolean

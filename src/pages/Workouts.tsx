@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { preBuiltPrograms, WorkoutProgram } from "@/data/workoutPrograms";
 import WorkoutProgramCard from "@/components/workout/WorkoutProgramCard";
 import CreateWorkoutForm from "@/components/workout/CreateWorkoutForm";
+import { ProductRecommendations } from "@/components/shop/ProductRecommendations";
 
 const Workouts = () => {
   const navigate = useNavigate();
@@ -321,6 +322,17 @@ const Workouts = () => {
                 </div>
               </TabsContent>
             </Tabs>
+
+            {/* Product Recommendations */}
+            <div className="mt-12">
+              <ProductRecommendations
+                category="Fitness Equipment"
+                tags={["workout", "strength", "home gym"]}
+                title="Recommended Workout Gear"
+                limit={4}
+                context="workouts"
+              />
+            </div>
           </>
         )}
       </div>

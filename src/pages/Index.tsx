@@ -9,6 +9,7 @@ import MentalWellness from "@/components/MentalWellness";
 import LandingHero from "@/components/landing/LandingHero";
 import FeaturesSection from "@/components/landing/FeaturesSection";
 import PricingSection from "@/components/subscription/PricingSection";
+import { ProductRecommendations } from "@/components/shop/ProductRecommendations";
 
 const Index = () => {
   const { user, loading } = useAuth();
@@ -62,6 +63,13 @@ const Index = () => {
           
           {/* Progress Section */}
           <ProgressVisualization />
+          
+          {/* Product Recommendations */}
+          <ProductRecommendations
+            title="Gear Up for Success"
+            limit={4}
+            context="dashboard"
+          />
         </div>
       </main>
     </div>

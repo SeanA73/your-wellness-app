@@ -14,6 +14,7 @@ import WorkoutSession from "./pages/WorkoutSession";
 import ProgramDetails from "./pages/ProgramDetails";
 import Nutrition from "./pages/Nutrition";
 import Chat from "./pages/Chat";
+import Shop from "./pages/Shop";
 import NotFound from "./pages/NotFound";
 import Profile from "./pages/Profile";
 import WorkoutPlanning from "./pages/features/WorkoutPlanning";
@@ -40,6 +41,7 @@ const AppRoutes = () => {
       <Route path="/program/:id" element={<ProgramDetails />} />
       <Route path="/nutrition" element={<Nutrition />} />
       <Route path="/chat" element={<Chat />} />
+      <Route path="/shop" element={<Shop />} />
       <Route path="/profile" element={<Profile />} />
       <Route path="/features/workout-planning" element={<WorkoutPlanning />} />
       <Route path="/features/nutrition-tracking" element={<NutritionTracking />} />

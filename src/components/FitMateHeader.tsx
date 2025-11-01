@@ -1,7 +1,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Bell, Settings, Heart, User, LogOut, LogIn } from "lucide-react";
+import { Bell, Settings, Heart, User, LogOut, LogIn, ShoppingBag, Dumbbell, Apple, MessageSquare } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 
@@ -29,6 +29,26 @@ const FitMateHeader = () => {
         <div className="flex items-center gap-3">
           {user ? (
             <>
+              {/* Navigation Links */}
+              <div className="hidden md:flex items-center gap-2">
+                <Button variant="ghost" size="sm" onClick={() => navigate("/workouts")}>
+                  <Dumbbell className="w-4 h-4 mr-2" />
+                  Workouts
+                </Button>
+                <Button variant="ghost" size="sm" onClick={() => navigate("/nutrition")}>
+                  <Apple className="w-4 h-4 mr-2" />
+                  Nutrition
+                </Button>
+                <Button variant="ghost" size="sm" onClick={() => navigate("/chat")}>
+                  <MessageSquare className="w-4 h-4 mr-2" />
+                  AI Coach
+                </Button>
+                <Button variant="default" size="sm" onClick={() => navigate("/shop")} className="bg-gradient-to-r from-primary to-accent">
+                  <ShoppingBag className="w-4 h-4 mr-2" />
+                  Shop
+                </Button>
+              </div>
+
               {/* Notifications */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
