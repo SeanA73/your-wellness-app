@@ -217,7 +217,7 @@ const Profile = () => {
                 <CardTitle className="text-xl">{profile?.full_name || "User"}</CardTitle>
                 <div className="flex items-center justify-center gap-2 mt-2">
                   <Badge variant={planBadgeVariant(getCurrentPlan())}>
-                    {getCurrentPlan() === 'pro' && <Crown className="w-3 h-3 mr-1" />}
+                    {getCurrentPlan() === 'premium' && <Crown className="w-3 h-3 mr-1" />}
                     {getCurrentPlan().toUpperCase()}
                   </Badge>
                 </div>

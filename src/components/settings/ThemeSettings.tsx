@@ -91,7 +91,7 @@ export const ThemeSettings = () => {
               {themeColors.map((color) => (
                 <button
                   key={color.value}
-                  onClick={() => setThemeColor(color.value as ThemeColor)}
+                  onClick={() => setThemeColor(color.value as 'blue' | 'green' | 'purple' | 'orange' | 'red')}
                   className={`relative p-4 rounded-lg border-2 transition-all ${
                     themeColor === color.value
                       ? 'border-primary ring-2 ring-primary/20'
