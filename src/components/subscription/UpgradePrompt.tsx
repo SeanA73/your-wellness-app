@@ -77,10 +77,11 @@ export const UpgradePrompt = ({ trigger, featureName, onClose, className }: Upgr
     setIsUpgrading(true);
     try {
       await createCheckoutSession(planType, false);
-    } catch (error: any) {
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to upgrade. Please try again.';
       toast({
         title: "Upgrade Error",
-        description: "Failed to upgrade. Please try again.",
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {

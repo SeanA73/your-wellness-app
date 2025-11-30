@@ -23,7 +23,6 @@ interface DashboardStats {
   totalUsers: number;
   freeUsers: number;
   premiumUsers: number;
-  proUsers: number;
   totalRevenue: number;
   activeSubscriptions: number;
   totalCheckins: number;
@@ -56,6 +55,7 @@ export default function AdminDashboard() {
     if (isAdmin && !adminLoading) {
       fetchDashboardData();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAdmin, adminLoading]);
 
   const fetchDashboardData = async () => {
@@ -67,10 +67,14 @@ export default function AdminDashboard() {
         .from('profiles')
         .select('subscription_plan')
         .then(result => {
-          const counts = { free: 0, premium: 0, pro: 0 };
+          const counts = { free: 0, premium: 0 };
           result.data?.forEach(profile => {
-            counts[profile.subscription_plan as keyof typeof counts] = 
-              (counts[profile.subscription_plan as keyof typeof counts] || 0) + 1;
+            // Handle legacy 'pro' plans as 'premium'
+            const plan = profile.subscription_plan === 'pro' ? 'premium' : profile.subscription_plan;
+            if (plan === 'free' || plan === 'premium') {
+              counts[plan as keyof typeof counts] = 
+                (counts[plan as keyof typeof counts] || 0) + 1;
+            }
           });
           return { data: counts };
         });
@@ -136,10 +140,9 @@ export default function AdminDashboard() {
         .limit(10);
 
       setStats({
-        totalUsers: (userCounts?.free || 0) + (userCounts?.premium || 0) + (userCounts?.pro || 0),
+        totalUsers: (userCounts?.free || 0) + (userCounts?.premium || 0),
         freeUsers: userCounts?.free || 0,
         premiumUsers: userCounts?.premium || 0,
-        proUsers: userCounts?.pro || 0,
         totalRevenue: revenueData || 0,
         activeSubscriptions: subscriptions?.length || 0,
         totalCheckins: checkins?.length || 0,
@@ -232,7 +235,6 @@ export default function AdminDashboard() {
                   <div className="flex gap-2 mt-2">
                     <Badge variant="secondary">Free: {stats?.freeUsers}</Badge>
                     <Badge variant="default">Premium: {stats?.premiumUsers}</Badge>
-                    <Badge variant="outline">Pro: {stats?.proUsers}</Badge>
                   </div>
                 </CardContent>
               </Card>
@@ -306,10 +308,9 @@ export default function AdminDashboard() {
                         </p>
                       </div>
                       <Badge variant={
-                        user.subscription_plan === 'pro' ? 'default' :
-                        user.subscription_plan === 'premium' ? 'secondary' : 'outline'
+                        user.subscription_plan === 'premium' || user.subscription_plan === 'pro' ? 'default' : 'outline'
                       }>
-                        {user.subscription_plan}
+                        {user.subscription_plan === 'pro' ? 'premium' : user.subscription_plan}
                       </Badge>
                     </div>
                   ))}
@@ -363,10 +364,6 @@ export default function AdminDashboard() {
                       <span>Premium Subscriptions</span>
                       <span>{stats?.premiumUsers} users</span>
                     </div>
-                    <div className="flex justify-between items-center text-sm text-muted-foreground">
-                      <span>Pro Subscriptions</span>
-                      <span>{stats?.proUsers} users</span>
-                    </div>
                   </div>
                 </CardContent>
               </Card>
@@ -390,7 +387,7 @@ export default function AdminDashboard() {
                     </div>
                     <div className="flex justify-between items-center text-sm text-muted-foreground">
                       <span>Paid Users</span>
-                      <span>{(stats?.premiumUsers || 0) + (stats?.proUsers || 0)}</span>
+                      <span>{stats?.premiumUsers || 0}</span>
                     </div>
                   </div>
                 </CardContent>

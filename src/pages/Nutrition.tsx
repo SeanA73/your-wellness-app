@@ -13,10 +13,32 @@ import { ArrowLeft, Search, Camera, Plus, ChefHat, Clock, Users, Upload } from "
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
 
+interface Recipe {
+  title: string;
+  calories: number;
+  prepTime: string;
+  difficulty: string;
+  tags: string[];
+  likes: number;
+  description: string;
+  image: string;
+}
+
+interface AnalyzedFood {
+  foodName: string;
+  calories: number;
+  protein: number;
+  carbs: number;
+  fats: number;
+  fiber: number;
+  ingredients: string[];
+  confidence: number;
+}
+
 const Nutrition = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedRecipe, setSelectedRecipe] = useState(null);
+  const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
   const [addFoodOpen, setAddFoodOpen] = useState(false);
   const [newFood, setNewFood] = useState({ 
     name: "", 
@@ -30,9 +52,9 @@ const Nutrition = () => {
     notes: ""
   });
   const [photoAnalysisOpen, setPhotoAnalysisOpen] = useState(false);
-  const [analyzedFood, setAnalyzedFood] = useState(null);
+  const [analyzedFood, setAnalyzedFood] = useState<AnalyzedFood | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const fileInputRef = useRef(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
   const nutritionData = {
@@ -125,11 +147,11 @@ const Nutrition = () => {
     }
   };
 
-  const handleViewRecipe = (recipe) => {
+  const handleViewRecipe = (recipe: Recipe) => {
     setSelectedRecipe(recipe);
   };
 
-  const handlePhotoUpload = (event) => {
+  const handlePhotoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
       analyzePhoto(file);
@@ -142,7 +164,7 @@ const Nutrition = () => {
     }
   };
 
-  const analyzePhoto = async (file) => {
+  const analyzePhoto = async (file: File) => {
     setIsAnalyzing(true);
     setPhotoAnalysisOpen(true);
     

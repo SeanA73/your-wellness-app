@@ -76,3 +76,4 @@ If you encounter errors:
 - Check that the `has_role` function exists in your database
 
 
+

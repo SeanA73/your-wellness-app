@@ -286,3 +286,4 @@ const MealCard = ({ meal, type }: { meal: Meal; type: string }) => (
   </div>
 );
 
+

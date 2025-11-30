@@ -85,7 +85,7 @@ const Onboarding = () => {
     try {
       await updateProfile({
         fitness_goals: data.fitness_goals,
-        activity_level: data.activity_level as any,
+        activity_level: data.activity_level as string | undefined,
       });
       
       // Mark onboarding as complete
@@ -98,10 +98,11 @@ const Onboarding = () => {
       });
       
       navigate("/");
-    } catch (error: any) {
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to save your preferences. Please try again.';
       toast({
         title: "Error",
-        description: "Failed to save your preferences. Please try again.",
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {

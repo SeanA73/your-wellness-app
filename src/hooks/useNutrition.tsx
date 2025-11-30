@@ -65,10 +65,11 @@ export const useNutrition = () => {
       ) || [];
       setTodaysMeals(todaysData);
       
-    } catch (error: any) {
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to load meals';
       toast({
         title: "Error loading meals",
-        description: error.message,
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {
@@ -85,8 +86,9 @@ export const useNutrition = () => {
 
       if (error) throw error;
       setFoodDatabase(data || []);
-    } catch (error: any) {
-      // Silent fail for food database
+    } catch (error) {
+      // Silent fail for food database - not critical for app functionality
+      console.debug('Food database fetch failed:', error);
     }
   };
 

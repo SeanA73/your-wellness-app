@@ -98,10 +98,11 @@ export const PricingSection = ({ showTitle = true, className }: PricingSectionPr
     setLoadingPlan(planId);
     try {
       await createCheckoutSession(planId, isAnnual);
-    } catch (error: any) {
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to start subscription. Please try again.';
       toast({
         title: "Error",
-        description: "Failed to start subscription. Please try again.",
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {

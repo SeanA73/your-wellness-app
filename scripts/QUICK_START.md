@@ -58,3 +58,4 @@ After running the script, you can sign in with:
 - Verify the user has `admin` role in `user_roles` table
 
 
+

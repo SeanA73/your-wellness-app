@@ -20,15 +20,31 @@ interface Profile {
   updated_at: string;
 }
 
+interface SignUpAdditionalData {
+  full_name?: string;
+  date_of_birth?: string;
+  gender?: string;
+  height_cm?: number;
+  weight_kg?: number;
+  activity_level?: string;
+  fitness_goals?: string[];
+  health_conditions?: string[];
+}
+
+interface AuthResponse {
+  data: { user: User | null; session: Session | null } | null;
+  error: Error | null;
+}
+
 interface AuthContextType {
   user: User | null;
   profile: Profile | null;
   session: Session | null;
   loading: boolean;
-  signUp: (email: string, password: string, additionalData?: any) => Promise<any>;
-  signIn: (email: string, password: string) => Promise<any>;
+  signUp: (email: string, password: string, additionalData?: SignUpAdditionalData) => Promise<AuthResponse>;
+  signIn: (email: string, password: string) => Promise<AuthResponse>;
   signOut: () => Promise<void>;
-  updateProfile: (updates: Partial<Profile>) => Promise<any>;
+  updateProfile: (updates: Partial<Profile>) => Promise<AuthResponse>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -51,7 +67,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         await fetchProfile(
           session.user.id,
           session.user.email ?? undefined,
-          (session.user.user_metadata as any)?.full_name
+          (session.user.user_metadata as Record<string, unknown>)?.full_name as string | undefined
         );
       }
       setLoading(false);
@@ -71,7 +87,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             fetchProfile(
               session.user!.id,
               session.user!.email ?? undefined,
-              (session.user!.user_metadata as any)?.full_name
+              (session.user!.user_metadata as Record<string, unknown>)?.full_name as string | undefined
             );
           }, 0);
         } else {
@@ -83,6 +99,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     );
 
     return () => subscription.unsubscribe();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fetchProfile = async (userId: string, email?: string, fullName?: string) => {
@@ -106,7 +123,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           .insert([{
             id: userId,
             email: email ?? user?.email ?? '',
-            full_name: fullName ?? (user?.user_metadata as any)?.full_name ?? '',
+            full_name: fullName ?? ((user?.user_metadata as Record<string, unknown>)?.full_name as string | undefined) ?? '',
             date_of_birth: null,
             gender: null,
             height_cm: null,
@@ -131,7 +148,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const signUp = async (email: string, password: string, additionalData: any = {}) => {
+  const signUp = async (email: string, password: string, additionalData: SignUpAdditionalData = {}): Promise<AuthResponse> => {
     try {
       setLoading(true);
       const redirectUrl = `${window.location.origin}/`;
@@ -175,19 +192,20 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       });
 
       return { data, error: null };
-    } catch (error: any) {
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
       toast({
         title: "Sign up failed",
-        description: error.message,
+        description: errorMessage,
         variant: "destructive",
       });
-      return { data: null, error };
+      return { data: null, error: error instanceof Error ? error : new Error(errorMessage) };
     } finally {
       setLoading(false);
     }
   };
 
-  const signIn = async (email: string, password: string) => {
+  const signIn = async (email: string, password: string): Promise<AuthResponse> => {
     try {
       setLoading(true);
       const { data, error } = await supabase.auth.signInWithPassword({
@@ -203,13 +221,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       });
 
       return { data, error: null };
-    } catch (error: any) {
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
       toast({
         title: "Sign in failed",
-        description: error.message,
+        description: errorMessage,
         variant: "destructive",
       });
-      return { data: null, error };
+      return { data: null, error: error instanceof Error ? error : new Error(errorMessage) };
     } finally {
       setLoading(false);
     }
@@ -237,10 +256,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       // Force redirect to home page
       window.location.href = '/';
       
-    } catch (error: any) {
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
       toast({
         title: "Error signing out",
-        description: error.message,
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {
@@ -248,7 +268,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const updateProfile = async (updates: Partial<Profile>) => {
+  const updateProfile = async (updates: Partial<Profile>): Promise<AuthResponse> => {
     try {
       if (!user) throw new Error('No user logged in');
 
@@ -269,13 +289,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       });
 
       return { data, error: null };
-    } catch (error: any) {
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
       toast({
         title: "Update failed",
-        description: error.message,
+        description: errorMessage,
         variant: "destructive",
       });
-      return { data: null, error };
+      return { data: null, error: error instanceof Error ? error : new Error(errorMessage) };
     }
   };
 
