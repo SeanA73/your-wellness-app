@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { Heart, Sparkles, MessageCircle, Target } from "lucide-react";
+import { Heart, Sparkles, MessageCircle, Target, ShoppingBag } from "lucide-react";
 import heroImage from "@/assets/fitmate-hero.jpg";
 
 const LandingHero = () => {
@@ -10,8 +10,8 @@ const LandingHero = () => {
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background Image */}
       <div className="absolute inset-0">
-        <img 
-          src={heroImage} 
+        <img
+          src={heroImage}
           alt="People exercising and staying healthy together"
           className="w-full h-full object-cover"
         />
@@ -33,13 +33,13 @@ const LandingHero = () => {
         </h1>
 
         <p className="text-base sm:text-lg md:text-xl lg:text-2xl mb-8 text-white/90 max-w-3xl mx-auto">
-          Meet FitMatePro - Your AI-powered companion for workouts, nutrition, and mental wellness. 
+          Meet FitMatePro - Your AI-powered companion for workouts, nutrition, and mental wellness.
           Get personalized guidance, track your progress, and build lasting healthy habits.
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-          <Button 
-            size="lg" 
+          <Button
+            size="lg"
             variant="secondary"
             className="text-lg px-8 py-6 h-auto bg-white text-primary hover:bg-white/90"
             onClick={() => navigate("/auth?trial=true")}
@@ -47,24 +47,16 @@ const LandingHero = () => {
             <Sparkles className="w-5 h-5 mr-2" />
             Start Your Journey Free
           </Button>
-          <Button 
-            size="lg" 
+          <Button
+            size="lg"
             variant="outline"
             className="text-lg px-8 py-6 h-auto border-white/30 text-white hover:bg-white/10 hover:text-white bg-transparent"
-            onClick={() => {
-              // Scroll to features section
-              setTimeout(() => {
-                const featuresSection = document.getElementById('features');
-                featuresSection?.scrollIntoView({ behavior: 'smooth' });
-              }, 100);
-            }}
+            onClick={() => navigate("/shop")}
           >
-            <Target className="w-5 h-5 mr-2" />
-            Learn More
+            <ShoppingBag className="w-5 h-5 mr-2" />
+            Shop Fitness Gear
           </Button>
         </div>
-
-        {/* Feature Pills */}
         <div className="flex flex-wrap justify-center gap-4 text-sm">
           <div className="bg-white/20 backdrop-blur-sm rounded-full px-4 py-2">
             🏋️ Personalized Workouts
