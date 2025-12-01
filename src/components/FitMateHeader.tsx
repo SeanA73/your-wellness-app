@@ -4,7 +4,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Bell, Settings, Heart, User, LogOut, LogIn, Crown, Shield, BookOpen } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useAdmin } from "@/hooks/useAdmin";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useTheme } from "@/contexts/ThemeContext";
 
 const FitMateHeader = () => {
@@ -31,6 +31,13 @@ const FitMateHeader = () => {
         </div>
 
         <div className="flex items-center gap-3">
+          <Link to="/guide">
+            <Button variant="ghost" size="sm" className="hidden sm:flex gap-2">
+              <BookOpen className="w-4 h-4" />
+              Guide
+            </Button>
+          </Link>
+          
           {user ? (
             <>
               {/* Notifications */}
