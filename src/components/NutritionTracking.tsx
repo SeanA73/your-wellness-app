@@ -12,6 +12,7 @@ import { Camera, Plus, Apple, Utensils, LogIn } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
 import { useAuth } from "@/hooks/useAuth";
+import ProductRecommendation from "@/components/affiliate/ProductRecommendation";
 
 const NutritionTracking = () => {
   const navigate = useNavigate();
@@ -348,6 +349,15 @@ const NutritionTracking = () => {
             </div>
           </div>
         </div>
+      </CardContent>
+
+      <CardContent className="pt-0">
+        <ProductRecommendation
+          context="nutrition"
+          title="Meal Prep Like a Pro"
+          description="Tools that make healthy eating easier"
+          limit={3}
+        />
       </CardContent>
 
       {/* Photo Analysis Dialog */}

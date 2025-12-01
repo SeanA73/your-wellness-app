@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Clock, Users, Flame, Target } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import ProductRecommendation from "@/components/affiliate/ProductRecommendation";
 
 const WorkoutPlanning = () => {
   const navigate = useNavigate();
@@ -96,6 +97,15 @@ const WorkoutPlanning = () => {
             Browse All Workouts
           </Button>
         </div>
+      </CardContent>
+
+      <CardContent className="pt-0">
+        <ProductRecommendation
+          context="workout"
+          title="Gear Up for Better Workouts"
+          description="Tools that helped users like you reach their goals"
+          limit={3}
+        />
       </CardContent>
     </Card>
   );

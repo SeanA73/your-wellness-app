@@ -1,7 +1,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Bell, Settings, Heart, User, LogOut, LogIn, Crown, Shield, BookOpen } from "lucide-react";
+import { Bell, Settings, Heart, User, LogOut, LogIn, Crown, Shield, BookOpen, Award } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useAdmin } from "@/hooks/useAdmin";
 import { useNavigate, Link } from "react-router-dom";
@@ -35,6 +35,13 @@ const FitMateHeader = () => {
             <Button variant="ghost" size="sm" className="flex gap-2">
               <BookOpen className="w-4 h-4" />
               <span className="hidden sm:inline">Guide</span>
+            </Button>
+          </Link>
+          
+          <Link to="/coach-picks">
+            <Button variant="ghost" size="sm" className="hidden sm:flex gap-2">
+              <Award className="w-4 h-4" />
+              Coach's Picks
             </Button>
           </Link>
           

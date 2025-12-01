@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Heart, Mail, Info, BookOpen, ShoppingBag, Dumbbell } from "lucide-react";
+import { Heart, Mail, Info, BookOpen, ShoppingBag, Dumbbell, Award } from "lucide-react";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -27,6 +27,12 @@ const Footer = () => {
                 <Link to="/guide" className="text-sm text-muted-foreground hover:text-primary transition-colors flex items-center gap-2">
                   <BookOpen className="w-4 h-4" />
                   User Guide
+                </Link>
+              </li>
+              <li>
+                <Link to="/coach-picks" className="text-sm text-muted-foreground hover:text-primary transition-colors flex items-center gap-2">
+                  <Award className="w-4 h-4" />
+                  Coach's Picks
                 </Link>
               </li>
               <li>
