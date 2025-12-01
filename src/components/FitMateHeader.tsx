@@ -32,9 +32,9 @@ const FitMateHeader = () => {
 
         <div className="flex items-center gap-3">
           <Link to="/guide">
-            <Button variant="ghost" size="sm" className="hidden sm:flex gap-2">
+            <Button variant="ghost" size="sm" className="flex gap-2">
               <BookOpen className="w-4 h-4" />
-              Guide
+              <span className="hidden sm:inline">Guide</span>
             </Button>
           </Link>
           
