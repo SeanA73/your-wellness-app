@@ -20,20 +20,20 @@ export const useAdmin = () => {
     }
 
     try {
-      // Check if user has admin role by querying profiles
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('subscription_plan')
-        .eq('id', user.id)
-        .single();
+      // Check if user has admin role using secure database function
+      const { data, error } = await supabase.rpc('has_role', {
+        _user_id: user.id,
+        _role: 'admin'
+      });
 
       if (error) {
+        console.error('Error checking admin role:', error);
         setIsAdmin(false);
       } else {
-        // For now, check if email is admin - you can extend this logic
-        setIsAdmin(user.email?.includes('admin') || false);
+        setIsAdmin(data === true);
       }
     } catch (error) {
+      console.error('Error in checkAdminAccess:', error);
       setIsAdmin(false);
     } finally {
       setLoading(false);

@@ -15,7 +15,10 @@ import {
   AlertCircle,
   Calendar,
   Target,
-  Utensils
+  Utensils,
+  ExternalLink,
+  MousePointerClick,
+  ShoppingBag
 } from 'lucide-react';
 import { Navigate } from 'react-router-dom';
 
@@ -32,6 +35,17 @@ interface DashboardStats {
     feature: string;
     count: number;
   }[];
+  affiliateStats: {
+    totalClicks: number;
+    totalConversions: number;
+    conversionRate: number;
+    affiliateRevenue: number;
+    topProducts: {
+      product_name: string;
+      clicks: number;
+      conversions: number;
+    }[];
+  };
 }
 
 interface UserData {
@@ -126,6 +140,44 @@ export default function AdminDashboard() {
           };
         });
 
+      // Fetch affiliate clicks data
+      const { data: affiliateClicks } = await supabase
+        .from('affiliate_clicks')
+        .select('*');
+
+      // Fetch affiliate products for product names
+      const { data: affiliateProducts } = await supabase
+        .from('affiliate_products')
+        .select('id, name');
+
+      // Calculate affiliate stats
+      const totalClicks = affiliateClicks?.length || 0;
+      const totalConversions = affiliateClicks?.filter(c => c.converted).length || 0;
+      const affiliateRevenue = affiliateClicks?.reduce((sum, click) => 
+        sum + (click.conversion_amount_cents || 0), 0) || 0;
+
+      // Calculate top products
+      const productClickMap = new Map();
+      affiliateClicks?.forEach(click => {
+        if (!click.product_id) return;
+        const current = productClickMap.get(click.product_id) || { clicks: 0, conversions: 0 };
+        current.clicks += 1;
+        if (click.converted) current.conversions += 1;
+        productClickMap.set(click.product_id, current);
+      });
+
+      const topProducts = Array.from(productClickMap.entries())
+        .map(([productId, stats]) => {
+          const product = affiliateProducts?.find(p => p.id === productId);
+          return {
+            product_name: product?.name || 'Unknown Product',
+            clicks: stats.clicks,
+            conversions: stats.conversions
+          };
+        })
+        .sort((a, b) => b.clicks - a.clicks)
+        .slice(0, 5);
+
       // Fetch recent users
       const { data: recentUsers } = await supabase
         .from('profiles')
@@ -148,7 +200,14 @@ export default function AdminDashboard() {
         totalCheckins: checkins?.length || 0,
         totalMeals: meals?.length || 0,
         totalGoals: goals?.length || 0,
-        usageStats: usageData || []
+        usageStats: usageData || [],
+        affiliateStats: {
+          totalClicks,
+          totalConversions,
+          conversionRate: totalClicks > 0 ? (totalConversions / totalClicks) * 100 : 0,
+          affiliateRevenue,
+          topProducts
+        }
       });
 
       setUsers(recentUsers || []);
@@ -216,11 +275,12 @@ export default function AdminDashboard() {
         </div>
 
         <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="users">Users</TabsTrigger>
             <TabsTrigger value="usage">Usage</TabsTrigger>
             <TabsTrigger value="revenue">Revenue</TabsTrigger>
+            <TabsTrigger value="affiliates">Affiliates</TabsTrigger>
           </TabsList>
 
           <TabsContent value="overview" className="space-y-6">
@@ -388,6 +448,172 @@ export default function AdminDashboard() {
                     <div className="flex justify-between items-center text-sm text-muted-foreground">
                       <span>Paid Users</span>
                       <span>{stats?.premiumUsers || 0}</span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="affiliates" className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">Total Clicks</CardTitle>
+                  <MousePointerClick className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">{stats?.affiliateStats.totalClicks}</div>
+                  <p className="text-xs text-muted-foreground">
+                    All affiliate product clicks
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">Conversions</CardTitle>
+                  <ShoppingBag className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">{stats?.affiliateStats.totalConversions}</div>
+                  <p className="text-xs text-muted-foreground">
+                    Successful purchases tracked
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">Conversion Rate</CardTitle>
+                  <TrendingUp className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">
+                    {stats?.affiliateStats.conversionRate.toFixed(2)}%
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    Click-to-purchase ratio
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">Affiliate Revenue</CardTitle>
+                  <DollarSign className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">
+                    ${((stats?.affiliateStats.affiliateRevenue || 0) / 100).toFixed(2)}
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    Commission earned
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Top Performing Products</CardTitle>
+                <CardDescription>Products with the most clicks and conversions</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {stats?.affiliateStats.topProducts.map((product, index) => (
+                    <div key={index} className="flex items-center justify-between p-4 border rounded-lg">
+                      <div className="flex items-center gap-3">
+                        <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 text-primary font-bold">
+                          {index + 1}
+                        </div>
+                        <div>
+                          <p className="font-medium">{product.product_name}</p>
+                          <p className="text-sm text-muted-foreground">
+                            {product.conversions} conversions from {product.clicks} clicks
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-4">
+                        <div className="text-right">
+                          <p className="text-sm font-medium">{product.clicks}</p>
+                          <p className="text-xs text-muted-foreground">clicks</p>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-sm font-medium text-green-600">{product.conversions}</p>
+                          <p className="text-xs text-muted-foreground">conversions</p>
+                        </div>
+                        <Badge variant="secondary">
+                          {product.clicks > 0 ? ((product.conversions / product.clicks) * 100).toFixed(1) : 0}% CVR
+                        </Badge>
+                      </div>
+                    </div>
+                  ))}
+                  {(!stats?.affiliateStats.topProducts || stats.affiliateStats.topProducts.length === 0) && (
+                    <div className="text-center py-8 text-muted-foreground">
+                      <ExternalLink className="h-12 w-12 mx-auto mb-2 opacity-50" />
+                      <p>No affiliate clicks yet</p>
+                      <p className="text-sm">Start promoting products to see analytics here</p>
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Click-Through Analytics</CardTitle>
+                  <CardDescription>Performance metrics</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="flex justify-between items-center">
+                      <span>Average CTR</span>
+                      <span className="font-bold">
+                        {stats?.affiliateStats.conversionRate.toFixed(2)}%
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center text-sm text-muted-foreground">
+                      <span>Total Clicks</span>
+                      <span>{stats?.affiliateStats.totalClicks}</span>
+                    </div>
+                    <div className="flex justify-between items-center text-sm text-muted-foreground">
+                      <span>Successful Conversions</span>
+                      <span>{stats?.affiliateStats.totalConversions}</span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Revenue Impact</CardTitle>
+                  <CardDescription>Commission breakdown</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="flex justify-between items-center">
+                      <span>Total Commission</span>
+                      <span className="font-bold">
+                        ${((stats?.affiliateStats.affiliateRevenue || 0) / 100).toFixed(2)}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center text-sm text-muted-foreground">
+                      <span>Avg. per Conversion</span>
+                      <span>
+                        ${stats?.affiliateStats.totalConversions ? 
+                          ((stats.affiliateStats.affiliateRevenue / stats.affiliateStats.totalConversions) / 100).toFixed(2) 
+                          : '0.00'}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center text-sm text-muted-foreground">
+                      <span>Revenue Share</span>
+                      <span>
+                        {stats?.totalRevenue > 0 ? 
+                          ((stats.affiliateStats.affiliateRevenue / stats.totalRevenue) * 100).toFixed(1) 
+                          : '0'}% of total
+                      </span>
                     </div>
                   </div>
                 </CardContent>
