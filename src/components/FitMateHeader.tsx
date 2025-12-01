@@ -1,7 +1,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Bell, Settings, Heart, User, LogOut, LogIn, Crown, Shield } from "lucide-react";
+import { Bell, Settings, Heart, User, LogOut, LogIn, Crown, Shield, BookOpen } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useAdmin } from "@/hooks/useAdmin";
 import { useNavigate } from "react-router-dom";
@@ -70,6 +70,10 @@ const FitMateHeader = () => {
                   <DropdownMenuItem onClick={() => navigate("/profile")}>
                     <Settings className="w-4 h-4 mr-2" />
                     Settings
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate("/guide")}>
+                    <BookOpen className="w-4 h-4 mr-2" />
+                    User Guide
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => navigate("/premium")}>
                     <Crown className="w-4 h-4 mr-2" />

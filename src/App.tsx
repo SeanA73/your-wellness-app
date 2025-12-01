@@ -29,6 +29,7 @@ import PersonalCoaching from "./pages/features/PersonalCoaching";
 import AdminDashboard from "./pages/AdminDashboard";
 import Onboarding from "./pages/Onboarding";
 import PremiumFeatures from "./pages/PremiumFeatures";
+import Guide from "./pages/Guide";
 
 const queryClient = new QueryClient();
 
@@ -56,6 +57,7 @@ const AppRoutes = () => {
       <Route path="/features/wearable-integration" element={<WearableIntegration />} />
       <Route path="/features/personal-coaching" element={<PersonalCoaching />} />
       <Route path="/premium" element={<PremiumFeatures />} />
+      <Route path="/guide" element={<Guide />} />
       <Route path="/admin" element={<AdminDashboard />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
