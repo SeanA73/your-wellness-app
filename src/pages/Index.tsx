@@ -12,6 +12,7 @@ import LandingHero from "@/components/landing/LandingHero";
 import FeaturesSection from "@/components/landing/FeaturesSection";
 import PricingSection from "@/components/subscription/PricingSection";
 import { ProductRecommendations } from "@/components/shop/ProductRecommendations";
+import Footer from "@/components/Footer";
 
 const Index = () => {
   const { user, loading } = useAuth();
@@ -38,23 +39,24 @@ const Index = () => {
   // Show landing page for non-authenticated users
   if (!user) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-background flex flex-col">
         <FitMateHeader />
-        <main>
+        <main className="flex-1">
           <LandingHero />
           <FeaturesSection />
           <PricingSection />
         </main>
+        <Footer />
       </div>
     );
   }
 
   // Show dashboard for authenticated users
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background flex flex-col">
       <FitMateHeader />
       
-      <main className="max-w-7xl mx-auto px-6 py-8">
+      <main className="max-w-7xl mx-auto px-6 py-8 flex-1">
         <div className="space-y-8">
           {/* Welcome Section */}
           <WelcomeSection />
@@ -85,6 +87,8 @@ const Index = () => {
           />
         </div>
       </main>
+      
+      <Footer />
     </div>
   );
 };
