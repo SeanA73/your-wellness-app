@@ -17,7 +17,13 @@ import {
   Users,
   Download,
   Palette,
-  ChefHat
+  ChefHat,
+  Award,
+  Shield,
+  BarChart3,
+  MousePointerClick,
+  DollarSign,
+  Info
 } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
@@ -106,6 +112,20 @@ const Guide = () => {
         "Get personalized product recommendations",
         "Shop from trusted fitness brands"
       ]
+    },
+    {
+      icon: Award,
+      title: "Coach's Picks",
+      badge: "All Users",
+      description: "Curated product recommendations from fitness experts",
+      details: [
+        "Browse hand-selected fitness products and gear",
+        "Filter by category: Equipment, Nutrition, Recovery, Apparel",
+        "View featured products with exclusive deals",
+        "See contextual recommendations based on your workouts",
+        "Get suggestions matched to your fitness goals",
+        "Products earn commission to support app development"
+      ]
     }
   ];
 
@@ -141,6 +161,22 @@ const Guide = () => {
     {
       question: "Can I use the app offline?",
       answer: "The app requires an internet connection for most features. However, your recent data is cached locally for quick access."
+    },
+    {
+      question: "What is Coach's Picks?",
+      answer: "Coach's Picks is a curated selection of fitness products recommended by our team. These include equipment, supplements, apparel, and recovery tools that align with your fitness journey. When you purchase through our links, we earn a small commission that helps support the app's development at no extra cost to you."
+    },
+    {
+      question: "Are the product recommendations personalized?",
+      answer: "Yes! Product recommendations are contextual based on your activities. For example, after logging strength workouts, you'll see equipment recommendations. After tracking meals, you'll see nutrition products. This ensures the suggestions are relevant to your current fitness focus."
+    },
+    {
+      question: "How do I access the admin dashboard?",
+      answer: "The admin dashboard is only accessible to users with administrator privileges. If you're an admin, you'll see an 'Admin' link in the navigation menu. The dashboard provides insights into user engagement, subscription metrics, and affiliate performance."
+    },
+    {
+      question: "How does the role system work?",
+      answer: "FitMatePro uses a secure role-based access system. Regular users have standard access, while administrators can view analytics and manage the platform. Roles are stored securely in the database and verified server-side to prevent unauthorized access."
     }
   ];
 
@@ -194,10 +230,11 @@ const Guide = () => {
         </div>
 
         <Tabs defaultValue="features" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 mb-8">
+          <TabsList className="grid w-full grid-cols-4 mb-8">
             <TabsTrigger value="features">Features</TabsTrigger>
             <TabsTrigger value="getting-started">Getting Started</TabsTrigger>
             <TabsTrigger value="faq">FAQ</TabsTrigger>
+            <TabsTrigger value="advanced">Admin & Advanced</TabsTrigger>
           </TabsList>
 
           {/* Features Tab */}
@@ -441,6 +478,258 @@ const Guide = () => {
                     <p className="text-sm text-muted-foreground">
                       Ask your AI coach any questions - available in the Chat section
                     </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Admin & Advanced Tab */}
+          <TabsContent value="advanced" className="space-y-6">
+            {/* Affiliate Disclosure */}
+            <Card className="border-amber-500/30 bg-amber-500/5">
+              <CardHeader>
+                <div className="flex items-center gap-2">
+                  <Info className="w-5 h-5 text-amber-600" />
+                  <CardTitle>Affiliate Disclosure</CardTitle>
+                </div>
+                <CardDescription>
+                  Transparency about our product recommendations
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-sm text-muted-foreground">
+                  FitMatePro participates in affiliate marketing programs, including Amazon Associates and other fitness retailers. 
+                  When you purchase products through our "Coach's Picks" or product recommendations, we may earn a small commission 
+                  at no additional cost to you.
+                </p>
+                <div className="space-y-3">
+                  <div className="flex items-start gap-3">
+                    <CheckCircle2 className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <p className="font-medium text-sm">No Extra Cost</p>
+                      <p className="text-sm text-muted-foreground">
+                        Prices remain the same whether you use our links or not
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <CheckCircle2 className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <p className="font-medium text-sm">Supports Development</p>
+                      <p className="text-sm text-muted-foreground">
+                        Commissions help us maintain and improve the app
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <CheckCircle2 className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <p className="font-medium text-sm">Honest Recommendations</p>
+                      <p className="text-sm text-muted-foreground">
+                        We only recommend products we believe will benefit your fitness journey
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <CheckCircle2 className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <p className="font-medium text-sm">Contextual & Personalized</p>
+                      <p className="text-sm text-muted-foreground">
+                        Suggestions are based on your workouts, nutrition, and goals
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Admin Dashboard */}
+            <Card>
+              <CardHeader>
+                <div className="flex items-center gap-2">
+                  <Shield className="w-5 h-5 text-primary" />
+                  <CardTitle>Admin Dashboard</CardTitle>
+                </div>
+                <CardDescription>
+                  Platform analytics and management (Admin access required)
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div>
+                  <h3 className="font-semibold mb-3 flex items-center gap-2">
+                    <BarChart3 className="w-4 h-4 text-primary" />
+                    Dashboard Features
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="p-4 border rounded-lg">
+                      <p className="font-medium mb-2">User Analytics</p>
+                      <ul className="space-y-1 text-sm text-muted-foreground">
+                        <li>• Total users and subscription breakdown</li>
+                        <li>• Active subscriptions and conversion rates</li>
+                        <li>• Recent user registrations</li>
+                        <li>• User engagement metrics</li>
+                      </ul>
+                    </div>
+                    <div className="p-4 border rounded-lg">
+                      <p className="font-medium mb-2">Revenue Tracking</p>
+                      <ul className="space-y-1 text-sm text-muted-foreground">
+                        <li>• Total revenue from all sources</li>
+                        <li>• Subscription revenue breakdown</li>
+                        <li>• Premium conversion metrics</li>
+                        <li>• Revenue trends and projections</li>
+                      </ul>
+                    </div>
+                    <div className="p-4 border rounded-lg">
+                      <p className="font-medium mb-2">Feature Usage</p>
+                      <ul className="space-y-1 text-sm text-muted-foreground">
+                        <li>• AI coaching interactions</li>
+                        <li>• Workout and nutrition tracking</li>
+                        <li>• Wellness check-ins</li>
+                        <li>• Goal setting engagement</li>
+                      </ul>
+                    </div>
+                    <div className="p-4 border rounded-lg">
+                      <p className="font-medium mb-2">Affiliate Analytics</p>
+                      <ul className="space-y-1 text-sm text-muted-foreground">
+                        <li>• Total clicks and conversions</li>
+                        <li>• Conversion rate tracking</li>
+                        <li>• Top performing products</li>
+                        <li>• Commission revenue reports</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="p-4 bg-muted rounded-lg">
+                  <div className="flex items-start gap-3">
+                    <MousePointerClick className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                    <div>
+                      <p className="font-medium mb-1">Accessing the Dashboard</p>
+                      <p className="text-sm text-muted-foreground">
+                        Only users with administrator privileges can access the admin dashboard. 
+                        Look for the "Admin" link in the navigation menu if you have admin access.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Role System */}
+            <Card>
+              <CardHeader>
+                <div className="flex items-center gap-2">
+                  <Users className="w-5 h-5 text-primary" />
+                  <CardTitle>Role-Based Access System</CardTitle>
+                </div>
+                <CardDescription>
+                  How user roles and permissions work
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-4">
+                  <div className="p-4 border rounded-lg">
+                    <div className="flex items-start gap-3 mb-2">
+                      <Users className="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" />
+                      <div>
+                        <p className="font-medium">Regular User</p>
+                        <p className="text-sm text-muted-foreground">
+                          Standard access to all fitness features including workouts, nutrition tracking, 
+                          AI coaching, and wellness check-ins. Can upgrade to Premium for advanced features.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <div className="flex items-start gap-3 mb-2">
+                      <Shield className="w-5 h-5 text-purple-500 flex-shrink-0 mt-0.5" />
+                      <div>
+                        <p className="font-medium">Administrator</p>
+                        <p className="text-sm text-muted-foreground">
+                          Full platform access including the admin dashboard with analytics, user management, 
+                          revenue tracking, and affiliate performance metrics. Required for platform moderation.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="p-4 border rounded-lg">
+                    <div className="flex items-start gap-3 mb-2">
+                      <Award className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" />
+                      <div>
+                        <p className="font-medium">Moderator</p>
+                        <p className="text-sm text-muted-foreground">
+                          Limited administrative access for community management and content moderation. 
+                          Can review user-generated content and manage community guidelines.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="p-4 bg-primary/5 border border-primary/20 rounded-lg">
+                  <div className="flex items-start gap-3">
+                    <Shield className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                    <div>
+                      <p className="font-medium mb-2">Security & Privacy</p>
+                      <ul className="space-y-1 text-sm text-muted-foreground">
+                        <li>• Roles are stored securely in a dedicated database table</li>
+                        <li>• All permissions are verified server-side, not client-side</li>
+                        <li>• Users cannot self-assign admin or moderator roles</li>
+                        <li>• Role changes are logged for audit purposes</li>
+                        <li>• Admins can only be assigned by other administrators</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Affiliate Performance */}
+            <Card>
+              <CardHeader>
+                <div className="flex items-center gap-2">
+                  <DollarSign className="w-5 h-5 text-green-600" />
+                  <CardTitle>Understanding Affiliate Metrics</CardTitle>
+                </div>
+                <CardDescription>
+                  How we track and measure product recommendations
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="p-4 border rounded-lg">
+                      <p className="font-medium mb-2">Click Tracking</p>
+                      <p className="text-sm text-muted-foreground">
+                        Every time you click on a product recommendation, we track which product 
+                        was clicked and from which page. This helps us understand which recommendations 
+                        are most helpful to users.
+                      </p>
+                    </div>
+                    <div className="p-4 border rounded-lg">
+                      <p className="font-medium mb-2">Conversion Tracking</p>
+                      <p className="text-sm text-muted-foreground">
+                        When a purchase is made through our affiliate links, it's recorded as a conversion. 
+                        This helps us measure the effectiveness of our recommendations and earn commission.
+                      </p>
+                    </div>
+                    <div className="p-4 border rounded-lg">
+                      <p className="font-medium mb-2">Conversion Rate</p>
+                      <p className="text-sm text-muted-foreground">
+                        The percentage of clicks that result in purchases. A higher conversion rate means 
+                        our recommendations are well-matched to user needs.
+                      </p>
+                    </div>
+                    <div className="p-4 border rounded-lg">
+                      <p className="font-medium mb-2">Top Products</p>
+                      <p className="text-sm text-muted-foreground">
+                        We track which products get the most clicks and conversions to feature the most 
+                        popular and useful items in Coach's Picks.
+                      </p>
+                    </div>
                   </div>
                 </div>
               </CardContent>
