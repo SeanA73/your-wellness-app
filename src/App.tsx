@@ -17,6 +17,7 @@ import Chat from "./pages/Chat";
 import Shop from "./pages/Shop";
 import NotFound from "./pages/NotFound";
 import Profile from "./pages/Profile";
+import CoachPicks from "./pages/CoachPicks";
 import WorkoutPlanning from "./pages/features/WorkoutPlanning";
 import NutritionTracking from "./pages/features/NutritionTracking";
 import MentalWellness from "./pages/features/MentalWellness";
@@ -46,6 +47,7 @@ const AppRoutes = () => {
       <Route path="/nutrition" element={<Nutrition />} />
       <Route path="/chat" element={<Chat />} />
       <Route path="/shop" element={<Shop />} />
+      <Route path="/coach-picks" element={<CoachPicks />} />
       <Route path="/profile" element={<Profile />} />
       <Route path="/features/workout-planning" element={<WorkoutPlanning />} />
       <Route path="/features/nutrition-tracking" element={<NutritionTracking />} />
