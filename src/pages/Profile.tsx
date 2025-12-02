@@ -22,6 +22,7 @@ import {
   Settings
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { useAdmin } from "@/hooks/useAdmin";
 import { useSubscription } from "@/hooks/useSubscription";
 import { toast } from "@/hooks/use-toast";
 import FitMateHeader from "@/components/FitMateHeader";
@@ -30,6 +31,7 @@ import { AIProductRecommendations } from "@/components/AIProductRecommendations"
 const Profile = () => {
   const navigate = useNavigate();
   const { user, profile, updateProfile } = useAuth();
+  const { isAdmin } = useAdmin();
   const { subscription, getCurrentPlan } = useSubscription();
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -151,11 +153,17 @@ const Profile = () => {
   ];
 
   const planBadgeVariant = (plan: string) => {
+    if (isAdmin) return 'destructive';
     switch (plan) {
       case 'pro': return 'default';
       case 'premium': return 'secondary';
       default: return 'outline';
     }
+  };
+  
+  const getPlanDisplay = () => {
+    if (isAdmin) return 'ADMIN';
+    return getCurrentPlan().toUpperCase();
   };
 
   if (!user) {
@@ -218,8 +226,9 @@ const Profile = () => {
                 <CardTitle className="text-xl">{profile?.full_name || "User"}</CardTitle>
                 <div className="flex items-center justify-center gap-2 mt-2">
                   <Badge variant={planBadgeVariant(getCurrentPlan())}>
-                    {getCurrentPlan() === 'premium' && <Crown className="w-3 h-3 mr-1" />}
-                    {getCurrentPlan().toUpperCase()}
+                    {isAdmin && <Settings className="w-3 h-3 mr-1" />}
+                    {!isAdmin && getCurrentPlan() === 'premium' && <Crown className="w-3 h-3 mr-1" />}
+                    {getPlanDisplay()}
                   </Badge>
                 </div>
               </CardHeader>

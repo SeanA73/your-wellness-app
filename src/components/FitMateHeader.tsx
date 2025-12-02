@@ -89,10 +89,12 @@ const FitMateHeader = () => {
                     <BookOpen className="w-4 h-4 mr-2" />
                     User Guide
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => navigate("/premium")}>
-                    <Crown className="w-4 h-4 mr-2" />
-                    Premium Features
-                  </DropdownMenuItem>
+                  {!isAdmin && (
+                    <DropdownMenuItem onClick={() => navigate("/premium")}>
+                      <Crown className="w-4 h-4 mr-2" />
+                      Premium Features
+                    </DropdownMenuItem>
+                  )}
                   {isAdmin && (
                     <DropdownMenuItem onClick={() => navigate("/admin")}>
                       <Shield className="w-4 h-4 mr-2" />
