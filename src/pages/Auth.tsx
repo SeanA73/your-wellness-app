@@ -14,6 +14,7 @@ import { Heart, Dumbbell, User, Mail, Lock, Calendar, Ruler, Weight, ArrowLeft, 
 import { useAuth } from "@/hooks/useAuth";
 import { useSubscription } from "@/hooks/useSubscription";
 import { useToast } from "@/hooks/use-toast";
+import { useCreateAdmin } from "@/hooks/useCreateAdmin";
 
 const Auth = () => {
   const navigate = useNavigate();
@@ -21,6 +22,7 @@ const Auth = () => {
   const { signUp, signIn, loading } = useAuth();
   const { createCheckoutSession } = useSubscription();
   const { toast } = useToast();
+  const { createAdmin, loading: adminLoading } = useCreateAdmin();
   const [activeTab, setActiveTab] = useState("signin");
   
   // Plan selection state
@@ -206,6 +208,27 @@ const Auth = () => {
                   
                   <Button type="submit" className="w-full" variant="wellness" disabled={loading}>
                     {loading ? "Signing In..." : "Sign In"}
+                  </Button>
+                  
+                  <Separator className="my-4" />
+                  
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    className="w-full" 
+                    disabled={adminLoading}
+                    onClick={async () => {
+                      const result = await createAdmin({
+                        email: 'admin@fitmate.com',
+                        password: 'Admin123!',
+                        fullName: 'FitMate Admin'
+                      });
+                      if (result.success) {
+                        setSignInData({ email: 'admin@fitmate.com', password: 'Admin123!' });
+                      }
+                    }}
+                  >
+                    {adminLoading ? "Creating Admin..." : "Create Admin Account"}
                   </Button>
                 </form>
               </CardContent>
