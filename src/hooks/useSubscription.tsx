@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from './useAuth';
+import { useAdmin } from './useAdmin';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
@@ -26,6 +27,7 @@ export interface UsageLimit {
 
 export const useSubscription = () => {
   const { user, profile } = useAuth();
+  const { isAdmin } = useAdmin();
   const { toast } = useToast();
   const [subscription, setSubscription] = useState<Subscription | null>(null);
   const [usageLimits, setUsageLimits] = useState<UsageLimit[]>([]);
@@ -62,6 +64,9 @@ export const useSubscription = () => {
   // Check if user can use a feature
   const canUseFeature = async (featureName: string, period: string): Promise<boolean> => {
     if (!user) return false;
+    
+    // Admins have unlimited access to all features
+    if (isAdmin) return true;
 
     try {
       const { data, error } = await supabase.rpc('check_usage_limit', {
@@ -226,6 +231,9 @@ export const useSubscription = () => {
 
   // Check if user has access to premium features
   const hasPremiumAccess = (): boolean => {
+    // Admins always have premium access
+    if (isAdmin) return true;
+    
     const plan = getCurrentPlan();
     return plan === 'premium';
   };
