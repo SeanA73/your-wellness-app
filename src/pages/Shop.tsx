@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ArrowLeft, Search, Filter, Star, ShoppingCart, ExternalLink, TrendingUp } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
+import { AIProductRecommendations } from "@/components/AIProductRecommendations";
 
 interface Product {
   id: string;
@@ -154,6 +155,13 @@ const Shop = () => {
       </div>
 
       <div className="max-w-7xl mx-auto px-6 py-8">
+        {/* AI Recommendations */}
+        {user && (
+          <div className="mb-8">
+            <AIProductRecommendations />
+          </div>
+        )}
+
         {/* Featured Banner */}
         {featuredProducts.length > 0 && (
           <Card className="mb-8 overflow-hidden bg-gradient-to-r from-primary/10 to-accent/10">

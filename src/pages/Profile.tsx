@@ -25,6 +25,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useSubscription } from "@/hooks/useSubscription";
 import { toast } from "@/hooks/use-toast";
 import FitMateHeader from "@/components/FitMateHeader";
+import { AIProductRecommendations } from "@/components/AIProductRecommendations";
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -408,6 +409,11 @@ const Profile = () => {
               </CardContent>
             </Card>
           </div>
+        </div>
+
+        {/* AI Recommendations */}
+        <div className="mt-8">
+          <AIProductRecommendations />
         </div>
       </div>
     </div>
