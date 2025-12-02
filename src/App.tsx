@@ -29,6 +29,7 @@ import WearableIntegration from "./pages/features/WearableIntegration";
 import PersonalCoaching from "./pages/features/PersonalCoaching";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminSetup from "./pages/AdminSetup";
+import AdminUsers from "./pages/AdminUsers";
 import Onboarding from "./pages/Onboarding";
 import PremiumFeatures from "./pages/PremiumFeatures";
 import Guide from "./pages/Guide";
@@ -62,6 +63,7 @@ const AppRoutes = () => {
       <Route path="/premium" element={<PremiumFeatures />} />
       <Route path="/guide" element={<Guide />} />
         <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/admin/users" element={<AdminUsers />} />
         <Route path="/admin-setup" element={<AdminSetup />} />
         <Route path="*" element={<NotFound />} />
     </Routes>
