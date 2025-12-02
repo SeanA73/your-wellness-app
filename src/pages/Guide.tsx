@@ -23,7 +23,9 @@ import {
   BarChart3,
   MousePointerClick,
   DollarSign,
-  Info
+  Info,
+  PlayCircle,
+  Clock
 } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
@@ -259,9 +261,10 @@ const Guide = () => {
       <main className="max-w-7xl mx-auto px-6 py-8">
 
         <Tabs defaultValue="features" className="w-full">
-          <TabsList className="grid w-full grid-cols-4 mb-8">
+          <TabsList className="grid w-full grid-cols-5 mb-8">
             <TabsTrigger value="features">Features</TabsTrigger>
             <TabsTrigger value="getting-started">Getting Started</TabsTrigger>
+            <TabsTrigger value="tutorials">Video Tutorials</TabsTrigger>
             <TabsTrigger value="faq">FAQ</TabsTrigger>
             <TabsTrigger value="advanced">Admin & Advanced</TabsTrigger>
           </TabsList>
@@ -757,6 +760,385 @@ const Guide = () => {
                       <p className="text-sm text-muted-foreground">
                         We track which products get the most clicks and conversions to feature the most 
                         popular and useful items in Coach's Picks.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Video Tutorials Tab */}
+          <TabsContent value="tutorials" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <PlayCircle className="w-5 h-5 text-primary" />
+                  Video Tutorials
+                </CardTitle>
+                <CardDescription>
+                  Step-by-step video guides to help you master FitMatePro
+                </CardDescription>
+              </CardHeader>
+            </Card>
+
+            {/* Getting Started Videos */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-xl">Getting Started</CardTitle>
+                <CardDescription>
+                  New to FitMatePro? Start here with these essential tutorials
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-3">
+                    <div className="aspect-video bg-muted rounded-lg overflow-hidden border border-border relative group">
+                      <div className="absolute inset-0 flex items-center justify-center bg-primary/10">
+                        <div className="text-center space-y-2">
+                          <PlayCircle className="w-16 h-16 text-primary mx-auto" />
+                          <p className="text-sm font-medium">Account Setup & First Steps</p>
+                        </div>
+                      </div>
+                      {/* Placeholder for video embed */}
+                      <iframe
+                        className="w-full h-full"
+                        src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+                        title="Account Setup & First Steps"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <h3 className="font-semibold">Account Setup & First Steps</h3>
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <Clock className="w-4 h-4" />
+                        <span>5:30</span>
+                      </div>
+                      <p className="text-sm text-muted-foreground">
+                        Learn how to create your account, complete your profile, and navigate the dashboard
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="space-y-3">
+                    <div className="aspect-video bg-muted rounded-lg overflow-hidden border border-border relative group">
+                      <div className="absolute inset-0 flex items-center justify-center bg-primary/10">
+                        <div className="text-center space-y-2">
+                          <PlayCircle className="w-16 h-16 text-primary mx-auto" />
+                          <p className="text-sm font-medium">Setting Your Fitness Goals</p>
+                        </div>
+                      </div>
+                      <iframe
+                        className="w-full h-full"
+                        src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+                        title="Setting Your Fitness Goals"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <h3 className="font-semibold">Setting Your Fitness Goals</h3>
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <Clock className="w-4 h-4" />
+                        <span>4:15</span>
+                      </div>
+                      <p className="text-sm text-muted-foreground">
+                        Define your fitness objectives and let FitMatePro create a personalized plan
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Workout Videos */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-xl flex items-center gap-2">
+                  <Dumbbell className="w-5 h-5 text-primary" />
+                  Workout Tracking
+                </CardTitle>
+                <CardDescription>
+                  Master workout logging and planning
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-3">
+                    <div className="aspect-video bg-muted rounded-lg overflow-hidden border border-border relative group">
+                      <div className="absolute inset-0 flex items-center justify-center bg-primary/10">
+                        <div className="text-center space-y-2">
+                          <PlayCircle className="w-16 h-16 text-primary mx-auto" />
+                          <p className="text-sm font-medium">How to Log a Workout</p>
+                        </div>
+                      </div>
+                      <iframe
+                        className="w-full h-full"
+                        src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+                        title="How to Log a Workout"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <h3 className="font-semibold">How to Log a Workout</h3>
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <Clock className="w-4 h-4" />
+                        <span>6:45</span>
+                      </div>
+                      <p className="text-sm text-muted-foreground">
+                        Step-by-step guide to tracking your workouts, sets, reps, and weight
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="space-y-3">
+                    <div className="aspect-video bg-muted rounded-lg overflow-hidden border border-border relative group">
+                      <div className="absolute inset-0 flex items-center justify-center bg-primary/10">
+                        <div className="text-center space-y-2">
+                          <PlayCircle className="w-16 h-16 text-primary mx-auto" />
+                          <p className="text-sm font-medium">Creating Custom Workouts</p>
+                        </div>
+                      </div>
+                      <iframe
+                        className="w-full h-full"
+                        src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+                        title="Creating Custom Workouts"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <h3 className="font-semibold">Creating Custom Workouts</h3>
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <Clock className="w-4 h-4" />
+                        <span>8:20</span>
+                      </div>
+                      <p className="text-sm text-muted-foreground">
+                        Build personalized workout plans tailored to your goals and preferences
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Nutrition Videos */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-xl flex items-center gap-2">
+                  <Apple className="w-5 h-5 text-primary" />
+                  Nutrition Tracking
+                </CardTitle>
+                <CardDescription>
+                  Learn to track your meals and hit your macro goals
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-3">
+                    <div className="aspect-video bg-muted rounded-lg overflow-hidden border border-border relative group">
+                      <div className="absolute inset-0 flex items-center justify-center bg-primary/10">
+                        <div className="text-center space-y-2">
+                          <PlayCircle className="w-16 h-16 text-primary mx-auto" />
+                          <p className="text-sm font-medium">Logging Your Meals</p>
+                        </div>
+                      </div>
+                      <iframe
+                        className="w-full h-full"
+                        src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+                        title="Logging Your Meals"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <h3 className="font-semibold">Logging Your Meals</h3>
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <Clock className="w-4 h-4" />
+                        <span>5:50</span>
+                      </div>
+                      <p className="text-sm text-muted-foreground">
+                        Quick and easy meal logging with barcode scanning and food database search
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="space-y-3">
+                    <div className="aspect-video bg-muted rounded-lg overflow-hidden border border-border relative group">
+                      <div className="absolute inset-0 flex items-center justify-center bg-primary/10">
+                        <div className="text-center space-y-2">
+                          <PlayCircle className="w-16 h-16 text-primary mx-auto" />
+                          <p className="text-sm font-medium">Understanding Macros</p>
+                        </div>
+                      </div>
+                      <iframe
+                        className="w-full h-full"
+                        src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+                        title="Understanding Macros"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <h3 className="font-semibold">Understanding Macros</h3>
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <Clock className="w-4 h-4" />
+                        <span>7:30</span>
+                      </div>
+                      <p className="text-sm text-muted-foreground">
+                        Learn about protein, carbs, and fats and how to balance them for your goals
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* AI Coaching Videos */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-xl flex items-center gap-2">
+                  <MessageSquare className="w-5 h-5 text-primary" />
+                  AI Coaching
+                </CardTitle>
+                <CardDescription>
+                  Get the most out of your AI fitness coach
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-3">
+                    <div className="aspect-video bg-muted rounded-lg overflow-hidden border border-border relative group">
+                      <div className="absolute inset-0 flex items-center justify-center bg-primary/10">
+                        <div className="text-center space-y-2">
+                          <PlayCircle className="w-16 h-16 text-primary mx-auto" />
+                          <p className="text-sm font-medium">Using AI Coach</p>
+                        </div>
+                      </div>
+                      <iframe
+                        className="w-full h-full"
+                        src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+                        title="Using AI Coach"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <h3 className="font-semibold">Using AI Coach</h3>
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <Clock className="w-4 h-4" />
+                        <span>6:00</span>
+                      </div>
+                      <p className="text-sm text-muted-foreground">
+                        Get personalized advice, workout suggestions, and form tips from your AI coach
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="space-y-3">
+                    <div className="aspect-video bg-muted rounded-lg overflow-hidden border border-border relative group">
+                      <div className="absolute inset-0 flex items-center justify-center bg-primary/10">
+                        <div className="text-center space-y-2">
+                          <PlayCircle className="w-16 h-16 text-primary mx-auto" />
+                          <p className="text-sm font-medium">Analyzing Your Progress</p>
+                        </div>
+                      </div>
+                      <iframe
+                        className="w-full h-full"
+                        src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+                        title="Analyzing Your Progress"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <h3 className="font-semibold">Analyzing Your Progress</h3>
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <Clock className="w-4 h-4" />
+                        <span>5:15</span>
+                      </div>
+                      <p className="text-sm text-muted-foreground">
+                        Review your progress reports and understand your fitness trends
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Premium Features Videos */}
+            <Card className="border-primary/30 bg-primary/5">
+              <CardHeader>
+                <CardTitle className="text-xl flex items-center gap-2">
+                  <Crown className="w-5 h-5 text-primary" />
+                  Premium Features
+                </CardTitle>
+                <CardDescription>
+                  Advanced tutorials for Premium subscribers
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-3">
+                    <div className="aspect-video bg-muted rounded-lg overflow-hidden border border-border relative group">
+                      <div className="absolute inset-0 flex items-center justify-center bg-primary/10">
+                        <div className="text-center space-y-2">
+                          <PlayCircle className="w-16 h-16 text-primary mx-auto" />
+                          <p className="text-sm font-medium">AI Meal Planning</p>
+                        </div>
+                      </div>
+                      <iframe
+                        className="w-full h-full"
+                        src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+                        title="AI Meal Planning"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <h3 className="font-semibold">AI Meal Planning</h3>
+                        <Badge variant="default" className="text-xs">Premium</Badge>
+                      </div>
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <Clock className="w-4 h-4" />
+                        <span>9:00</span>
+                      </div>
+                      <p className="text-sm text-muted-foreground">
+                        Let AI create personalized weekly meal plans with shopping lists
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="space-y-3">
+                    <div className="aspect-video bg-muted rounded-lg overflow-hidden border border-border relative group">
+                      <div className="absolute inset-0 flex items-center justify-center bg-primary/10">
+                        <div className="text-center space-y-2">
+                          <PlayCircle className="w-16 h-16 text-primary mx-auto" />
+                          <p className="text-sm font-medium">Advanced Analytics</p>
+                        </div>
+                      </div>
+                      <iframe
+                        className="w-full h-full"
+                        src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+                        title="Advanced Analytics"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <h3 className="font-semibold">Advanced Analytics</h3>
+                        <Badge variant="default" className="text-xs">Premium</Badge>
+                      </div>
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <Clock className="w-4 h-4" />
+                        <span>7:45</span>
+                      </div>
+                      <p className="text-sm text-muted-foreground">
+                        Deep dive into your progress reports and performance metrics
                       </p>
                     </div>
                   </div>
