@@ -217,17 +217,46 @@ const Guide = () => {
     <div className="min-h-screen bg-background">
       <FitMateHeader />
       
-      <main className="max-w-7xl mx-auto px-6 py-8">
-        {/* Hero Section */}
-        <div className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 mb-4">
-            <Target className="w-8 h-8 text-primary" />
-            <h1 className="text-4xl font-bold">User Guide</h1>
+      {/* Hero Header */}
+      <div className="relative bg-gradient-to-br from-primary/10 via-accent/5 to-background border-b border-border">
+        <div className="max-w-7xl mx-auto px-6 py-16 md:py-24">
+          <div className="text-center space-y-6">
+            <div className="inline-flex items-center gap-3 mb-4">
+              <div className="p-3 rounded-xl bg-primary/20 backdrop-blur-sm">
+                <Target className="w-10 h-10 text-primary" />
+              </div>
+            </div>
+            <div className="space-y-4">
+              <h1 className="text-4xl md:text-6xl font-bold tracking-tight">
+                User Guide
+              </h1>
+              <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto">
+                Everything you need to know to make the most of <span className="text-primary font-semibold">FitMatePro</span>
+              </p>
+            </div>
+            <div className="flex flex-wrap justify-center gap-3 pt-4">
+              <Badge variant="secondary" className="text-sm px-4 py-2">
+                <Dumbbell className="w-4 h-4 mr-2" />
+                Workout Tracking
+              </Badge>
+              <Badge variant="secondary" className="text-sm px-4 py-2">
+                <Apple className="w-4 h-4 mr-2" />
+                Nutrition Plans
+              </Badge>
+              <Badge variant="secondary" className="text-sm px-4 py-2">
+                <MessageSquare className="w-4 h-4 mr-2" />
+                AI Coaching
+              </Badge>
+              <Badge variant="secondary" className="text-sm px-4 py-2">
+                <TrendingUp className="w-4 h-4 mr-2" />
+                Progress Analytics
+              </Badge>
+            </div>
           </div>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Everything you need to know to make the most of FitMatePro
-          </p>
         </div>
+      </div>
+
+      <main className="max-w-7xl mx-auto px-6 py-8">
 
         <Tabs defaultValue="features" className="w-full">
           <TabsList className="grid w-full grid-cols-4 mb-8">
