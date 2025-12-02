@@ -498,24 +498,34 @@ export default function AdminDashboard() {
             <h1 className="text-3xl font-bold text-foreground mb-2">Admin Dashboard</h1>
             <p className="text-muted-foreground">Monitor app performance and user engagement</p>
           </div>
-          <Button
-            onClick={handleCreateTestUsers}
-            disabled={creatingUsers}
-            variant="outline"
-            className="gap-2"
-          >
-            {creatingUsers ? (
-              <>
-                <Loader2 className="w-4 h-4 animate-spin" />
-                Creating...
-              </>
-            ) : (
-              <>
-                <UserPlus className="w-4 h-4" />
-                Create Test Users
-              </>
-            )}
-          </Button>
+          <div className="flex gap-2">
+            <Button
+              onClick={() => window.location.href = '/admin/users'}
+              variant="default"
+              className="gap-2"
+            >
+              <UserCog className="w-4 h-4" />
+              Manage Users
+            </Button>
+            <Button
+              onClick={handleCreateTestUsers}
+              disabled={creatingUsers}
+              variant="outline"
+              className="gap-2"
+            >
+              {creatingUsers ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Creating...
+                </>
+              ) : (
+                <>
+                  <UserPlus className="w-4 h-4" />
+                  Create Test Users
+                </>
+              )}
+            </Button>
+          </div>
         </div>
 
         <Tabs defaultValue="overview" className="space-y-6">
