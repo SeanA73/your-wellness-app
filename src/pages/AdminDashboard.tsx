@@ -22,7 +22,9 @@ import {
   UserCog,
   Shield,
   Clock,
-  Gift
+  Gift,
+  UserPlus,
+  Loader2
 } from 'lucide-react';
 import { Navigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -83,6 +85,7 @@ export default function AdminDashboard() {
   const [selectedUser, setSelectedUser] = useState<string | null>(null);
   const [tempAccessDays, setTempAccessDays] = useState<number>(7);
   const [tempAccessFeature, setTempAccessFeature] = useState<string>('ai_coaching');
+  const [creatingUsers, setCreatingUsers] = useState(false);
 
   useEffect(() => {
     if (isAdmin && !adminLoading) {
@@ -409,6 +412,40 @@ export default function AdminDashboard() {
     }
   };
 
+  const handleCreateTestUsers = async () => {
+    setCreatingUsers(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('create-test-users', {
+        method: 'POST',
+      });
+
+      if (error) throw error;
+
+      const results = data?.results || [];
+      const created = results.filter((r: any) => r.status === 'created').length;
+      const existing = results.filter((r: any) => r.status === 'already_exists').length;
+      const failed = results.filter((r: any) => r.status === 'error').length;
+
+      toast({
+        title: 'Test Users Created',
+        description: `Created: ${created}, Already existed: ${existing}, Failed: ${failed}`,
+      });
+
+      // Refresh dashboard data
+      await fetchDashboardData();
+      await fetchManagementUsers();
+    } catch (error: any) {
+      console.error('Error creating test users:', error);
+      toast({
+        title: 'Error',
+        description: error.message || 'Failed to create test users',
+        variant: 'destructive',
+      });
+    } finally {
+      setCreatingUsers(false);
+    }
+  };
+
   if (!user) {
     return <Navigate to="/auth" replace />;
   }
@@ -456,9 +493,29 @@ export default function AdminDashboard() {
   return (
     <div className="min-h-screen bg-background p-6">
       <div className="max-w-7xl mx-auto">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-foreground mb-2">Admin Dashboard</h1>
-          <p className="text-muted-foreground">Monitor app performance and user engagement</p>
+        <div className="mb-8 flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-foreground mb-2">Admin Dashboard</h1>
+            <p className="text-muted-foreground">Monitor app performance and user engagement</p>
+          </div>
+          <Button
+            onClick={handleCreateTestUsers}
+            disabled={creatingUsers}
+            variant="outline"
+            className="gap-2"
+          >
+            {creatingUsers ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin" />
+                Creating...
+              </>
+            ) : (
+              <>
+                <UserPlus className="w-4 h-4" />
+                Create Test Users
+              </>
+            )}
+          </Button>
         </div>
 
         <Tabs defaultValue="overview" className="space-y-6">
