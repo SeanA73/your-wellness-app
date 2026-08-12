@@ -10,54 +10,10 @@ export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "13.0.5"
+    PostgrestVersion: "14.15"
   }
   public: {
     Tables: {
-      ad_interactions: {
-        Row: {
-          ad_placement: string
-          ad_provider: string | null
-          ad_type: string
-          created_at: string | null
-          id: string
-          interaction_type: string
-          revenue_cents: number | null
-          session_id: string | null
-          user_id: string | null
-        }
-        Insert: {
-          ad_placement: string
-          ad_provider?: string | null
-          ad_type: string
-          created_at?: string | null
-          id?: string
-          interaction_type: string
-          revenue_cents?: number | null
-          session_id?: string | null
-          user_id?: string | null
-        }
-        Update: {
-          ad_placement?: string
-          ad_provider?: string | null
-          ad_type?: string
-          created_at?: string | null
-          id?: string
-          interaction_type?: string
-          revenue_cents?: number | null
-          session_id?: string | null
-          user_id?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "ad_interactions_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       affiliate_clicks: {
         Row: {
           clicked_at: string | null
@@ -188,91 +144,6 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: []
-      }
-      biometric_data: {
-        Row: {
-          additional_data: Json | null
-          created_at: string | null
-          data_type: string
-          id: string
-          recorded_at: string
-          source: string | null
-          unit: string
-          user_id: string | null
-          value: number
-        }
-        Insert: {
-          additional_data?: Json | null
-          created_at?: string | null
-          data_type: string
-          id?: string
-          recorded_at: string
-          source?: string | null
-          unit: string
-          user_id?: string | null
-          value: number
-        }
-        Update: {
-          additional_data?: Json | null
-          created_at?: string | null
-          data_type?: string
-          id?: string
-          recorded_at?: string
-          source?: string | null
-          unit?: string
-          user_id?: string | null
-          value?: number
-        }
-        Relationships: [
-          {
-            foreignKeyName: "biometric_data_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      coaching_interactions: {
-        Row: {
-          ai_message: string
-          context: Json | null
-          created_at: string | null
-          id: string
-          interaction_type: string | null
-          sentiment_score: number | null
-          user_id: string | null
-          user_response: string | null
-        }
-        Insert: {
-          ai_message: string
-          context?: Json | null
-          created_at?: string | null
-          id?: string
-          interaction_type?: string | null
-          sentiment_score?: number | null
-          user_id?: string | null
-          user_response?: string | null
-        }
-        Update: {
-          ai_message?: string
-          context?: Json | null
-          created_at?: string | null
-          id?: string
-          interaction_type?: string | null
-          sentiment_score?: number | null
-          user_id?: string | null
-          user_response?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "coaching_interactions_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
       }
       food_database: {
         Row: {
@@ -437,6 +308,74 @@ export type Database = {
           },
         ]
       }
+      product_recommendations: {
+        Row: {
+          clicked: boolean | null
+          confidence_score: number | null
+          created_at: string | null
+          dismissed: boolean | null
+          display_order: number | null
+          displayed_at: string | null
+          id: string
+          priority: number | null
+          product_id: string | null
+          purchased: boolean | null
+          recommendation_context: string | null
+          recommendation_reason: string
+          updated_at: string | null
+          user_goals_alignment: Json | null
+          user_id: string | null
+          user_preferences_match: Json | null
+          user_workout_patterns: Json | null
+        }
+        Insert: {
+          clicked?: boolean | null
+          confidence_score?: number | null
+          created_at?: string | null
+          dismissed?: boolean | null
+          display_order?: number | null
+          displayed_at?: string | null
+          id?: string
+          priority?: number | null
+          product_id?: string | null
+          purchased?: boolean | null
+          recommendation_context?: string | null
+          recommendation_reason: string
+          updated_at?: string | null
+          user_goals_alignment?: Json | null
+          user_id?: string | null
+          user_preferences_match?: Json | null
+          user_workout_patterns?: Json | null
+        }
+        Update: {
+          clicked?: boolean | null
+          confidence_score?: number | null
+          created_at?: string | null
+          dismissed?: boolean | null
+          display_order?: number | null
+          displayed_at?: string | null
+          id?: string
+          priority?: number | null
+          product_id?: string | null
+          purchased?: boolean | null
+          recommendation_context?: string | null
+          recommendation_reason?: string
+          updated_at?: string | null
+          user_goals_alignment?: Json | null
+          user_id?: string | null
+          user_preferences_match?: Json | null
+          user_workout_patterns?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_recommendations_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "affiliate_products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           activity_level: string | null
@@ -487,6 +426,41 @@ export type Database = {
           weight_kg?: number | null
         }
         Relationships: []
+      }
+      recommendation_feedback: {
+        Row: {
+          created_at: string | null
+          feedback_text: string | null
+          feedback_type: string
+          id: string
+          recommendation_id: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          feedback_text?: string | null
+          feedback_type: string
+          id?: string
+          recommendation_id?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          feedback_text?: string | null
+          feedback_type?: string
+          id?: string
+          recommendation_id?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "recommendation_feedback_recommendation_id_fkey"
+            columns: ["recommendation_id"]
+            isOneToOne: false
+            referencedRelation: "product_recommendations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       revenue_events: {
         Row: {
@@ -582,47 +556,6 @@ export type Database = {
           },
         ]
       }
-      temporary_access: {
-        Row: {
-          created_at: string | null
-          expires_at: string
-          features: Json
-          granted_at: string
-          granted_via: string
-          id: string
-          used_at: string | null
-          user_id: string | null
-        }
-        Insert: {
-          created_at?: string | null
-          expires_at: string
-          features: Json
-          granted_at?: string
-          granted_via: string
-          id?: string
-          used_at?: string | null
-          user_id?: string | null
-        }
-        Update: {
-          created_at?: string | null
-          expires_at?: string
-          features?: Json
-          granted_at?: string
-          granted_via?: string
-          id?: string
-          used_at?: string | null
-          user_id?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "temporary_access_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       usage_tracking: {
         Row: {
           created_at: string | null
@@ -711,6 +644,71 @@ export type Database = {
           },
         ]
       }
+      user_notifications: {
+        Row: {
+          action_data: Json | null
+          action_text: string | null
+          action_url: string | null
+          body: string
+          clicked: boolean | null
+          clicked_at: string | null
+          created_at: string | null
+          id: string
+          is_read: boolean | null
+          notification_type: string
+          priority: string | null
+          read_at: string | null
+          scheduled_for: string
+          sent_at: string | null
+          title: string
+          user_id: string | null
+        }
+        Insert: {
+          action_data?: Json | null
+          action_text?: string | null
+          action_url?: string | null
+          body: string
+          clicked?: boolean | null
+          clicked_at?: string | null
+          created_at?: string | null
+          id?: string
+          is_read?: boolean | null
+          notification_type: string
+          priority?: string | null
+          read_at?: string | null
+          scheduled_for: string
+          sent_at?: string | null
+          title: string
+          user_id?: string | null
+        }
+        Update: {
+          action_data?: Json | null
+          action_text?: string | null
+          action_url?: string | null
+          body?: string
+          clicked?: boolean | null
+          clicked_at?: string | null
+          created_at?: string | null
+          id?: string
+          is_read?: boolean | null
+          notification_type?: string
+          priority?: string | null
+          read_at?: string | null
+          scheduled_for?: string
+          sent_at?: string | null
+          title?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_notifications_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_preferences: {
         Row: {
           coach_communication_style: string | null
@@ -718,6 +716,7 @@ export type Database = {
           id: string
           meal_reminders: boolean | null
           metric_units: boolean | null
+          notification_preferences: Json | null
           notification_settings: Json | null
           preferred_workout_times: string[] | null
           privacy_settings: Json | null
@@ -731,6 +730,7 @@ export type Database = {
           id?: string
           meal_reminders?: boolean | null
           metric_units?: boolean | null
+          notification_preferences?: Json | null
           notification_settings?: Json | null
           preferred_workout_times?: string[] | null
           privacy_settings?: Json | null
@@ -744,6 +744,7 @@ export type Database = {
           id?: string
           meal_reminders?: boolean | null
           metric_units?: boolean | null
+          notification_preferences?: Json | null
           notification_settings?: Json | null
           preferred_workout_times?: string[] | null
           privacy_settings?: Json | null
@@ -760,6 +761,27 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      user_roles: {
+        Row: {
+          created_at: string | null
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
       }
       wellness_checkins: {
         Row: {
@@ -931,8 +953,11 @@ export type Database = {
         Returns: boolean
       }
       get_user_plan: { Args: { user_uuid: string }; Returns: string }
-      has_temporary_access: {
-        Args: { feature_name: string; user_uuid: string }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
         Returns: boolean
       }
       increment_usage: {
@@ -941,7 +966,7 @@ export type Database = {
       }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1068,6 +1093,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "user"],
+    },
   },
 } as const

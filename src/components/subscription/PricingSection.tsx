@@ -45,14 +45,13 @@ const PRICING_PLANS: PricingPlan[] = [
     features: [
       'Basic workout tracking (3/week)',
       'Simple nutrition logging',
-      'AI coaching (3 interactions/day)',
+      'Coach chat preview (3 messages/day)',
       'Community access',
       'Basic progress charts',
       'Manual data entry'
     ],
     limitations: [
       'Limited workouts per week',
-      'Ads between features',
       'Basic reporting only'
     ],
     gradient: 'from-gray-50 to-gray-100'
@@ -64,16 +63,11 @@ const PRICING_PLANS: PricingPlan[] = [
     price: { monthly: 7.99, annual: 69.99 },
     description: 'Unlock everything FitMatePro has to offer',
     features: [
-      'Unlimited workout tracking',
+      'Unlimited workout and nutrition logging',
+      'Custom workout builder',
       'Advanced meal planning',
-      'Unlimited AI coaching',
-      'Wearable device integration',
-      'Custom workout plans',
-      'Priority group classes',
-      'Weekly progress reports',
-      'Export health data',
-      'Dark mode & themes',
-      'Ad-free experience'
+      'Health data export',
+      'Premium themes'
     ],
     popular: true,
     gradient: 'from-primary/10 to-primary/5'
@@ -296,7 +290,7 @@ export const PricingSection = ({ showTitle = true, className }: PricingSectionPr
 
                   {plan.id !== 'free' && currentPlan === 'free' && (
                     <p className="text-xs text-center text-muted-foreground">
-                      7-day free trial • Cancel anytime
+                      7-day free trial
                     </p>
                   )}
                 </div>
@@ -306,7 +300,11 @@ export const PricingSection = ({ showTitle = true, className }: PricingSectionPr
         })}
       </div>
 
-      {/* Trust indicators */}
+      {/* Trust indicators.
+          Removed: "Cancel anytime" (no cancel endpoint is deployed — restore when
+          the billing portal ships), "30-day guarantee" (no refund mechanism), and
+          "secure data encryption and GDPR compliance" (no DPA, no erasure flow).
+          Only claims we can actually honour belong here. */}
       <div className="text-center space-y-4 pt-8">
         <div className="flex justify-center items-center gap-8 text-sm text-muted-foreground">
           <div className="flex items-center gap-2">
@@ -315,16 +313,8 @@ export const PricingSection = ({ showTitle = true, className }: PricingSectionPr
           </div>
           <div className="flex items-center gap-2">
             <Check className="h-4 w-4 text-success" />
-            <span>Cancel anytime</span>
+            <span>7-day free trial</span>
           </div>
-          <div className="flex items-center gap-2">
-            <Check className="h-4 w-4 text-success" />
-            <span>30-day guarantee</span>
-          </div>
-        </div>
-        
-        <div className="text-xs text-muted-foreground">
-          All plans include secure data encryption and GDPR compliance
         </div>
       </div>
     </div>

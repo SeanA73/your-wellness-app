@@ -23,15 +23,19 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useSubscription } from "@/hooks/useSubscription";
-import { toast } from "@/hooks/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import FitMateHeader from "@/components/FitMateHeader";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { SubscriptionSettings } from "@/components/subscription/SubscriptionSettings";
 
 const Profile = () => {
   const navigate = useNavigate();
   const { user, profile, updateProfile } = useAuth();
-  const { subscription, getCurrentPlan } = useSubscription();
+  const { subscription, getCurrentPlan, hasPremiumAccess, cancelSubscription, createCheckoutSession } = useSubscription();
+  const { toast } = useToast();
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState("profile");
 
   const [profileData, setProfileData] = useState({
     full_name: "",
@@ -151,7 +155,6 @@ const Profile = () => {
 
   const planBadgeVariant = (plan: string) => {
     switch (plan) {
-      case 'pro': return 'default';
       case 'premium': return 'secondary';
       default: return 'outline';
     }
@@ -206,9 +209,16 @@ const Profile = () => {
           )}
         </div>
 
-        <div className="grid gap-6 md:grid-cols-3">
-          {/* Profile Overview */}
-          <div className="md:col-span-1">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsList className="grid w-full max-w-md grid-cols-2 mb-6">
+            <TabsTrigger value="profile">Profile</TabsTrigger>
+            <TabsTrigger value="subscription">Subscription</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="profile" className="space-y-6">
+            <div className="grid gap-6 md:grid-cols-3">
+              {/* Profile Overview */}
+              <div className="md:col-span-1">
             <Card>
               <CardHeader className="text-center">
                 <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -217,7 +227,7 @@ const Profile = () => {
                 <CardTitle className="text-xl">{profile?.full_name || "User"}</CardTitle>
                 <div className="flex items-center justify-center gap-2 mt-2">
                   <Badge variant={planBadgeVariant(getCurrentPlan())}>
-                    {getCurrentPlan() === 'pro' && <Crown className="w-3 h-3 mr-1" />}
+                    {getCurrentPlan() === 'premium' && <Crown className="w-3 h-3 mr-1" />}
                     {getCurrentPlan().toUpperCase()}
                   </Badge>
                 </div>
@@ -409,6 +419,12 @@ const Profile = () => {
             </Card>
           </div>
         </div>
+      </TabsContent>
+
+      <TabsContent value="subscription">
+        <SubscriptionSettings />
+      </TabsContent>
+    </Tabs>
       </div>
     </div>
   );

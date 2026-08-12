@@ -1,1 +1,8 @@
-project_id = "pbbrbnjswuoceqayqbqs"
+project_id = "atfdumpulvyhwcptybrt"
+
+# Stripe signs webhook requests with its own signature scheme and cannot present
+# a Supabase JWT. With verify_jwt left at its default of true, Supabase rejects
+# the request with 401 before stripe-webhook/index.ts ever runs
+# stripe.webhooks.constructEvent(), so no purchase becomes an entitlement.
+[functions.stripe-webhook]
+verify_jwt = false

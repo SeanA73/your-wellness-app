@@ -1,3 +1,4 @@
+// UNREFERENCED: consumed only by AdminDashboard, whose /admin route is disabled pending admin RLS policies (see src/App.tsx).
 import { useState, useEffect } from 'react';
 import { useAuth } from './useAuth';
 import { supabase } from '@/integrations/supabase/client';

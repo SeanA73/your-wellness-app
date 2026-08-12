@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
@@ -17,10 +17,12 @@ import {
   ArrowLeft,
   Dumbbell,
   Apple,
-  Brain
+  Brain,
+  X
 } from "lucide-react";
 import FitMateHeader from "@/components/FitMateHeader";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 interface OnboardingData {
   fitness_goals: string[];
@@ -81,14 +83,34 @@ const Onboarding = () => {
   };
 
   const handleComplete = async () => {
+    if (!user) return;
+    
     setLoading(true);
     try {
+      // Update profile with onboarding data
       await updateProfile({
         fitness_goals: data.fitness_goals,
         activity_level: data.activity_level as string | undefined,
       });
       
-      // Mark onboarding as complete
+      // Save onboarding completion to user_preferences
+      const { error: prefError } = await supabase
+        .from('user_preferences')
+        .upsert({
+          user_id: user.id,
+          notification_settings: {
+            onboarding_complete: true,
+            onboarding_completed_at: new Date().toISOString(),
+            preferred_workout_time: data.preferred_workout_time,
+            workout_frequency: data.workout_frequency,
+          },
+        }, {
+          onConflict: 'user_id'
+        });
+
+      if (prefError) throw prefError;
+      
+      // Mark onboarding as complete in localStorage for backward compatibility
       localStorage.setItem('onboarding_complete', 'true');
       sessionStorage.setItem('onboarding_just_completed', 'true');
       
@@ -107,6 +129,37 @@ const Onboarding = () => {
       });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleSkip = async () => {
+    if (!user) {
+      navigate("/");
+      return;
+    }
+    
+    try {
+      // Mark as skipped in preferences
+      const { error } = await supabase
+        .from('user_preferences')
+        .upsert({
+          user_id: user.id,
+          notification_settings: {
+            onboarding_complete: true,
+            onboarding_skipped: true,
+          },
+        }, {
+          onConflict: 'user_id'
+        });
+
+      if (error) throw error;
+      
+      localStorage.setItem('onboarding_complete', 'true');
+      navigate("/");
+    } catch (error) {
+      // Even if save fails, allow skip
+      localStorage.setItem('onboarding_complete', 'true');
+      navigate("/");
     }
   };
 
@@ -327,19 +380,29 @@ const Onboarding = () => {
 
             {/* Navigation Buttons */}
             <div className="flex items-center justify-between pt-6 border-t">
-              <Button
-                variant="outline"
-                onClick={handleBack}
-                disabled={currentStep === 1}
-              >
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Back
-              </Button>
-              
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  onClick={handleBack}
+                  disabled={currentStep === 1}
+                >
+                  <ArrowLeft className="w-4 h-4 mr-2" />
+                  Back
+                </Button>
+                <Button
+                  variant="ghost"
+                  onClick={handleSkip}
+                  className="text-muted-foreground"
+                >
+                  <X className="w-4 h-4 mr-2" />
+                  Skip for now
+                </Button>
+              </div>
               <Button
                 onClick={handleNext}
                 disabled={!canProceed() || loading}
                 className="min-w-[120px]"
+                variant="wellness"
               >
                 {loading ? (
                   "Saving..."

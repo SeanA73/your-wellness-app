@@ -6,7 +6,7 @@ import { useToast } from '@/hooks/use-toast';
 export interface Subscription {
   id: string;
   user_id: string;
-  plan_type: 'free' | 'premium' | 'pro'; // 'pro' kept for backward compatibility
+  plan_type: 'free' | 'premium';
   status: 'active' | 'canceled' | 'past_due' | 'unpaid';
   current_period_start: string;
   current_period_end: string;
@@ -54,9 +54,7 @@ export const useSubscription = () => {
 
   // Get current plan
   const getCurrentPlan = (): 'free' | 'premium' => {
-    const planType = subscription?.plan_type;
-    // Handle legacy 'pro' plans as 'premium'
-    return planType === 'pro' ? 'premium' : (planType === 'premium' ? 'premium' : 'free');
+    return subscription?.plan_type === 'premium' ? 'premium' : 'free';
   };
 
   // Check if user can use a feature
@@ -77,20 +75,33 @@ export const useSubscription = () => {
     }
   };
 
-  // Increment usage for a feature
+  // Increment usage for a feature.
+  //
+  // NEVER swallow failures here. A silent catch is how the missing
+  // UNIQUE (user_id, feature_type, period_start) constraint hid for months:
+  // increment_usage() raised 42P10 on every call, usage never incremented, and
+  // free-tier limits therefore never enforced. An unmetered free tier is a
+  // revenue leak, so this has to be loud.
   const incrementUsage = async (featureName: string, period: string) => {
     if (!user) return;
 
-    try {
-      const { error } = await supabase.rpc('increment_usage', {
-        user_uuid: user.id,
-        feature: featureName,
-        period: period
-      });
+    const { error } = await supabase.rpc('increment_usage', {
+      user_uuid: user.id,
+      feature: featureName,
+      period: period
+    });
 
-      if (error) throw error;
-    } catch (error) {
-      // Silent fail for usage tracking
+    if (error) {
+      console.error(
+        `[metering] increment_usage failed for feature="${featureName}" period="${period}" user=${user.id}.`,
+        `Usage was NOT recorded, so plan limits are not being enforced.`,
+        error
+      );
+      toast({
+        title: "Usage tracking failed",
+        description: `We couldn't record your usage of ${featureName}. Please report this — code ${error.code || 'unknown'}.`,
+        variant: "destructive"
+      });
     }
   };
 
@@ -198,30 +209,43 @@ export const useSubscription = () => {
     }
   };
 
-  // Cancel subscription
+  // Cancel subscription.
+  //
+  // WARNING: the 'cancel-subscription' edge function does not exist — only
+  // create-checkout-session and stripe-webhook are deployed. Every call fails.
+  // The call is kept so this starts working the moment the function ships, but
+  // the failure must be honest: "Please try again" is a lie when the endpoint
+  // is missing, and the UI promises "Cancel anytime".
   const cancelSubscription = async () => {
-    if (!subscription?.stripe_subscription_id) return;
-
-    try {
-      const { error } = await supabase.functions.invoke('cancel-subscription', {
-        body: { subscriptionId: subscription.stripe_subscription_id }
-      });
-
-      if (error) throw error;
-
+    if (!subscription?.stripe_subscription_id) {
       toast({
-        title: "Subscription Canceled",
-        description: "Your subscription has been canceled and will end at the current period.",
-      });
-
-      await fetchSubscription();
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to cancel subscription. Please try again.",
+        title: "No active subscription",
+        description: "We couldn't find a Stripe subscription on your account to cancel.",
         variant: "destructive"
       });
+      return;
     }
+
+    const { error } = await supabase.functions.invoke('cancel-subscription', {
+      body: { subscriptionId: subscription.stripe_subscription_id }
+    });
+
+    if (error) {
+      console.error('[billing] cancel-subscription invocation failed:', error);
+      toast({
+        title: "Cancellation could not be processed",
+        description: `Self-service cancellation is unavailable (${error.message || 'endpoint not reachable'}). Your subscription is still active and will renew. Please contact support to cancel.`,
+        variant: "destructive"
+      });
+      return;
+    }
+
+    toast({
+      title: "Subscription Canceled",
+      description: "Your subscription has been canceled and will end at the current period.",
+    });
+
+    await fetchSubscription();
   };
 
   // Check if user has access to premium features
@@ -247,6 +271,7 @@ export const useSubscription = () => {
     getCurrentPlan,
     canUseFeature,
     incrementUsage,
+    getCurrentUsage,
     createCheckoutSession,
     cancelSubscription,
     hasPremiumAccess,

@@ -33,8 +33,8 @@ const LandingHero = () => {
         </h1>
 
         <p className="text-base sm:text-lg md:text-xl lg:text-2xl mb-8 text-white/90 max-w-3xl mx-auto">
-          Meet FitMatePro - Your AI-powered companion for workouts, nutrition, and mental wellness.
-          Get personalized guidance, track your progress, and build lasting healthy habits.
+          Meet FitMatePro - Your companion for workouts, nutrition, and mental wellness.
+          Track your progress, plan your meals, and build lasting healthy habits.
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">

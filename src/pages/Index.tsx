@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
 import FitMateHeader from "@/components/FitMateHeader";
 import WelcomeSection from "@/components/WelcomeSection";
 import DailyCheckIn from "@/components/DailyCheckIn";
@@ -11,23 +12,62 @@ import MentalWellness from "@/components/MentalWellness";
 import LandingHero from "@/components/landing/LandingHero";
 import FeaturesSection from "@/components/landing/FeaturesSection";
 import PricingSection from "@/components/subscription/PricingSection";
-import { ProductRecommendations } from "@/components/shop/ProductRecommendations";
+import { PersonalizedRecommendations } from "@/components/shop/PersonalizedRecommendations";
 
 const Index = () => {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
+  const [checkingOnboarding, setCheckingOnboarding] = useState(true);
 
-  // Check if user needs onboarding
-  React.useEffect(() => {
-    if (user && !loading) {
-      const onboardingComplete = localStorage.getItem('onboarding_complete');
-      if (!onboardingComplete) {
-        navigate("/onboarding");
+  // Check if user needs onboarding (check both localStorage and database)
+  useEffect(() => {
+    const checkOnboarding = async () => {
+      if (!user || loading) {
+        setCheckingOnboarding(false);
+        return;
       }
-    }
+
+      // First check localStorage for quick check
+      const localOnboarding = localStorage.getItem('onboarding_complete');
+      if (localOnboarding) {
+        setCheckingOnboarding(false);
+        return;
+      }
+
+      // Check database for onboarding status
+      try {
+        const { data, error } = await supabase
+          .from('user_preferences')
+          .select('notification_settings')
+          .eq('user_id', user.id)
+          .maybeSingle();
+
+        if (error) throw error;
+
+        // notification_settings is jsonb (typed Json), so narrow before reading the key
+        const settings = (data?.notification_settings ?? null) as { onboarding_complete?: boolean } | null;
+        const onboardingComplete = settings?.onboarding_complete;
+        if (onboardingComplete) {
+          localStorage.setItem('onboarding_complete', 'true');
+          setCheckingOnboarding(false);
+        } else {
+          navigate("/onboarding");
+        }
+      } catch (error) {
+        // If check fails, use localStorage as fallback
+        const localCheck = localStorage.getItem('onboarding_complete');
+        if (!localCheck) {
+          navigate("/onboarding");
+        }
+      } finally {
+        setCheckingOnboarding(false);
+      }
+    };
+
+    checkOnboarding();
   }, [user, loading, navigate]);
 
-  if (loading) {
+  if (loading || checkingOnboarding) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
@@ -77,11 +117,12 @@ const Index = () => {
           {/* Progress Section */}
           <ProgressVisualization />
           
-          {/* Product Recommendations */}
-          <ProductRecommendations
-            title="Gear Up for Success"
+          {/* Personalised product recommendations */}
+          <PersonalizedRecommendations
+            title="Recommended for You"
             limit={4}
-            context="dashboard"
+            context="general"
+            autoGenerate={true}
           />
         </div>
       </main>

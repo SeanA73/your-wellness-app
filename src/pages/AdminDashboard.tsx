@@ -1,3 +1,4 @@
+// UNREFERENCED: /admin route disabled pending admin RLS policies (see src/App.tsx). Still contains legacy 'pro' tier handling.
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";

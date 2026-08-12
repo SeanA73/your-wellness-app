@@ -105,7 +105,7 @@ const FeaturesSection = () => {
             <span className="block text-primary">Complete Wellness</span>
           </h2>
           <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
-            From personalized workouts to AI coaching, FitMatePro provides comprehensive tools 
+            From workout tracking to meal planning, FitMatePro provides comprehensive tools 
             to support your fitness journey at every step.
           </p>
         </div>
@@ -246,7 +246,7 @@ const FeaturesSection = () => {
               Ready to Start Your Transformation?
             </h3>
             <p className="text-base sm:text-lg md:text-xl mb-8 text-white/90 max-w-2xl mx-auto">
-              Join thousands of users who have already transformed their lives with FitMatePro. 
+              Build your routine with workout tracking, meal planning, and daily check-ins. 
               Start your free trial today!
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">

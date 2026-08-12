@@ -4,9 +4,12 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { AuthProvider, useAuth } from "@/hooks/useAuth";
+import { AuthProvider } from "@/hooks/useAuth";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import ScrollToTop from "@/components/ScrollToTop";
+import ErrorBoundary from "@/components/ErrorBoundary";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
+import { PremiumRoute } from "@/components/PremiumRoute";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Workouts from "./pages/Workouts";
@@ -26,9 +29,11 @@ import CommunityFeatures from "./pages/features/CommunityFeatures";
 import GoalSetting from "./pages/features/GoalSetting";
 import WearableIntegration from "./pages/features/WearableIntegration";
 import PersonalCoaching from "./pages/features/PersonalCoaching";
-import AdminDashboard from "./pages/AdminDashboard";
 import Onboarding from "./pages/Onboarding";
 import PremiumFeatures from "./pages/PremiumFeatures";
+import CheckoutSuccess from "./pages/CheckoutSuccess";
+import CheckoutCancel from "./pages/CheckoutCancel";
+import Recommendations from "./pages/Recommendations";
 
 const queryClient = new QueryClient();
 
@@ -37,46 +42,193 @@ const AppRoutes = () => {
     <Routes>
       <Route path="/" element={<Index />} />
       <Route path="/auth" element={<Auth />} />
-      <Route path="/onboarding" element={<Onboarding />} />
-      <Route path="/workouts" element={<Workouts />} />
-      <Route path="/workout/:id" element={<WorkoutSession />} />
-      <Route path="/workout/program/:programId/day/:dayId" element={<WorkoutSession />} />
-      <Route path="/program/:id" element={<ProgramDetails />} />
-      <Route path="/nutrition" element={<Nutrition />} />
-      <Route path="/chat" element={<Chat />} />
-      <Route path="/shop" element={<Shop />} />
-      <Route path="/profile" element={<Profile />} />
-      <Route path="/features/workout-planning" element={<WorkoutPlanning />} />
-      <Route path="/features/nutrition-tracking" element={<NutritionTracking />} />
-      <Route path="/features/mental-wellness" element={<MentalWellness />} />
-      <Route path="/features/ai-coaching" element={<AICoaching />} />
-      <Route path="/features/advanced-analytics" element={<AdvancedAnalytics />} />
-      <Route path="/features/community-features" element={<CommunityFeatures />} />
-      <Route path="/features/goal-setting" element={<GoalSetting />} />
-      <Route path="/features/wearable-integration" element={<WearableIntegration />} />
-      <Route path="/features/personal-coaching" element={<PersonalCoaching />} />
-      <Route path="/premium" element={<PremiumFeatures />} />
-      <Route path="/admin" element={<AdminDashboard />} />
+      <Route path="/checkout/success" element={<CheckoutSuccess />} />
+      <Route path="/checkout/cancel" element={<CheckoutCancel />} />
+      <Route 
+        path="/onboarding" 
+        element={
+          <ProtectedRoute>
+            <Onboarding />
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/workouts" 
+        element={
+          <ProtectedRoute>
+            <Workouts />
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/workout/:id" 
+        element={
+          <ProtectedRoute>
+            <WorkoutSession />
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/workout/program/:programId/day/:dayId" 
+        element={
+          <ProtectedRoute>
+            <WorkoutSession />
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/program/:id" 
+        element={
+          <ProtectedRoute>
+            <ProgramDetails />
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/nutrition" 
+        element={
+          <ProtectedRoute>
+            <Nutrition />
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/chat" 
+        element={
+          <ProtectedRoute>
+            <Chat />
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/shop" 
+        element={
+          <ProtectedRoute>
+            <Shop />
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/recommendations" 
+        element={
+          <ProtectedRoute>
+            <Recommendations />
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/profile" 
+        element={
+          <ProtectedRoute>
+            <Profile />
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/features/workout-planning" 
+        element={
+          <ProtectedRoute>
+            <WorkoutPlanning />
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/features/nutrition-tracking" 
+        element={
+          <ProtectedRoute>
+            <NutritionTracking />
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/features/mental-wellness" 
+        element={
+          <ProtectedRoute>
+            <MentalWellness />
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/features/ai-coaching" 
+        element={
+          <ProtectedRoute>
+            <AICoaching />
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/features/advanced-analytics" 
+        element={
+          <PremiumRoute>
+            <AdvancedAnalytics />
+          </PremiumRoute>
+        } 
+      />
+      <Route 
+        path="/features/community-features" 
+        element={
+          <ProtectedRoute>
+            <CommunityFeatures />
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/features/goal-setting" 
+        element={
+          <PremiumRoute>
+            <GoalSetting />
+          </PremiumRoute>
+        } 
+      />
+      <Route 
+        path="/features/wearable-integration" 
+        element={
+          <PremiumRoute>
+            <WearableIntegration />
+          </PremiumRoute>
+        } 
+      />
+      <Route 
+        path="/features/personal-coaching" 
+        element={
+          <PremiumRoute>
+            <PersonalCoaching />
+          </PremiumRoute>
+        } 
+      />
+      <Route 
+        path="/premium" 
+        element={
+          <ProtectedRoute>
+            <PremiumFeatures />
+          </ProtectedRoute>
+        } 
+      />
+      {/* /admin route disabled pending admin RLS policies — profiles,
+          subscriptions, revenue_events and usage_tracking are all self-row-only,
+          so the dashboard could only ever show the admin's own row. */}
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
 };
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <ThemeProvider>
-      <AuthProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <ScrollToTop />
-            <AppRoutes />
-          </BrowserRouter>
-        </TooltipProvider>
-      </AuthProvider>
-    </ThemeProvider>
-  </QueryClientProvider>
+  <ErrorBoundary>
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider>
+        <AuthProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <ScrollToTop />
+              <AppRoutes />
+            </BrowserRouter>
+          </TooltipProvider>
+        </AuthProvider>
+      </ThemeProvider>
+    </QueryClientProvider>
+  </ErrorBoundary>
 );
 
 export default App;

@@ -5,14 +5,12 @@ import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { AdManager } from '@/components/ads/AdManager';
-import { 
-  CheckCircle, 
-  Zap, 
-  Crown, 
-  Star, 
+import {
+  CheckCircle,
+  Zap,
+  Crown,
+  Star,
   X,
-  Play,
   Clock
 } from 'lucide-react';
 
@@ -30,16 +28,16 @@ const UPGRADE_SCENARIOS = {
     message: "You've hit your 3 workout limit this week. Want to keep the momentum going?",
     benefits: ["Unlimited workouts", "Advanced tracking", "Custom workout plans"],
     cta: "Upgrade to Premium",
-    alternativeCta: "Watch Ad for 24h Access",
+    alternativeCta: "Maybe later",
     urgency: "high"
   },
   'ai_limit_reached': {
     icon: <Star className="h-6 w-6" />,
     title: "FitMatePro wants to help more! 🤖",
-    message: "You've used your daily AI coaching sessions. Upgrade for unlimited guidance!",
-    benefits: ["24/7 AI coaching", "Personalized tips", "Instant feedback"],
+    message: "You've used your daily coach chat messages. Upgrade for unlimited access!",
+    benefits: ["Unlimited coach chat", "Custom workout builder", "Advanced meal planning"],
     cta: "Get Unlimited Coaching",
-    alternativeCta: "Watch Ad for 3 More Sessions",
+    alternativeCta: "Maybe later",
     urgency: "medium"
   },
   'advanced_feature_attempt': {
@@ -55,7 +53,7 @@ const UPGRADE_SCENARIOS = {
     icon: <Crown className="h-6 w-6" />,
     title: "Unlock Your Full Potential! 💪",
     message: "Take your fitness journey to the next level with premium features.",
-    benefits: ["Ad-free experience", "Unlimited everything", "Priority support"],
+    benefits: ["Unlimited workout tracking", "Custom workout plans", "Export your health data"],
     cta: "Start Free Trial",
     alternativeCta: "Continue with Free",
     urgency: "low"
@@ -65,7 +63,6 @@ const UPGRADE_SCENARIOS = {
 export const UpgradePrompt = ({ trigger, featureName, onClose, className }: UpgradePromptProps) => {
   const { createCheckoutSession, hasPremiumAccess } = useSubscription();
   const { toast } = useToast();
-  const [showRewardAd, setShowRewardAd] = useState(false);
   const [isUpgrading, setIsUpgrading] = useState(false);
 
   const scenario = UPGRADE_SCENARIOS[trigger];
@@ -90,33 +87,8 @@ export const UpgradePrompt = ({ trigger, featureName, onClose, className }: Upgr
   };
 
   const handleAlternative = () => {
-    if (scenario.alternativeCta.includes('Watch Ad')) {
-      setShowRewardAd(true);
-    } else {
-      onClose?.();
-    }
+    onClose?.();
   };
-
-  if (showRewardAd) {
-    return (
-      <motion.div 
-        className={`upgrade-prompt ${className}`}
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.95 }}
-      >
-        <AdManager 
-          placement="upgrade_prompt"
-          context={{ trigger, featureName }}
-          onAdInteraction={(type) => {
-            if (type === 'complete') {
-              onClose?.();
-            }
-          }}
-        />
-      </motion.div>
-    );
-  }
 
   return (
     <motion.div 
@@ -220,22 +192,15 @@ export const UpgradePrompt = ({ trigger, featureName, onClose, className }: Upgr
                 onClick={handleAlternative}
                 className="w-full"
               >
-                {scenario.alternativeCta.includes('Watch Ad') ? (
-                  <>
-                    <Play className="mr-2 h-4 w-4" />
-                    {scenario.alternativeCta}
-                  </>
-                ) : (
-                  scenario.alternativeCta
-                )}
+                {scenario.alternativeCta}
               </Button>
             </div>
 
-            {/* Trust indicators */}
+            {/* Trust indicators — "Cancel anytime" and the money-back guarantee are
+                removed until a cancel endpoint and a refund process actually exist. */}
             <div className="text-xs text-muted-foreground space-y-1">
-              <div>✓ Cancel anytime</div>
               <div>✓ No hidden fees</div>
-              <div>✓ 30-day money-back guarantee</div>
+              <div>✓ 7-day free trial</div>
             </div>
           </div>
         </Card>

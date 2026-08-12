@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -8,14 +8,18 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { Camera, Plus, Apple, Utensils, LogIn } from "lucide-react";
+import { Plus, Apple, Utensils, LogIn } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
 import { useAuth } from "@/hooks/useAuth";
+import { useNutrition } from "@/hooks/useNutrition";
+import { Skeleton } from "@/components/ui/skeleton";
+import { EmptyState } from "@/components/EmptyState";
 
 const NutritionTracking = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { todaysMeals, loading, getTodaysNutrition } = useNutrition();
   const [addFoodOpen, setAddFoodOpen] = useState(false);
   const [newFood, setNewFood] = useState({ 
     name: "", 
@@ -28,74 +32,15 @@ const NutritionTracking = () => {
     mealType: "",
     notes: ""
   });
-  const [photoAnalysisOpen, setPhotoAnalysisOpen] = useState(false);
-  const [analyzedFood, setAnalyzedFood] = useState(null);
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const fileInputRef = useRef(null);
   const { toast } = useToast();
   
+  // Calculate nutrition data from today's meals
+  const todaysNutrition = getTodaysNutrition();
   const nutritionData = {
-    calories: { current: 1420, target: 2000 },
-    protein: { current: 85, target: 120 },
-    carbs: { current: 180, target: 250 },
-    fats: { current: 45, target: 65 },
-  };
-
-  const recentMeals = [
-    { time: "Breakfast", food: "Oatmeal with berries", calories: 320, status: "Great choice!" },
-    { time: "Lunch", food: "Quinoa salad with chicken", calories: 450, status: "Perfect protein!" },
-    { time: "Snack", food: "Greek yogurt", calories: 150, status: "Smart snacking!" },
-  ];
-
-  const handlePhotoUpload = (event) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      analyzePhoto(file);
-    }
-  };
-
-  const handleCameraCapture = () => {
-    if (fileInputRef.current) {
-      fileInputRef.current.click();
-    }
-  };
-
-  const analyzePhoto = async (file) => {
-    setIsAnalyzing(true);
-    setPhotoAnalysisOpen(true);
-    
-    // Simulate AI analysis - in real app, this would call an AI service
-    setTimeout(() => {
-      const mockAnalysis = {
-        foodName: "Grilled Chicken Salad",
-        calories: 340,
-        protein: 32,
-        carbs: 12,
-        fats: 18,
-        fiber: 4,
-        ingredients: ["Grilled chicken breast", "Mixed greens", "Cherry tomatoes", "Cucumber", "Olive oil dressing"],
-        confidence: 85
-      };
-      
-      setAnalyzedFood(mockAnalysis);
-      setIsAnalyzing(false);
-      
-      toast({
-        title: "Photo Analyzed!",
-        description: `Detected ${mockAnalysis.foodName} with ${mockAnalysis.calories} calories`,
-      });
-    }, 2000);
-  };
-
-  const addAnalyzedFood = () => {
-    if (analyzedFood) {
-      toast({
-        title: "Food Added!",
-        description: `${analyzedFood.foodName} has been added to your nutrition log.`,
-      });
-      setPhotoAnalysisOpen(false);
-      setAnalyzedFood(null);
-    }
+    calories: { current: todaysNutrition.calories, target: 2000 },
+    protein: { current: todaysNutrition.protein, target: 120 },
+    carbs: { current: todaysNutrition.carbs, target: 250 },
+    fats: { current: todaysNutrition.fat, target: 65 },
   };
 
   const handleAddFood = () => {
@@ -129,24 +74,13 @@ const NutritionTracking = () => {
     }
   };
 
+
   return (
     <Card className="shadow-card hover:shadow-card-hover transition-smooth">
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="text-xl font-bold">Nutrition Tracking</CardTitle>
           <div className="flex gap-2">
-            <Button variant="wellness" size="sm" onClick={handleCameraCapture}>
-              <Camera className="w-4 h-4" />
-              Photo
-            </Button>
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/*"
-              capture="environment"
-              onChange={handlePhotoUpload}
-              className="hidden"
-            />
             <Dialog open={addFoodOpen} onOpenChange={setAddFoodOpen}>
               <DialogTrigger asChild>
                 <Button variant="wellness" size="sm">
@@ -280,23 +214,33 @@ const NutritionTracking = () => {
       </CardHeader>
       
       <CardContent className="space-y-6">
-        {/* Daily Progress */}
-        <div className="grid grid-cols-2 gap-4">
-          {Object.entries(nutritionData).map(([key, data]) => (
-            <div key={key} className="space-y-2">
-              <div className="flex justify-between items-center">
-                <span className="text-sm font-medium capitalize">{key}</span>
-                <span className="text-xs text-muted-foreground">
-                  {data.current}/{data.target}{key === 'calories' ? '' : 'g'}
-                </span>
-              </div>
-              <Progress 
-                value={(data.current / data.target) * 100} 
-                className="h-2"
-              />
+        {loading ? (
+          <div className="space-y-4">
+            <Skeleton className="h-20 w-full" />
+            <Skeleton className="h-20 w-full" />
+            <Skeleton className="h-20 w-full" />
+          </div>
+        ) : (
+          <>
+            {/* Daily Progress */}
+            <div className="grid grid-cols-2 gap-4">
+              {Object.entries(nutritionData).map(([key, data]) => (
+                <div key={key} className="space-y-2">
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm font-medium capitalize">{key}</span>
+                    <span className="text-xs text-muted-foreground">
+                      {data.current}/{data.target}{key === 'calories' ? '' : 'g'}
+                    </span>
+                  </div>
+                  <Progress 
+                    value={(data.current / data.target) * 100} 
+                    className="h-2"
+                  />
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
+          </>
+        )}
 
         {/* Recent Meals */}
         <div>
@@ -304,22 +248,42 @@ const NutritionTracking = () => {
             <Utensils className="w-4 h-4" />
             Today's Meals
           </h4>
-          <div className="space-y-3">
-            {recentMeals.map((meal, index) => (
-              <div key={index} className="flex items-center justify-between p-3 bg-calm-gradient rounded-lg">
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-1">
-                    <Badge variant="outline" className="text-xs">{meal.time}</Badge>
-                    <span className="text-sm font-medium">{meal.food}</span>
+          {loading ? (
+            <div className="space-y-3">
+              {[1, 2, 3].map((i) => (
+                <Skeleton key={i} className="h-16 w-full" />
+              ))}
+            </div>
+          ) : todaysMeals && todaysMeals.length > 0 ? (
+            <div className="space-y-3">
+              {todaysMeals.map((meal, index) => (
+                <div key={meal.id || index} className="flex items-center justify-between p-3 bg-calm-gradient rounded-lg">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-1">
+                      <Badge variant="outline" className="text-xs capitalize">{meal.meal_type || 'meal'}</Badge>
+                      <span className="text-sm font-medium">{meal.description || 'Meal'}</span>
+                    </div>
+                    {meal.food_items && Array.isArray(meal.food_items) && meal.food_items.length > 0 && (
+                      <p className="text-xs text-muted-foreground">
+                        {meal.food_items.map((item: any) => item.name || item).join(', ')}
+                      </p>
+                    )}
                   </div>
-                  <p className="text-xs text-success font-medium">{meal.status}</p>
+                  <div className="text-sm font-semibold text-muted-foreground">
+                    {meal.total_calories || 0} cal
+                  </div>
                 </div>
-                <div className="text-sm font-semibold text-muted-foreground">
-                  {meal.calories} cal
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <EmptyState
+              iconEmoji="🍽️"
+              title="No meals logged today"
+              description="Start tracking your nutrition by adding your first meal!"
+              actionLabel="Add Food"
+              onAction={() => setAddFoodOpen(true)}
+            />
+          )}
         </div>
 
         {/* FitMate Suggestion */}
@@ -331,7 +295,7 @@ const NutritionTracking = () => {
               <p className="text-sm text-muted-foreground mb-2">
                 {user 
                   ? "You're doing great with protein today! For dinner, how about adding some colorful veggies? A rainbow on your plate means a rainbow of nutrients!"
-                  : "Track your nutrition and get personalized tips from FitMatePro! Sign in to save your progress and get AI-powered coaching."
+                  : "Track your nutrition and log your meals. Sign in to save your progress."
                 }
               </p>
               <div className="flex gap-2">
@@ -350,73 +314,6 @@ const NutritionTracking = () => {
         </div>
       </CardContent>
 
-      {/* Photo Analysis Dialog */}
-      <Dialog open={photoAnalysisOpen} onOpenChange={setPhotoAnalysisOpen}>
-        <DialogContent className="max-w-2xl">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-3">
-              <Camera className="w-5 h-5" />
-              Food Photo Analysis
-            </DialogTitle>
-          </DialogHeader>
-          
-          {isAnalyzing ? (
-            <div className="flex flex-col items-center py-8 space-y-4">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-              <p className="text-muted-foreground">Analyzing your food photo...</p>
-            </div>
-          ) : analyzedFood ? (
-            <div className="space-y-6">
-              <div className="bg-success-gradient/10 p-4 rounded-lg">
-                <h3 className="font-semibold text-lg mb-2">{analyzedFood.foodName}</h3>
-                <p className="text-sm text-muted-foreground mb-3">
-                  Analysis confidence: {analyzedFood.confidence}%
-                </p>
-                
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-primary">{analyzedFood.calories}</div>
-                    <div className="text-xs text-muted-foreground">Calories</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-success">{analyzedFood.protein}g</div>
-                    <div className="text-xs text-muted-foreground">Protein</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-motivation">{analyzedFood.carbs}g</div>
-                    <div className="text-xs text-muted-foreground">Carbs</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-calm">{analyzedFood.fats}g</div>
-                    <div className="text-xs text-muted-foreground">Fats</div>
-                  </div>
-                </div>
-                
-                <div>
-                  <h4 className="font-medium mb-2">Detected Ingredients:</h4>
-                  <div className="flex gap-1 flex-wrap">
-                    {analyzedFood.ingredients.map((ingredient, index) => (
-                      <Badge key={index} variant="secondary" className="text-xs">
-                        {ingredient}
-                      </Badge>
-                    ))}
-                  </div>
-                </div>
-              </div>
-              
-              <div className="flex gap-3">
-                <Button variant="wellness" onClick={addAnalyzedFood} className="flex-1">
-                  <Plus className="w-4 h-4 mr-2" />
-                  Add to Food Log
-                </Button>
-                <Button variant="outline" onClick={() => setPhotoAnalysisOpen(false)}>
-                  Cancel
-                </Button>
-              </div>
-            </div>
-          ) : null}
-        </DialogContent>
-      </Dialog>
     </Card>
   );
 };

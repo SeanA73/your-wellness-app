@@ -1,15 +1,14 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Bell, Settings, Heart, User, LogOut, LogIn } from "lucide-react";
+import { Settings, Heart, User, LogOut, LogIn, Crown, Sparkles, ShoppingBag } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
-import { useAdmin } from "@/hooks/useAdmin";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "@/contexts/ThemeContext";
+import { NotificationCenter } from "@/components/NotificationCenter";
 
 const FitMateHeader = () => {
   const { user, profile, signOut } = useAuth();
-  const { isAdmin } = useAdmin();
   const navigate = useNavigate();
   const { theme, setTheme, actualTheme } = useTheme();
 
@@ -34,23 +33,7 @@ const FitMateHeader = () => {
           {user ? (
             <>
               {/* Notifications */}
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon">
-                    <Bell className="w-5 h-5" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-80">
-                  <div className="p-4">
-                    <h3 className="font-semibold text-sm mb-2">Notifications</h3>
-                    <div className="space-y-2">
-                      <div className="text-sm text-muted-foreground">
-                        No new notifications
-                      </div>
-                    </div>
-                  </div>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              <NotificationCenter />
 
               {/* User Profile */}
               <DropdownMenu>
@@ -67,6 +50,14 @@ const FitMateHeader = () => {
                     <User className="w-4 h-4 mr-2" />
                     Profile
                   </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate("/recommendations")}>
+                    <Sparkles className="w-4 h-4 mr-2" />
+                    AI Recommendations
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate("/shop")}>
+                    <ShoppingBag className="w-4 h-4 mr-2" />
+                    Shop
+                  </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => navigate("/profile")}>
                     <Settings className="w-4 h-4 mr-2" />
                     Settings
@@ -75,12 +66,7 @@ const FitMateHeader = () => {
                     <Crown className="w-4 h-4 mr-2" />
                     Premium Features
                   </DropdownMenuItem>
-                  {isAdmin && (
-                    <DropdownMenuItem onClick={() => navigate("/admin")}>
-                      <Shield className="w-4 h-4 mr-2" />
-                      Admin Dashboard
-                    </DropdownMenuItem>
-                  )}
+                  {/* Admin Dashboard link removed: /admin route disabled pending admin RLS policies */}
                   <DropdownMenuItem onClick={handleSignOut}>
                     <LogOut className="w-4 h-4 mr-2" />
                     Sign Out

@@ -36,6 +36,14 @@ interface AuthResponse {
   error: Error | null;
 }
 
+// updateProfile returns the updated profiles row, not an auth session — it needs
+// its own response type. It was previously declared as AuthResponse, which only
+// type-checked because the stale generated types made the row shape unknown.
+interface ProfileResponse {
+  data: Profile | null;
+  error: Error | null;
+}
+
 interface AuthContextType {
   user: User | null;
   profile: Profile | null;
@@ -44,7 +52,7 @@ interface AuthContextType {
   signUp: (email: string, password: string, additionalData?: SignUpAdditionalData) => Promise<AuthResponse>;
   signIn: (email: string, password: string) => Promise<AuthResponse>;
   signOut: () => Promise<void>;
-  updateProfile: (updates: Partial<Profile>) => Promise<AuthResponse>;
+  updateProfile: (updates: Partial<Profile>) => Promise<ProfileResponse>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -268,7 +276,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const updateProfile = async (updates: Partial<Profile>): Promise<AuthResponse> => {
+  const updateProfile = async (updates: Partial<Profile>): Promise<ProfileResponse> => {
     try {
       if (!user) throw new Error('No user logged in');
 

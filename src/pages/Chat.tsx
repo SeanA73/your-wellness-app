@@ -1,18 +1,21 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Send, Heart, Zap, Moon, Brain, Target, Infinity, Lock } from "lucide-react";
+import { ArrowLeft, Send, Heart, Zap, Moon, Brain, Target, Lock } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useSubscription } from "@/hooks/useSubscription";
 import { UpgradePrompt } from "@/components/subscription/UpgradePrompt";
+import { useToast } from "@/hooks/use-toast";
 
 const Chat = () => {
   const navigate = useNavigate();
-  const { hasPremiumAccess, canUseFeature, incrementUsage } = useSubscription();
+  const { hasPremiumAccess, canUseFeature, incrementUsage, getCurrentUsage } = useSubscription();
+  const { toast } = useToast();
   const [message, setMessage] = useState("");
   const [dailyUsage, setDailyUsage] = useState(0);
+  const [showUpgradePrompt, setShowUpgradePrompt] = useState(false);
   const [messages, setMessages] = useState([
     {
       type: "fitmate",
@@ -31,14 +34,18 @@ const Chat = () => {
 
   useEffect(() => {
     // Check usage for free users
-    if (!hasPremiumAccess()) {
-      canUseFeature('ai_interactions_per_day', 'daily').then(canUse => {
+    const checkUsage = async () => {
+      if (!hasPremiumAccess()) {
+        const usage = await getCurrentUsage('ai_interactions_per_day', 'daily');
+        setDailyUsage(usage);
+        const canUse = await canUseFeature('ai_interactions_per_day', 'daily');
         if (!canUse) {
-          // Show upgrade prompt
+          setShowUpgradePrompt(true);
         }
-      });
-    }
-  }, [hasPremiumAccess, canUseFeature]);
+      }
+    };
+    checkUsage();
+  }, [hasPremiumAccess, canUseFeature, getCurrentUsage]);
 
   const sendMessage = async () => {
     if (!message.trim()) return;
@@ -47,11 +54,17 @@ const Chat = () => {
     if (!hasPremiumAccess()) {
       const canUse = await canUseFeature('ai_interactions_per_day', 'daily');
       if (!canUse) {
-        // Limit reached - would show upgrade prompt
+        setShowUpgradePrompt(true);
+        toast({
+          title: "Daily limit reached",
+          description: "You've used all 3 free messages today. Upgrade to Premium for unlimited access.",
+          variant: "destructive",
+        });
         return;
       }
       await incrementUsage('ai_interactions_per_day', 'daily');
-      setDailyUsage(prev => prev + 1);
+      const newUsage = await getCurrentUsage('ai_interactions_per_day', 'daily');
+      setDailyUsage(newUsage);
     }
     
     setMessages(prev => [...prev, {
@@ -60,7 +73,9 @@ const Chat = () => {
       time: "Just now"
     }]);
     
-    // Simulate FitMate response
+    // DEMO ONLY: there is no model behind this. These are five fixed sample
+    // replies chosen at random. The usage metering above is deliberately kept
+    // wired so it is already correct when a real model is connected.
     setTimeout(() => {
       const responses = [
         "That's wonderful! I love your enthusiasm. Let's work together to make today amazing. What would you like to focus on first?",
@@ -95,27 +110,16 @@ const Chat = () => {
               Back to Dashboard
             </Button>
             <div className="flex-1">
-              <h1 className="text-xl font-bold">Chat with FitMatePro</h1>
+              <h1 className="text-xl font-bold">Coach Chat</h1>
               <p className="text-sm text-muted-foreground">
-                {hasPremiumAccess() ? (
-                  <span className="flex items-center gap-1">
-                    <Infinity className="w-3 h-3" />
-                    Unlimited AI coaching
-                  </span>
-                ) : (
-                  `Your personal wellness coach is here to help (${3 - dailyUsage}/3 today)`
-                )}
+                {hasPremiumAccess()
+                  ? 'Preview — replies are sample text, not a live coach yet'
+                  : `Preview — replies are sample text (${3 - dailyUsage}/3 messages today)`}
               </p>
             </div>
-            <Badge variant="outline" className="bg-success/10 text-success">
-              Online
+            <Badge variant="outline">
+              Demo
             </Badge>
-            {hasPremiumAccess() && (
-              <Badge variant="default" className="gap-1">
-                <Infinity className="w-3 h-3" />
-                Premium
-              </Badge>
-            )}
           </div>
         </div>
       </div>
@@ -185,6 +189,17 @@ const Chat = () => {
             <Send className="w-4 h-4" />
           </Button>
         </div>
+
+        {/* Upgrade Prompt */}
+        {showUpgradePrompt && !hasPremiumAccess() && (
+          <div className="mt-4">
+            <UpgradePrompt
+              trigger="ai_limit_reached"
+              featureName="ai_interactions_per_day"
+              onClose={() => setShowUpgradePrompt(false)}
+            />
+          </div>
+        )}
 
         {/* Tips */}
         <div className="mt-4 p-3 bg-calm-gradient rounded-lg">

@@ -1,18 +1,14 @@
 import FitMateHeader from "@/components/FitMateHeader";
 import { AdvancedMealPlanning } from "@/components/nutrition/AdvancedMealPlanning";
 import { CustomWorkoutBuilder } from "@/components/workout/CustomWorkoutBuilder";
-import { WeeklyProgressReport } from "@/components/reports/WeeklyProgressReport";
 import { HealthDataExport } from "@/components/export/HealthDataExport";
-import { GroupClasses } from "@/components/community/GroupClasses";
 import { ThemeSettings } from "@/components/settings/ThemeSettings";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   Dumbbell, 
   ChefHat, 
-  FileText, 
   Download, 
-  Users, 
   Palette,
   CheckCircle2,
   Crown
@@ -34,31 +30,13 @@ const PremiumFeatures = () => {
       id: 'nutrition',
       name: 'Advanced Meal Planning',
       icon: ChefHat,
-      description: 'AI-powered weekly meal plans with shopping lists'
-    },
-    {
-      id: 'ai',
-      name: 'Unlimited AI Coaching',
-      icon: CheckCircle2,
-      description: 'Chat with your AI coach anytime, unlimited interactions'
-    },
-    {
-      id: 'reports',
-      name: 'Weekly Progress Reports',
-      icon: FileText,
-      description: 'Detailed analytics and insights into your fitness journey'
+      description: 'Weekly meal plans with shopping lists and macro targets'
     },
     {
       id: 'export',
       name: 'Export Health Data',
       icon: Download,
       description: 'Download your complete fitness data in multiple formats'
-    },
-    {
-      id: 'classes',
-      name: 'Priority Group Classes',
-      icon: Users,
-      description: 'Early access to all group classes and exclusive sessions'
     },
     {
       id: 'themes',
@@ -151,14 +129,12 @@ const PremiumFeatures = () => {
           </TabsContent>
 
           <TabsContent value="analytics" className="space-y-6 mt-6">
-            <WeeklyProgressReport />
             <HealthDataExport />
           </TabsContent>
         </Tabs>
 
         {/* Additional Premium Features */}
         <div className="mt-8 space-y-6">
-          <GroupClasses />
           <ThemeSettings />
         </div>
       </main>

@@ -68,12 +68,7 @@ const AdvancedAnalytics = () => {
     {
       name: "Recovery Analysis",
       description: "Analyze sleep patterns and recovery metrics",
-      badge: "Pro"
-    },
-    {
-      name: "Predictive Insights",
-      description: "AI-powered predictions for your fitness goals",
-      badge: "Pro"
+      badge: "Premium"
     }
   ];
 

@@ -5,9 +5,12 @@ import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Dumbbell, Play, Calendar, Target, Users, BarChart3 } from "lucide-react";
 import FitMateHeader from "@/components/FitMateHeader";
+import { PersonalizedRecommendations } from "@/components/shop/PersonalizedRecommendations";
+import { useAuth } from "@/hooks/useAuth";
 
 const WorkoutPlanning = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   const features = [
     {
@@ -128,6 +131,20 @@ const WorkoutPlanning = () => {
             </div>
           </div>
         </section>
+
+        {/* AI Product Recommendations */}
+        {user && (
+          <section className="py-16 bg-background">
+            <div className="max-w-6xl mx-auto px-6">
+              <PersonalizedRecommendations
+                context="workout_planning"
+                limit={4}
+                title="Recommended Workout Equipment"
+                autoGenerate={true}
+              />
+            </div>
+          </section>
+        )}
 
         {/* CTA Section */}
         <section className="py-16">

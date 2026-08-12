@@ -14,6 +14,7 @@ import { Heart, Dumbbell, User, Mail, Lock, Calendar, Ruler, Weight, ArrowLeft, 
 import { useAuth } from "@/hooks/useAuth";
 import { useSubscription } from "@/hooks/useSubscription";
 import { useToast } from "@/hooks/use-toast";
+import { validateSignUp, validateEmail } from "@/lib/validation";
 
 const Auth = () => {
   const navigate = useNavigate();
@@ -43,9 +44,26 @@ const Auth = () => {
     activity_level: "",
     fitness_goals: [] as string[],
   });
+  const [signUpErrors, setSignUpErrors] = useState<Record<string, string>>({});
+  const [signInErrors, setSignInErrors] = useState<Record<string, string>>({});
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
+    const errors: Record<string, string> = {};
+    
+    if (!signInData.email) {
+      errors.email = 'Email is required';
+    } else if (!validateEmail(signInData.email)) {
+      errors.email = 'Please enter a valid email address';
+    }
+    
+    if (!signInData.password) {
+      errors.password = 'Password is required';
+    }
+    
+    setSignInErrors(errors);
+    if (Object.keys(errors).length > 0) return;
+    
     const { data, error } = await signIn(signInData.email, signInData.password);
     if (data && !error) {
       // Check if onboarding is complete
@@ -60,6 +78,16 @@ const Auth = () => {
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate form
+    const validation = validateSignUp({
+      email: signUpData.email,
+      password: signUpData.password,
+      full_name: signUpData.full_name,
+    });
+    
+    setSignUpErrors(validation.errors);
+    if (!validation.isValid) return;
     
     // Create account first
     const { data, error } = await signUp(signUpData.email, signUpData.password, {
@@ -196,12 +224,20 @@ const Auth = () => {
                         id="signin-password"
                         type="password"
                         value={signInData.password}
-                        onChange={(e) => setSignInData({...signInData, password: e.target.value})}
+                        onChange={(e) => {
+                          setSignInData({...signInData, password: e.target.value});
+                          if (signInErrors.password) {
+                            setSignInErrors({...signInErrors, password: ''});
+                          }
+                        }}
                         placeholder="••••••••"
-                        className="pl-10"
+                        className={`pl-10 ${signInErrors.password ? 'border-destructive' : ''}`}
                         required
                       />
                     </div>
+                    {signInErrors.password && (
+                      <p className="text-sm text-destructive mt-1">{signInErrors.password}</p>
+                    )}
                   </div>
                   
                   <Button type="submit" className="w-full" variant="wellness" disabled={loading}>
@@ -255,7 +291,7 @@ const Auth = () => {
                             </div>
                             <div className="flex items-center gap-2">
                               <Check className="w-4 h-4 text-success" />
-                              <span>AI coaching (3 interactions/day)</span>
+                              <span>Coach chat preview (3 messages/day)</span>
                             </div>
                           </div>
                         </div>
@@ -336,7 +372,7 @@ const Auth = () => {
                             </div>
                             <div className="flex items-center gap-2">
                               <Check className="w-4 h-4 text-success" />
-                              <span>Unlimited AI coaching</span>
+                              <span>Custom workout builder</span>
                             </div>
                             <div className="flex items-center gap-2">
                               <Check className="w-4 h-4 text-success" />
@@ -346,7 +382,7 @@ const Auth = () => {
                               <div className="mt-2 pt-2 border-t border-border">
                                 <div className="flex items-center gap-2 text-xs text-primary">
                                   <Shield className="w-3 h-3" />
-                                  <span>🎉 7-day free trial • Cancel anytime</span>
+                                  <span>🎉 7-day free trial</span>
                                 </div>
                               </div>
                             )}
@@ -379,10 +415,19 @@ const Auth = () => {
                       <Input
                         id="signup-name"
                         value={signUpData.full_name}
-                        onChange={(e) => setSignUpData({...signUpData, full_name: e.target.value})}
+                        onChange={(e) => {
+                          setSignUpData({...signUpData, full_name: e.target.value});
+                          if (signUpErrors.full_name) {
+                            setSignUpErrors({...signUpErrors, full_name: ''});
+                          }
+                        }}
                         placeholder="John Doe"
                         required
+                        className={signUpErrors.full_name ? 'border-destructive' : ''}
                       />
+                      {signUpErrors.full_name && (
+                        <p className="text-sm text-destructive mt-1">{signUpErrors.full_name}</p>
+                      )}
                     </div>
                     
                     <div className="col-span-2">
@@ -393,12 +438,20 @@ const Auth = () => {
                           id="signup-email"
                           type="email"
                           value={signUpData.email}
-                          onChange={(e) => setSignUpData({...signUpData, email: e.target.value})}
+                          onChange={(e) => {
+                            setSignUpData({...signUpData, email: e.target.value});
+                            if (signUpErrors.email) {
+                              setSignUpErrors({...signUpErrors, email: ''});
+                            }
+                          }}
                           placeholder="your@email.com"
-                          className="pl-10"
+                          className={`pl-10 ${signUpErrors.email ? 'border-destructive' : ''}`}
                           required
                         />
                       </div>
+                      {signUpErrors.email && (
+                        <p className="text-sm text-destructive mt-1">{signUpErrors.email}</p>
+                      )}
                     </div>
                     
                     <div className="col-span-2">
@@ -409,13 +462,21 @@ const Auth = () => {
                           id="signup-password"
                           type="password"
                           value={signUpData.password}
-                          onChange={(e) => setSignUpData({...signUpData, password: e.target.value})}
+                          onChange={(e) => {
+                            setSignUpData({...signUpData, password: e.target.value});
+                            if (signUpErrors.password) {
+                              setSignUpErrors({...signUpErrors, password: ''});
+                            }
+                          }}
                           placeholder="••••••••"
-                          className="pl-10"
+                          className={`pl-10 ${signUpErrors.password ? 'border-destructive' : ''}`}
                           minLength={6}
                           required
                         />
                       </div>
+                      {signUpErrors.password && (
+                        <p className="text-sm text-destructive mt-1">{signUpErrors.password}</p>
+                      )}
                     </div>
                     
                     <div>
