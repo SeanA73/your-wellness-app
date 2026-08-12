@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { Heart, Sparkles, MessageCircle, Target, ShoppingBag } from "lucide-react";
+import { Heart, Sparkles, MessageCircle, Target, ShoppingBag, BookOpen } from "lucide-react";
 import heroImage from "@/assets/fitmate-hero.jpg";
 
 const LandingHero = () => {
@@ -46,6 +46,15 @@ const LandingHero = () => {
           >
             <Sparkles className="w-5 h-5 mr-2" />
             Start Your Journey Free
+          </Button>
+          <Button
+            size="lg"
+            variant="outline"
+            className="text-lg px-8 py-6 h-auto border-white/30 text-white hover:bg-white/10 hover:text-white bg-transparent"
+            onClick={() => navigate("/guide")}
+          >
+            <BookOpen className="w-5 h-5 mr-2" />
+            User Guide
           </Button>
           <Button
             size="lg"

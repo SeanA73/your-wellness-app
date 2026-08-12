@@ -22,16 +22,21 @@ import {
   Settings
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { useAdmin } from "@/hooks/useAdmin";
 import { useSubscription } from "@/hooks/useSubscription";
 import { useToast } from "@/hooks/use-toast";
 import FitMateHeader from "@/components/FitMateHeader";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SubscriptionSettings } from "@/components/subscription/SubscriptionSettings";
+import { AIProductRecommendations } from "@/components/AIProductRecommendations";
 
 const Profile = () => {
   const navigate = useNavigate();
   const { user, profile, updateProfile } = useAuth();
   const { subscription, getCurrentPlan, hasPremiumAccess, cancelSubscription, createCheckoutSession } = useSubscription();
+  // isAdmin is used for the plan badge label only — it must never feed an
+  // entitlement decision. Gating stays on getCurrentPlan()/hasPremiumAccess().
+  const { isAdmin } = useAdmin();
   const { toast } = useToast();
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -154,10 +159,16 @@ const Profile = () => {
   ];
 
   const planBadgeVariant = (plan: string) => {
+    if (isAdmin) return 'destructive';
     switch (plan) {
       case 'premium': return 'secondary';
       default: return 'outline';
     }
+  };
+  
+  const getPlanDisplay = () => {
+    if (isAdmin) return 'ADMIN';
+    return getCurrentPlan().toUpperCase();
   };
 
   if (!user) {
@@ -227,8 +238,9 @@ const Profile = () => {
                 <CardTitle className="text-xl">{profile?.full_name || "User"}</CardTitle>
                 <div className="flex items-center justify-center gap-2 mt-2">
                   <Badge variant={planBadgeVariant(getCurrentPlan())}>
-                    {getCurrentPlan() === 'premium' && <Crown className="w-3 h-3 mr-1" />}
-                    {getCurrentPlan().toUpperCase()}
+                    {isAdmin && <Settings className="w-3 h-3 mr-1" />}
+                    {!isAdmin && getCurrentPlan() === 'premium' && <Crown className="w-3 h-3 mr-1" />}
+                    {getPlanDisplay()}
                   </Badge>
                 </div>
               </CardHeader>
@@ -419,12 +431,17 @@ const Profile = () => {
             </Card>
           </div>
         </div>
-      </TabsContent>
 
-      <TabsContent value="subscription">
-        <SubscriptionSettings />
-      </TabsContent>
-    </Tabs>
+          {/* AI Recommendations */}
+          <div className="mt-8">
+            <AIProductRecommendations />
+          </div>
+        </TabsContent>
+
+        <TabsContent value="subscription">
+          <SubscriptionSettings />
+        </TabsContent>
+      </Tabs>
       </div>
     </div>
   );

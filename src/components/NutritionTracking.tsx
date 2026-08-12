@@ -15,6 +15,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useNutrition } from "@/hooks/useNutrition";
 import { Skeleton } from "@/components/ui/skeleton";
 import { EmptyState } from "@/components/EmptyState";
+import ProductRecommendation from "@/components/affiliate/ProductRecommendation";
 
 const NutritionTracking = () => {
   const navigate = useNavigate();
@@ -314,6 +315,14 @@ const NutritionTracking = () => {
         </div>
       </CardContent>
 
+      <CardContent className="pt-0">
+        <ProductRecommendation
+          context="nutrition"
+          title="Meal Prep Like a Pro"
+          description="Tools that make healthy eating easier"
+          limit={3}
+        />
+      </CardContent>
     </Card>
   );
 };

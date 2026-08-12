@@ -20,6 +20,7 @@ import Chat from "./pages/Chat";
 import Shop from "./pages/Shop";
 import NotFound from "./pages/NotFound";
 import Profile from "./pages/Profile";
+import CoachPicks from "./pages/CoachPicks";
 import WorkoutPlanning from "./pages/features/WorkoutPlanning";
 import NutritionTracking from "./pages/features/NutritionTracking";
 import MentalWellness from "./pages/features/MentalWellness";
@@ -34,6 +35,11 @@ import PremiumFeatures from "./pages/PremiumFeatures";
 import CheckoutSuccess from "./pages/CheckoutSuccess";
 import CheckoutCancel from "./pages/CheckoutCancel";
 import Recommendations from "./pages/Recommendations";
+import Guide from "./pages/Guide";
+// AdminDashboard and AdminUsers are intentionally NOT imported. Both pages
+// remain on disk but are unreachable — see the routes below. AdminSetup was
+// deleted outright: it granted premium and self-assigned the admin role from
+// the browser.
 
 const queryClient = new QueryClient();
 
@@ -44,6 +50,7 @@ const AppRoutes = () => {
       <Route path="/auth" element={<Auth />} />
       <Route path="/checkout/success" element={<CheckoutSuccess />} />
       <Route path="/checkout/cancel" element={<CheckoutCancel />} />
+      <Route path="/guide" element={<Guide />} />
       <Route 
         path="/onboarding" 
         element={
@@ -108,13 +115,21 @@ const AppRoutes = () => {
           </ProtectedRoute>
         } 
       />
-      <Route 
-        path="/recommendations" 
+      <Route
+        path="/recommendations"
         element={
           <ProtectedRoute>
             <Recommendations />
           </ProtectedRoute>
-        } 
+        }
+      />
+      <Route
+        path="/coach-picks"
+        element={
+          <ProtectedRoute>
+            <CoachPicks />
+          </ProtectedRoute>
+        }
       />
       <Route 
         path="/profile" 
@@ -204,9 +219,11 @@ const AppRoutes = () => {
           </ProtectedRoute>
         } 
       />
-      {/* /admin route disabled pending admin RLS policies — profiles,
-          subscriptions, revenue_events and usage_tracking are all self-row-only,
-          so the dashboard could only ever show the admin's own row. */}
+      {/* /admin, /admin/users and /admin-setup are deliberately NOT routed.
+          The admin RLS policies these pages need are not in the applied schema —
+          profiles, subscriptions, revenue_events and usage_tracking are all
+          self-row-only, so the dashboard could only ever show the admin's own
+          row. /admin-setup additionally granted premium from the browser. */}
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

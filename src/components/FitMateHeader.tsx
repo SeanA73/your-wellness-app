@@ -1,9 +1,9 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Settings, Heart, User, LogOut, LogIn, Crown, Sparkles, ShoppingBag } from "lucide-react";
+import { Settings, Heart, User, LogOut, LogIn, Crown, Sparkles, ShoppingBag, BookOpen, Award } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useTheme } from "@/contexts/ThemeContext";
 import { NotificationCenter } from "@/components/NotificationCenter";
 
@@ -30,6 +30,20 @@ const FitMateHeader = () => {
         </div>
 
         <div className="flex items-center gap-3">
+          <Link to="/guide">
+            <Button variant="ghost" size="sm" className="flex gap-2">
+              <BookOpen className="w-4 h-4" />
+              <span className="hidden sm:inline">Guide</span>
+            </Button>
+          </Link>
+          
+          <Link to="/coach-picks">
+            <Button variant="ghost" size="sm" className="hidden sm:flex gap-2">
+              <Award className="w-4 h-4" />
+              Coach's Picks
+            </Button>
+          </Link>
+          
           {user ? (
             <>
               {/* Notifications */}
@@ -61,6 +75,10 @@ const FitMateHeader = () => {
                   <DropdownMenuItem onClick={() => navigate("/profile")}>
                     <Settings className="w-4 h-4 mr-2" />
                     Settings
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate("/guide")}>
+                    <BookOpen className="w-4 h-4 mr-2" />
+                    User Guide
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => navigate("/premium")}>
                     <Crown className="w-4 h-4 mr-2" />
