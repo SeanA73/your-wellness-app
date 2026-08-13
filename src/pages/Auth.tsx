@@ -346,15 +346,15 @@ const Auth = () => {
                                       setBillingCycle('annual');
                                     }}
                                   >
-                                    Annual <span className="ml-1 text-xs">(Save 27%)</span>
+                                    Annual <span className="ml-1 text-xs">(Save 20%)</span>
                                   </Button>
                                 </div>
                               </div>
                               <div className="text-lg font-bold text-primary">
-                                ${billingCycle === 'monthly' ? '7.99' : '5.83'}/month
+                                ${billingCycle === 'monthly' ? '4.99' : '4.00'}/month
                                 {billingCycle === 'annual' && (
                                   <span className="text-sm text-muted-foreground font-normal ml-2">
-                                    (${69.99}/year)
+                                    (${47.99}/year)
                                   </span>
                                 )}
                               </div>
@@ -602,7 +602,7 @@ const Auth = () => {
                         <div className="flex items-center justify-between">
                           <span className="text-sm font-medium">Price</span>
                           <span className="text-lg font-bold text-primary">
-                            ${billingCycle === 'monthly' ? '7.99' : '69.99'}
+                            ${billingCycle === 'monthly' ? '4.99' : '47.99'}
                             <span className="text-sm font-normal text-muted-foreground">/{billingCycle === 'monthly' ? 'month' : 'year'}</span>
                           </span>
                         </div>

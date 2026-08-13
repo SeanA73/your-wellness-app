@@ -60,7 +60,7 @@ const PRICING_PLANS: PricingPlan[] = [
     id: 'premium',
     name: 'FitMatePro Premium',
     icon: <Zap className="h-6 w-6" />,
-    price: { monthly: 7.99, annual: 69.99 },
+    price: { monthly: 4.99, annual: 47.99 },
     description: 'Unlock everything FitMatePro has to offer',
     features: [
       'Unlimited workout and nutrition logging',
@@ -159,7 +159,7 @@ export const PricingSection = ({ showTitle = true, className }: PricingSectionPr
               Annual
             </span>
             <Badge variant="secondary" className="ml-2">
-              Save 27% annually
+              Save 20% annually
             </Badge>
           </div>
         </div>

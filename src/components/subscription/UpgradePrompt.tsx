@@ -156,9 +156,9 @@ export const UpgradePrompt = ({ trigger, featureName, onClose, className }: Upgr
             {/* Pricing highlight */}
             <div className="bg-primary/5 rounded-lg p-4 border border-primary/20">
               <div className="text-center">
-                <div className="text-2xl font-bold text-primary">$7.99/month</div>
+                <div className="text-2xl font-bold text-primary">$4.99/month</div>
                 <div className="text-sm text-muted-foreground">
-                  or $69.99/year (save 27%)
+                  or $47.99/year (save 20%)
                 </div>
                 <Badge variant="secondary" className="mt-2">
                   7-day free trial
