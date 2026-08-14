@@ -19,7 +19,11 @@ const FitMateHeader = () => {
   return (
     <header className="w-full bg-card border-b border-border px-6 py-4">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
-        <div className="flex items-center gap-4">
+        <Link
+          to="/"
+          aria-label="FitMatePro home"
+          className="flex items-center gap-4 rounded-md transition-opacity hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+        >
           <div className="w-10 h-10 bg-wellness-gradient rounded-full flex items-center justify-center">
             <Heart className="w-6 h-6 text-white" />
           </div>
@@ -27,7 +31,7 @@ const FitMateHeader = () => {
             <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-foreground">FitMatePro</h1>
             <p className="text-xs sm:text-sm text-muted-foreground hidden sm:block">Your Personal Wellness Coach</p>
           </div>
-        </div>
+        </Link>
 
         <div className="flex items-center gap-3">
           <Link to="/guide">
