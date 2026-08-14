@@ -10,10 +10,14 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand Section */}
           <div className="space-y-4">
-            <div className="flex items-center gap-2">
+            <Link
+              to="/"
+              aria-label="FitMatePro home"
+              className="flex w-fit items-center gap-2 rounded-md transition-opacity hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+            >
               <Heart className="w-6 h-6 text-primary" />
               <span className="text-xl font-bold text-foreground">FitMatePro</span>
-            </div>
+            </Link>
             <p className="text-sm text-muted-foreground">
               Your AI-powered wellness companion for a healthier, happier life.
             </p>
