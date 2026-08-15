@@ -23,6 +23,7 @@ import {
 import FitMateHeader from "@/components/FitMateHeader";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import type { Json } from "@/integrations/supabase/types";
 
 interface OnboardingData {
   fitness_goals: string[];
@@ -82,9 +83,43 @@ const Onboarding = () => {
     }
   };
 
+  // user_preferences has no unique constraint on user_id, so .upsert({ onConflict:
+  // 'user_id' }) is rejected at plan time (42P10) — it can never succeed. The
+  // on_profile_created trigger already seeds one row per profile, so update that
+  // row and only insert when it is genuinely missing (accounts predating the
+  // trigger). notification_settings is merged, not replaced, so this never drops
+  // keys written elsewhere.
+  const saveOnboardingPreferences = async (settings: Record<string, Json>) => {
+    const { data: existing, error: readError } = await supabase
+      .from('user_preferences')
+      .select('id, notification_settings')
+      .eq('user_id', user!.id)
+      .maybeSingle();
+
+    if (readError) throw readError;
+
+    const merged: Record<string, Json> = {
+      ...((existing?.notification_settings as Record<string, Json> | null) ?? {}),
+      ...settings,
+    };
+
+    if (existing) {
+      const { error } = await supabase
+        .from('user_preferences')
+        .update({ notification_settings: merged })
+        .eq('id', existing.id);
+      if (error) throw error;
+    } else {
+      const { error } = await supabase
+        .from('user_preferences')
+        .insert({ user_id: user!.id, notification_settings: merged });
+      if (error) throw error;
+    }
+  };
+
   const handleComplete = async () => {
     if (!user) return;
-    
+
     setLoading(true);
     try {
       // Update profile with onboarding data
@@ -92,24 +127,16 @@ const Onboarding = () => {
         fitness_goals: data.fitness_goals,
         activity_level: data.activity_level as string | undefined,
       });
-      
-      // Save onboarding completion to user_preferences
-      const { error: prefError } = await supabase
-        .from('user_preferences')
-        .upsert({
-          user_id: user.id,
-          notification_settings: {
-            onboarding_complete: true,
-            onboarding_completed_at: new Date().toISOString(),
-            preferred_workout_time: data.preferred_workout_time,
-            workout_frequency: data.workout_frequency,
-          },
-        }, {
-          onConflict: 'user_id'
-        });
 
-      if (prefError) throw prefError;
-      
+      // Save onboarding completion to user_preferences
+      await saveOnboardingPreferences({
+        onboarding_complete: true,
+        onboarding_completed_at: new Date().toISOString(),
+        preferred_workout_time: data.preferred_workout_time,
+        workout_frequency: data.workout_frequency,
+        primary_focus: data.primary_focus,
+      });
+
       // Mark onboarding as complete in localStorage for backward compatibility
       localStorage.setItem('onboarding_complete', 'true');
       sessionStorage.setItem('onboarding_just_completed', 'true');
@@ -140,20 +167,11 @@ const Onboarding = () => {
     
     try {
       // Mark as skipped in preferences
-      const { error } = await supabase
-        .from('user_preferences')
-        .upsert({
-          user_id: user.id,
-          notification_settings: {
-            onboarding_complete: true,
-            onboarding_skipped: true,
-          },
-        }, {
-          onConflict: 'user_id'
-        });
+      await saveOnboardingPreferences({
+        onboarding_complete: true,
+        onboarding_skipped: true,
+      });
 
-      if (error) throw error;
-      
       localStorage.setItem('onboarding_complete', 'true');
       navigate("/");
     } catch (error) {
