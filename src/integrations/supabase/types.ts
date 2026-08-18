@@ -378,15 +378,16 @@ export type Database = {
       }
       profiles: {
         Row: {
+          account_status: string
           activity_level: string | null
           avatar_url: string | null
           created_at: string | null
+          paused_at: string | null
           date_of_birth: string | null
           email: string
           fitness_goals: string[] | null
           full_name: string | null
           gender: string | null
-          health_conditions: string[] | null
           height_cm: number | null
           id: string
           subscription_plan: string | null
@@ -394,15 +395,16 @@ export type Database = {
           weight_kg: number | null
         }
         Insert: {
+          account_status?: string
           activity_level?: string | null
           avatar_url?: string | null
           created_at?: string | null
+          paused_at?: string | null
           date_of_birth?: string | null
           email: string
           fitness_goals?: string[] | null
           full_name?: string | null
           gender?: string | null
-          health_conditions?: string[] | null
           height_cm?: number | null
           id: string
           subscription_plan?: string | null
@@ -410,15 +412,16 @@ export type Database = {
           weight_kg?: number | null
         }
         Update: {
+          account_status?: string
           activity_level?: string | null
           avatar_url?: string | null
           created_at?: string | null
+          paused_at?: string | null
           date_of_birth?: string | null
           email?: string
           fitness_goals?: string[] | null
           full_name?: string | null
           gender?: string | null
-          health_conditions?: string[] | null
           height_cm?: number | null
           id?: string
           subscription_plan?: string | null
