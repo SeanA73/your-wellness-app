@@ -132,13 +132,18 @@ Gate features on `hasPremiumAccess()` / `canUseFeature()` from
 `src/hooks/useSubscription.tsx`. Do not add client-side shortcuts that grant
 premium — including for admins.
 
-### Admin routes
+### There is no admin UI
 
-`AdminDashboard.tsx` and `AdminUsers.tsx` exist but are **not routed**. The admin
-RLS policies they need are not in the applied schema: `profiles`,
-`subscriptions`, `revenue_events` and `usage_tracking` are all self-row-only, so
-the dashboard could only ever display the admin's own row. Adding admin
-policies is a prerequisite for re-enabling `/admin`.
+`AdminDashboard.tsx` and `AdminUsers.tsx` have been deleted — they were unrouted
+and linked only to each other. The admin RLS policies they needed are not in the
+applied schema: `profiles`, `subscriptions`, `revenue_events` and
+`usage_tracking` are all self-row-only, so the dashboard could only ever display
+the admin's own row. Writing those policies is a prerequisite for any `/admin`
+surface; recover the pages from git history as a starting point.
+
+The `admin` role in `user_roles` still exists and `has_role()` is still applied.
+Its only effect in the app is the Profile page plan badge (`useAdmin` →
+`ADMIN` label). It must never gate an entitlement.
 
 ## Build and deploy
 

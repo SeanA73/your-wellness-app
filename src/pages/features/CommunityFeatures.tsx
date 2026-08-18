@@ -4,8 +4,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import FitMateHeader from "@/components/FitMateHeader";
-import { 
-  Users, 
+import { useAuth } from "@/hooks/useAuth";
+import { Seo } from '@/components/Seo';
+import {
+  Users,
   Trophy, 
   Share2, 
   MessageSquare,
@@ -20,6 +22,11 @@ import {
 
 const CommunityFeatures = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
+
+  // Public marketing page. Nothing here is built yet, so a signed-in user is
+  // sent back to the dashboard rather than to the login screen.
+  const startHere = () => navigate(user ? "/" : "/auth?plan=free");
 
   const features = [
     {
@@ -77,7 +84,7 @@ const CommunityFeatures = () => {
       name: "Elite Performance",
       description: "Advanced athletes and competitive fitness",
       members: "950+ members",
-      badge: "Pro"
+      badge: "Premium"
     }
   ];
 
@@ -102,17 +109,22 @@ const CommunityFeatures = () => {
     }
   ];
 
+  // Free and Premium are the only tiers. There is no Pro tier.
   const getBadgeVariant = (badge: string) => {
     switch (badge) {
       case "Free": return "secondary";
       case "Premium": return "default";
-      case "Pro": return "destructive";
       default: return "secondary";
     }
   };
 
   return (
     <div className="min-h-screen bg-background">
+      <Seo
+        title="Community — Train Alongside Other FitMatePro Members"
+        description="Share milestones, join monthly challenges, find an accountability partner and swap advice with other members working toward similar fitness goals."
+        path="/features/community-features"
+      />
       <FitMateHeader />
       
       <div className="max-w-7xl mx-auto px-6 py-12">
@@ -143,9 +155,9 @@ const CommunityFeatures = () => {
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" onClick={() => navigate("/auth")}>
+            <Button size="lg" onClick={startHere}>
               <UserPlus className="w-4 h-4 mr-2" />
-              Join Community
+              {user ? "Go to Dashboard" : "Create an Account"}
             </Button>
             <Button variant="outline" size="lg" onClick={() => navigate("/features/ai-coaching")}>
               <Zap className="w-4 h-4 mr-2" />
@@ -273,10 +285,10 @@ const CommunityFeatures = () => {
               <Button 
                 size="lg" 
                 variant="secondary"
-                onClick={() => navigate("/auth")}
+                onClick={startHere}
                 className="bg-white text-primary hover:bg-white/90"
               >
-                Join the FitMatePro Community
+                {user ? "Go to Dashboard" : "Create an Account"}
               </Button>
             </CardContent>
           </Card>
