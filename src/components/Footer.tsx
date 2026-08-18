@@ -1,8 +1,13 @@
 import { Link } from "react-router-dom";
-import { Heart, Mail, Info, BookOpen, ShoppingBag, Dumbbell, Award } from "lucide-react";
+import { Heart, Mail, Info, BookOpen, ShoppingBag, Dumbbell, Award, Tag } from "lucide-react";
+import { useHasProducts } from "@/hooks/useHasProducts";
+import { useAuth } from "@/hooks/useAuth";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
+  // Hidden while affiliate_products is empty — see useHasProducts.
+  const { hasProducts } = useHasProducts();
+  const { user } = useAuth();
 
   return (
     <footer className="bg-card border-t border-border mt-auto">
@@ -33,29 +38,47 @@ const Footer = () => {
                   User Guide
                 </Link>
               </li>
+              {/* Pricing is public; everything below it needs an account.
+                  The footer renders on the signed-out landing page, so
+                  advertising protected routes there just bounced visitors to
+                  /auth. Signed-out visitors get the pricing link instead. */}
               <li>
-                <Link to="/coach-picks" className="text-sm text-muted-foreground hover:text-primary transition-colors flex items-center gap-2">
-                  <Award className="w-4 h-4" />
-                  Coach's Picks
+                <Link to="/pricing" className="text-sm text-muted-foreground hover:text-primary transition-colors flex items-center gap-2">
+                  <Tag className="w-4 h-4" />
+                  Pricing
                 </Link>
               </li>
-              <li>
-                <Link to="/workouts" className="text-sm text-muted-foreground hover:text-primary transition-colors flex items-center gap-2">
-                  <Dumbbell className="w-4 h-4" />
-                  Workouts
-                </Link>
-              </li>
-              <li>
-                <Link to="/shop" className="text-sm text-muted-foreground hover:text-primary transition-colors flex items-center gap-2">
-                  <ShoppingBag className="w-4 h-4" />
-                  Shop
-                </Link>
-              </li>
-              <li>
-                <Link to="/premium" className="text-sm text-muted-foreground hover:text-primary transition-colors">
-                  Premium Features
-                </Link>
-              </li>
+              {user && hasProducts && (
+                <li>
+                  <Link to="/coach-picks" className="text-sm text-muted-foreground hover:text-primary transition-colors flex items-center gap-2">
+                    <Award className="w-4 h-4" />
+                    Coach's Picks
+                  </Link>
+                </li>
+              )}
+              {user && (
+                <li>
+                  <Link to="/workouts" className="text-sm text-muted-foreground hover:text-primary transition-colors flex items-center gap-2">
+                    <Dumbbell className="w-4 h-4" />
+                    Workouts
+                  </Link>
+                </li>
+              )}
+              {user && hasProducts && (
+                <li>
+                  <Link to="/shop" className="text-sm text-muted-foreground hover:text-primary transition-colors flex items-center gap-2">
+                    <ShoppingBag className="w-4 h-4" />
+                    Shop
+                  </Link>
+                </li>
+              )}
+              {user && (
+                <li>
+                  <Link to="/premium" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                    Premium Features
+                  </Link>
+                </li>
+              )}
             </ul>
           </div>
 

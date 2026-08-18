@@ -5,9 +5,17 @@ import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, MessageCircle, Zap, Clock, Brain, TrendingUp, Star } from "lucide-react";
 import FitMateHeader from "@/components/FitMateHeader";
+import { useAuth } from "@/hooks/useAuth";
+import { Seo } from '@/components/Seo';
 
 const AICoaching = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
+
+  // Public marketing page. Signed-in users go to the chat; the upgrade CTA
+  // sends them to pricing rather than back to the login screen.
+  const startHere = () => navigate(user ? "/chat" : "/auth?plan=free");
+  const upgradeHere = () => navigate(user ? "/pricing" : "/auth?trial=true&plan=premium");
 
   const features = [
     {
@@ -63,6 +71,11 @@ const AICoaching = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <Seo
+        title="AI Coaching — Fitness Answers Whenever You Need Them"
+        description="Ask about training, form, nutrition and goal setting, and get guidance shaped by the workouts and meals you have actually logged, not generic advice."
+        path="/features/ai-coaching"
+      />
       <FitMateHeader />
       
       <main className="pt-20">
@@ -94,9 +107,9 @@ const AICoaching = () => {
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4">
-              <Button size="lg" onClick={() => navigate("/auth")}>
+              <Button size="lg" onClick={startHere}>
                 <MessageCircle className="w-5 h-5 mr-2" />
-                Chat with AI Coach
+                {user ? "Open Coach Chat" : "Try Coach Chat"}
               </Button>
               <Button size="lg" variant="outline" onClick={() => navigate("/")}>
                 View All Features
@@ -208,8 +221,8 @@ const AICoaching = () => {
               <p className="text-xl mb-8 text-white/90 max-w-2xl mx-auto">
                 Upgrade to Premium and get unlimited access to personalized fitness coaching.
               </p>
-              <Button size="lg" variant="secondary" onClick={() => navigate("/auth")}>
-                Start Premium Trial
+              <Button size="lg" variant="secondary" onClick={upgradeHere}>
+                {user ? "See Plans" : "Start Premium Trial"}
               </Button>
             </div>
           </div>

@@ -19,15 +19,13 @@ import {
   Palette,
   ChefHat,
   Award,
-  Shield,
-  BarChart3,
-  MousePointerClick,
   DollarSign,
   Info,
   PlayCircle,
   Clock
 } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Seo } from '@/components/Seo';
 
 const Guide = () => {
   const features = [
@@ -93,7 +91,6 @@ const Guide = () => {
       badge: "Premium",
       description: "Detailed insights into your journey",
       details: [
-        "Weekly progress reports",
         "Track weight, body measurements, and fitness metrics",
         "View workout volume and consistency",
         "Monitor nutrition adherence",
@@ -134,11 +131,11 @@ const Guide = () => {
   const faqs = [
     {
       question: "How do I upgrade to Premium?",
-      answer: "Click the Crown icon in the header or navigate to your Profile page. You'll see subscription options with detailed feature comparisons. Premium unlocks unlimited workouts, AI coaching, advanced meal planning, and detailed analytics."
+      answer: "Open the menu under your avatar in the header and choose \"Premium Features\" (the crown icon). That page lists what Premium includes and has an Upgrade button that takes you to Pricing, where you can compare plans and start checkout."
     },
     {
       question: "Can I cancel my subscription anytime?",
-      answer: "Yes! You can cancel your Premium subscription at any time from your Profile page. You'll retain access until the end of your billing period."
+      answer: "Yes. Go to Profile > Subscription and use \"Cancel Subscription\". You'll retain access until the end of your billing period."
     },
     {
       question: "How do I track a workout?",
@@ -158,7 +155,7 @@ const Guide = () => {
     },
     {
       question: "How do I export my data?",
-      answer: "Premium users can export all health data from the Profile page. Choose from PDF, CSV, or JSON formats to download your complete fitness history."
+      answer: "Premium users can export their health data from the Premium Features page (avatar menu > Premium Features). Choose from PDF, CSV, or JSON formats to download your fitness history."
     },
     {
       question: "Can I use the app offline?",
@@ -171,14 +168,6 @@ const Guide = () => {
     {
       question: "Are the product recommendations personalized?",
       answer: "Yes! Product recommendations are contextual based on your activities. For example, after logging strength workouts, you'll see equipment recommendations. After tracking meals, you'll see nutrition products. This ensures the suggestions are relevant to your current fitness focus."
-    },
-    {
-      question: "How do I access the admin dashboard?",
-      answer: "The admin dashboard is only accessible to users with administrator privileges. If you're an admin, you'll see an 'Admin' link in the navigation menu. The dashboard provides insights into user engagement, subscription metrics, and affiliate performance."
-    },
-    {
-      question: "How does the role system work?",
-      answer: "FitMatePro uses a secure role-based access system. Regular users have standard access, while administrators can view analytics and manage the platform. Roles are stored securely in the database and verified server-side to prevent unauthorized access."
     }
   ];
 
@@ -217,6 +206,11 @@ const Guide = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <Seo
+        title="FitMatePro Guide — How to Track Workouts and Meals"
+        description="A walkthrough of every feature: browsing workout programs, building custom plans, logging meals and macros, and what Free and Premium each include."
+        path="/guide"
+      />
       <FitMateHeader />
       
       {/* Hero Header */}
@@ -266,7 +260,7 @@ const Guide = () => {
             <TabsTrigger value="getting-started">Getting Started</TabsTrigger>
             <TabsTrigger value="tutorials">Video Tutorials</TabsTrigger>
             <TabsTrigger value="faq">FAQ</TabsTrigger>
-            <TabsTrigger value="advanced">Admin & Advanced</TabsTrigger>
+            <TabsTrigger value="affiliates">Affiliates</TabsTrigger>
           </TabsList>
 
           {/* Features Tab */}
@@ -345,13 +339,6 @@ const Guide = () => {
                     <div>
                       <p className="font-medium">Advanced Meal Planning</p>
                       <p className="text-sm text-muted-foreground">AI-powered weekly meal plans</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <TrendingUp className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                    <div>
-                      <p className="font-medium">Progress Reports</p>
-                      <p className="text-sm text-muted-foreground">Detailed weekly analytics</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
@@ -516,8 +503,8 @@ const Guide = () => {
             </Card>
           </TabsContent>
 
-          {/* Admin & Advanced Tab */}
-          <TabsContent value="advanced" className="space-y-6">
+          {/* Affiliates Tab */}
+          <TabsContent value="affiliates" className="space-y-6">
             {/* Affiliate Disclosure */}
             <Card className="border-amber-500/30 bg-amber-500/5">
               <CardHeader>
@@ -570,149 +557,6 @@ const Guide = () => {
                       <p className="text-sm text-muted-foreground">
                         Suggestions are based on your workouts, nutrition, and goals
                       </p>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Admin Dashboard */}
-            <Card>
-              <CardHeader>
-                <div className="flex items-center gap-2">
-                  <Shield className="w-5 h-5 text-primary" />
-                  <CardTitle>Admin Dashboard</CardTitle>
-                </div>
-                <CardDescription>
-                  Platform analytics and management (Admin access required)
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div>
-                  <h3 className="font-semibold mb-3 flex items-center gap-2">
-                    <BarChart3 className="w-4 h-4 text-primary" />
-                    Dashboard Features
-                  </h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="p-4 border rounded-lg">
-                      <p className="font-medium mb-2">User Analytics</p>
-                      <ul className="space-y-1 text-sm text-muted-foreground">
-                        <li>• Total users and subscription breakdown</li>
-                        <li>• Active subscriptions and conversion rates</li>
-                        <li>• Recent user registrations</li>
-                        <li>• User engagement metrics</li>
-                      </ul>
-                    </div>
-                    <div className="p-4 border rounded-lg">
-                      <p className="font-medium mb-2">Revenue Tracking</p>
-                      <ul className="space-y-1 text-sm text-muted-foreground">
-                        <li>• Total revenue from all sources</li>
-                        <li>• Subscription revenue breakdown</li>
-                        <li>• Premium conversion metrics</li>
-                        <li>• Revenue trends and projections</li>
-                      </ul>
-                    </div>
-                    <div className="p-4 border rounded-lg">
-                      <p className="font-medium mb-2">Feature Usage</p>
-                      <ul className="space-y-1 text-sm text-muted-foreground">
-                        <li>• AI coaching interactions</li>
-                        <li>• Workout and nutrition tracking</li>
-                        <li>• Wellness check-ins</li>
-                        <li>• Goal setting engagement</li>
-                      </ul>
-                    </div>
-                    <div className="p-4 border rounded-lg">
-                      <p className="font-medium mb-2">Affiliate Analytics</p>
-                      <ul className="space-y-1 text-sm text-muted-foreground">
-                        <li>• Total clicks and conversions</li>
-                        <li>• Conversion rate tracking</li>
-                        <li>• Top performing products</li>
-                        <li>• Commission revenue reports</li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="p-4 bg-muted rounded-lg">
-                  <div className="flex items-start gap-3">
-                    <MousePointerClick className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                    <div>
-                      <p className="font-medium mb-1">Accessing the Dashboard</p>
-                      <p className="text-sm text-muted-foreground">
-                        Only users with administrator privileges can access the admin dashboard. 
-                        Look for the "Admin" link in the navigation menu if you have admin access.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Role System */}
-            <Card>
-              <CardHeader>
-                <div className="flex items-center gap-2">
-                  <Users className="w-5 h-5 text-primary" />
-                  <CardTitle>Role-Based Access System</CardTitle>
-                </div>
-                <CardDescription>
-                  How user roles and permissions work
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-4">
-                  <div className="p-4 border rounded-lg">
-                    <div className="flex items-start gap-3 mb-2">
-                      <Users className="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" />
-                      <div>
-                        <p className="font-medium">Regular User</p>
-                        <p className="text-sm text-muted-foreground">
-                          Standard access to all fitness features including workouts, nutrition tracking, 
-                          AI coaching, and wellness check-ins. Can upgrade to Premium for advanced features.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="p-4 border rounded-lg">
-                    <div className="flex items-start gap-3 mb-2">
-                      <Shield className="w-5 h-5 text-purple-500 flex-shrink-0 mt-0.5" />
-                      <div>
-                        <p className="font-medium">Administrator</p>
-                        <p className="text-sm text-muted-foreground">
-                          Full platform access including the admin dashboard with analytics, user management, 
-                          revenue tracking, and affiliate performance metrics. Required for platform moderation.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="p-4 border rounded-lg">
-                    <div className="flex items-start gap-3 mb-2">
-                      <Award className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" />
-                      <div>
-                        <p className="font-medium">Moderator</p>
-                        <p className="text-sm text-muted-foreground">
-                          Limited administrative access for community management and content moderation. 
-                          Can review user-generated content and manage community guidelines.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="p-4 bg-primary/5 border border-primary/20 rounded-lg">
-                  <div className="flex items-start gap-3">
-                    <Shield className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                    <div>
-                      <p className="font-medium mb-2">Security & Privacy</p>
-                      <ul className="space-y-1 text-sm text-muted-foreground">
-                        <li>• Roles are stored securely in a dedicated database table</li>
-                        <li>• All permissions are verified server-side, not client-side</li>
-                        <li>• Users cannot self-assign admin or moderator roles</li>
-                        <li>• Role changes are logged for audit purposes</li>
-                        <li>• Admins can only be assigned by other administrators</li>
-                      </ul>
                     </div>
                   </div>
                 </div>
